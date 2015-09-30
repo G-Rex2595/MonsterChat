@@ -2,7 +2,8 @@
  * File:  Message.h
  * Author:  Andrew Sytsma
  * 
- * [INSERT DESCRIPTION]
+ * Message.h is used to abstract the methods that
+ * are coded in Message.cpp.
  */
 
 #ifndef Message_H
@@ -16,12 +17,17 @@ using std::string;
 class Message
 {
 public:
-	Message(string username, string msg, string id);
+	Message(string username, string msg, string id, time_t time);
 	virtual string getName();
 	virtual string getMessage();
 	virtual time_t getTime();
 	virtual string getID();
-	virtual void setTime(time_t time);
+
+private:
+	string username;
+	string msg;
+	string id;
+	time_t time;
 };
 
 #endif
