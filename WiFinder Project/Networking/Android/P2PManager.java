@@ -12,12 +12,10 @@ public class P2PManager {
 	
 	/**
 	  * Constructor for P2PManager
-	  * @param roomName The name of the room the user belongs to.
-	  * @param passwd The password of the room, if any.
 	  */
-	public P2PManager(String roomName, String passwd) {
-		this.roomName = roomName;
-		this.passwd = passwd;
+	public P2PManager() {
+		roomName = null;
+		passwd = null;
 		incomingMessageQueue = new LinkedList<>();
 		outgoingMessageQueue = new LinkedList<>();
 	}
