@@ -13,15 +13,14 @@
  * @param username Holds the sender's unsername.
  * @param msg Holds the message received.
  * @param id Holds the id of the sender.
- * @param time Holds the time received.
  */
 
-Message::Message(string username, string msg, string id, time_t time)
+Message::Message(string username, string msg, string id)
 {
 	Message::username = username;
 	Message::msg = msg;
 	Message::id = id;
-	Message::time = time;
+	Message::time = NULL;
 }	//end of Message constructor
 
 /* Returns the sender's username.
@@ -63,3 +62,12 @@ string Message::getID()
 {
 	return Message::id;
 }	//end of getID method
+
+/* Sets the time received.
+ * @param time Holds the time received.
+ */
+
+void Message::setTime(time_t time)
+{
+	Message::time = time;
+}	//end of setTime method
