@@ -1,6 +1,3 @@
-#ifndef CHATROOMMANAGER_CPP
-#define CHATROOMMANAGER_CPP
-
 #include<string>
 #include<vector>
 #include<memory>
@@ -40,4 +37,3 @@ std::shared_ptr<ChatRoom> ChatRoomManager::joinRoom(std::string room)
 
 	return this->currentRoom;
 }
-#endif
