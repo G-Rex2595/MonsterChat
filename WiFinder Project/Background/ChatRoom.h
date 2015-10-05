@@ -21,20 +21,21 @@ using std::vector;
 class ChatRoom
 {
 public:
-	ChatRoom(string roomName);
+	ChatRoom(P2PManager manager, string username, string roomName);
 	virtual vector<Message> getMessages();
 	virtual void sendMessage(Message msg);
 	virtual void addMessage(Message msg);
 	virtual bool failedConnect();
 	virtual void close();
 	virtual void setChatView(ChatView view);
-	virtual void setP2PManager(P2PManager manager);
+	virtual void setUsername(string username);
 
 private:
 	P2PManager manager;
 	string roomName;
 	ChatView view;
 	vector<Message> msgs;
+	string username;
 };
 
 #endif

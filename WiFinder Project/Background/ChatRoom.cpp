@@ -17,8 +17,10 @@
  * @param roomName Holds the name of the chat room
  */
 
-ChatRoom::ChatRoom(string roomName)
+ChatRoom::ChatRoom(P2PManager manager, string username, string roomName)
 {
+	ChatRoom::manager = manager;
+	ChatRoom::username = username;
 	ChatRoom::roomName = roomName;
 }	//end of ChatRoom constructor
 
@@ -54,7 +56,7 @@ void ChatRoom::setChatView(ChatView view)
 	ChatRoom::view = view;
 }	//end of setChatView method
 
-void ChatRoom::setP2PManager(P2PManager manager)
+void ChatRoom::setUsername(string username)
 {
-	ChatRoom::manager = manager;
-}
+	ChatRoom::username = username;
+}	//end of setUsername method
