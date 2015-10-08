@@ -12,9 +12,14 @@
 
 #include "ChatRoom.h"
 
-ChatRoom::ChatRoom(P2PManager manager)
+/* Initializes the ChatRoom class
+ * 
+ * @param roomName Holds the name of the chat room
+ */
+
+ChatRoom::ChatRoom(string roomName)
 {
-	ChatRoom::manager = manager;
+	ChatRoom::roomName = roomName;
 }	//end of ChatRoom constructor
 
 vector<Message> ChatRoom::getMessages()
@@ -34,11 +39,6 @@ void ChatRoom::addMessage(Message msg)
 	ChatRoom::view.addMessage(msg);
 }	//end of addMessage method
 
-void ChatRoom::setRoomName(string roomName)
-{
-	ChatRoom::roomName = roomName;
-}	//end of setRoomName method
-
 bool ChatRoom::failedConnect()
 {
 	ChatRoom::view.failedConnect();
@@ -53,3 +53,8 @@ void ChatRoom::setChatView(ChatView view)
 {
 	ChatRoom::view = view;
 }	//end of setChatView method
+
+void ChatRoom::setP2PManager(P2PManager manager)
+{
+	ChatRoom::manager = manager;
+}

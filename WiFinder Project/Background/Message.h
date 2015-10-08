@@ -17,11 +17,12 @@ using std::string;
 class Message
 {
 public:
-	Message(string username, string msg, string id, time_t time);
+	Message(string username, string msg, string id);
 	virtual string getName();
 	virtual string getMessage();
 	virtual time_t getTime();
 	virtual string getID();
+	virtual void setTime(time_t time);
 
 private:
 	string username;
