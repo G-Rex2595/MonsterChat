@@ -1,4 +1,4 @@
-package team14.wifinder;    //TODO:  Set package to the final one we use
+package wifinderinc.wifinder;
 
 import java.util.LinkedList;
 
@@ -23,9 +23,9 @@ public class ChatRoom
     private String _roomName;
 
     /**
-     * Contains a reference to the ChatView
+     * Contains a reference to the ChatRoomView
      */
-    private ChatView _view;
+    private ChatRoomView _view;
 
     /**
      * Holds a list of Messages.
@@ -59,7 +59,7 @@ public class ChatRoom
     }   //end of getMessages method
 
     /**
-     * Adds the message received from the ChatView to the message list.
+     * Adds the message received from the ChatRoomView to the message list.
      * Calls P2PManager's sendMessage to send a message.
      *
      * @param message   Holds the message to be saved and sent.
@@ -72,7 +72,7 @@ public class ChatRoom
 
     /**
      * Adds the message received from the P2PManager to the message list.
-     * Calls ChatView's addMessage to add a message.
+     * Calls ChatRoomView's addMessage to add a message.
      *
      * @param message   Holds the message to be saved and added.
      */
@@ -83,7 +83,7 @@ public class ChatRoom
     }   //end of addMessage method
 
     /**
-     * Calls ChatView's failedConnect.
+     * Calls ChatRoomView's failedConnect.
      */
     public void failedConnect()
     {
@@ -99,14 +99,14 @@ public class ChatRoom
     }   //end of close method
 
     /**
-     * Sets the view to the given ChatView.
+     * Sets the view to the given ChatRoomView.
      *
-     * @param view  Contains a reference to the ChatView.
+     * @param view  Contains a reference to the ChatRooomView.
      */
-    public void setChatView(ChatView view)
+    public void setChatRoomView(ChatRoomView view)
     {
         _view = view;
-    }   //end of setChatView method
+    }   //end of setChatRoomView method
 
     /**
      * Sets the username to the given string.

@@ -1,4 +1,4 @@
-package team14.wifinder;    //TODO:  Set package to the final one we use
+package wifinderinc.wifinder;
 
 /**
  * @author  Andrew Sytsma <asytsma@purdue.edu>
