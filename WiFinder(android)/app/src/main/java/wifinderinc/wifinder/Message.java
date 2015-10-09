@@ -26,18 +26,25 @@ public class Message
     private long _time;
 
     /**
+     * Holds a string of the chat room name.
+     */
+    private String _roomName;
+
+    /**
      * Message constructor initializes the fields.
      *
      * @param username  Holds a string of the username.
      * @param message   Holds a string of the message.
      * @param id        Holds a string of the id.
+     * @param roomName  Holds a string of the chat room name.
      */
-    public Message(String username, String message, String id)
+    public Message(String username, String message, String id, String roomName)
     {
         _username = username;
         _message = message;
         _id = id;
         _time = 0;
+        _roomName = roomName;
     }   //end of Message constructor
 
     /**
@@ -97,4 +104,14 @@ public class Message
     {
         _time = System.currentTimeMillis();
     }   //end of setTime method
+
+    /**
+     * Returns the chat room name as a string.
+     *
+     * @return  Returns the chat room name as a string.
+     */
+    public String getRoomName()
+    {
+        return _roomName;
+    }   //end of getRoomName method
 }   //end of Message class
