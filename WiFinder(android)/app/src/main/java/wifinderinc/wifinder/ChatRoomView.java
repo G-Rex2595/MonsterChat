@@ -31,7 +31,6 @@ public class ChatRoomView extends AppCompatActivity{
 
 
 
-
         txtbxInput.clearFocus();
         txtbxInput.setOnClickListener(new View.OnClickListener() {
             @Override
