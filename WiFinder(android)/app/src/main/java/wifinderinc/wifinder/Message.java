@@ -1,9 +1,11 @@
 package wifinderinc.wifinder;
 
+import java.io.Serializable;
+
 /**
  * @author  Andrew Sytsma <asytsma@purdue.edu>
  */
-public class Message
+public class Message implements Serializable
 {
     /**
      * Holds a string of the username.

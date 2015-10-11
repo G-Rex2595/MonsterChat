@@ -1,6 +1,7 @@
 package wifinderinc.wifinder;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pManager;
 
@@ -21,7 +22,7 @@ public class P2PManager {
 	private WifiP2pManager.Channel channel;             //The Wifi p2p channel
     private WifiBroadcastReceiver receiver;             //The receiver listening for intents from other devices
     private Activity activity;                          //Activity this p2p manager is associated with
-    private IntentFilter intentFilter;
+    private IntentFilter intentFilter;                  //Filter for the intents the broadcast receiver will take
 
 	//Singleton Object
 	private static P2PManager instance = null;
@@ -29,14 +30,12 @@ public class P2PManager {
 	/**
 	 * Constructor for P2PManager. Private to enforce a single instance.
 	 */
-	private P2PManager() {
-		roomName = null;
-		passwd = null;
-		incomingMessageQueue = new LinkedList<>();
-		outgoingMessageQueue = new LinkedList<>();
-        p2pManager = null;
-        channel = null;
-        receiver = null;
+	public P2PManager(Activity activity) {
+
+		//Initialize components for Wifi p2p
+        p2pManager = (WifiP2pManager) activity.getSystemService(Context.WIFI_P2P_SERVICE);
+        channel = p2pManager.initialize(activity, activity.getMainLooper(), null);
+        receiver = new WifiBroadcastReceiver(p2pManager, channel, this.activity);
 
         intentFilter = new IntentFilter();
 
@@ -51,6 +50,26 @@ public class P2PManager {
 
         // Indicates this device's details have changed.
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+
+        p2pManager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
+            @Override
+            public void onSuccess() {
+                //Discovery service started, but nothing found. Ignore
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                //TODO: tell user it failed
+            }
+        });
+
+        //Create message queues
+        incomingMessageQueue = new LinkedList<>();
+        outgoingMessageQueue = new LinkedList<>();
+
+        roomName = null;
+        passwd = null;
+        this.activity = activity;
 
     }
 	
@@ -72,53 +91,6 @@ public class P2PManager {
 	}
 
     /**
-     * Gets the instance of the P2PManager.
-     * @return The P2PManager instance
-     */
-	public static P2PManager getInstance() {
-		if (instance == null) instance = new P2PManager();
-		return instance;
-	}
-
-    /**
-     *
-     * @param p2pManager
-     */
-	public void addWifiP2PManager(WifiP2pManager p2pManager) {
-		this.p2pManager = p2pManager;
-        if (this.p2pManager != null && this.channel != null && activity != null) {
-            createReceiver();
-        }
-	}
-
-    /**
-     *
-     * @param channel
-     */
-	public void addChannel(WifiP2pManager.Channel channel) {
-		this.channel = channel;
-        if (this.p2pManager != null && this.channel != null && activity != null) {
-            createReceiver();
-        }
-	}
-
-    /**
-     * Add the activity to the P2PManager. Needed for registering the broadcast receiver.
-     * @param activity The activity being added for P2P Connection
-     */
-    public void addActivity(Activity activity) {
-        this.activity = activity;
-        if (this.p2pManager != null && this.channel != null && activity != null) {
-            createReceiver();
-        }
-    }
-
-    /**
-     * Creates the broadcast receiver for p2p connections.
-     */
-    private void createReceiver() { receiver = new WifiBroadcastReceiver(p2pManager, channel, activity); }
-
-    /**
      * Registers the receiver for Wifi P2P connections for the app. Does nothing fi the receiver
      * has not been created yet.
      */
@@ -134,5 +106,9 @@ public class P2PManager {
     public void unregisterReceiver() {
         if (receiver == null) return;
         activity.unregisterReceiver(receiver);
+    }
+
+    private void connect() {
+
     }
 }

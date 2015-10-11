@@ -5,12 +5,28 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.NetworkInfo;
+import android.net.wifi.WpsInfo;
+import android.net.wifi.p2p.WifiP2pConfig;
+import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.InetAddress;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.ArrayList;
 
 /**
  * Created by Michael on 10/10/2015.
  */
 public class WifiBroadcastReceiver extends BroadcastReceiver{
+
+    public static final int PORT = 6223;
 
     //Fields
     private WifiP2pManager manager;
@@ -40,8 +56,10 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
         else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
             //The list of peers has changed. Update the list of devices to conenct to
             if (manager != null) {
-
+                manager.requestPeers(channel, peerListListener);
             }
+
+
         }
         else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
             //Connection state changed.
@@ -51,7 +69,12 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
 
             if (networkInfo.isConnected()) {
                 //Connection with some device
+                manager.requestConnectionInfo(channel, new ConnectionInfoListener() {
+                    @Override
+                    public void onConnectionInfoAvailable(WifiP2pInfo info) {
 
+                    }
+                });
             }
             else {
                 //Disconnect
@@ -59,6 +82,100 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
         }
         else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
 
+        }
+    }
+
+    private ArrayList<WifiP2pDevice> peers = new ArrayList();
+    private WifiP2pManager.PeerListListener peerListListener = new WifiP2pManager.PeerListListener() {
+        @Override
+        public void onPeersAvailable(WifiP2pDeviceList peerList) {
+
+            //Clear the original list and add to the new list
+            peers.clear();
+            peers.addAll(peerList.getDeviceList());
+            for (WifiP2pDevice device : peers) {
+                WifiP2pConfig config = new WifiP2pConfig();
+                config.deviceAddress = device.deviceAddress;
+                config.wps.setup = WpsInfo.PBC;
+                manager.connect(channel, config, new WifiP2pManager.ActionListener() {
+                    @Override
+                    public void onSuccess() {
+                        //The intent P2P_CONNECTION_CHANGED.. will notify us.
+                        //This can be ignored.
+                    }
+
+                    @Override
+                    public void onFailure(int reason) {
+                        //TODO error handle
+                    }
+                });
+            }
+        }
+    };
+
+    private ConnectionInfoListener connectionListener= new ConnectionInfoListener() {
+        @Override
+        public void onConnectionInfoAvailable(WifiP2pInfo info) {
+            InetAddress groupOwnerAddress = info.groupOwnerAddress;
+
+            if (info.groupFormed && info.isGroupOwner) {
+                new ServerThread().start();
+
+            }
+            else if (info.groupFormed) {
+                new ClientThread(info.groupOwnerAddress).start();
+            }
+        }
+    };
+
+    private class ServerThread extends Thread {
+        @Override
+        public void run() {
+            try {
+                ServerSocket ss = new ServerSocket(PORT);
+                while (!isInterrupted()) {
+                    Socket s = ss.accept();
+                    new ClientThread(s).start();    //We can reuse the client thread class because it will do the same things
+                }
+            }
+            catch (IOException e) {
+                //TODO error handle
+            }
+        }
+    }
+
+    private class ClientThread extends Thread {
+
+        private Socket socket;
+
+        public ClientThread(InetAddress address) {
+            try {
+                socket = new Socket(address, PORT);
+            }
+            catch (IOException e) {
+                //TODO error handle
+            }
+        }
+
+        public ClientThread(Socket socket) {
+            this.socket = socket;
+        }
+
+        @Override
+        public void run() {
+            try {
+                ObjectInputStream read = new ObjectInputStream(socket.getInputStream());
+                ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+                while (socket.isConnected()) {
+                    Message m = (Message) read.readObject();
+                }
+
+            }
+            catch (IOException e) {
+                //TODO error handle
+            } catch (ClassNotFoundException e) {
+                //TODO error handle
+            }
         }
     }
 }
