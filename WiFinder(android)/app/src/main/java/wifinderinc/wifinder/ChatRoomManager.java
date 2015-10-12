@@ -1,5 +1,7 @@
 package wifinderinc.wifinder;
 
+import android.app.Activity;
+
 import java.util.LinkedList;
 
 /**
@@ -27,10 +29,10 @@ public class ChatRoomManager
      *
      * @param username  Holds a string of the username.
      */
-    public ChatRoomManager(String username)
+    public ChatRoomManager(String username, Activity activity)
     {
         _username = username;
-        _manager = P2PManager.getInstance();
+        _manager = P2PManager(activity);
         _currentRoom = null;
     }   //end of ChatRoomManager constructor
 
@@ -68,6 +70,7 @@ public class ChatRoomManager
             _currentRoom.close();
 
         _currentRoom = new ChatRoom(_manager, _username, roomName);
+        _manager.setChatRoom(_currentRoom);
     }   //end of joinRoom method
 
     /**

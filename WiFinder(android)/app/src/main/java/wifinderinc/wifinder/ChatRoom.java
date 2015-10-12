@@ -67,7 +67,7 @@ public class ChatRoom
     public void sendMessage(Message message)
     {
         _messages.add(message);
-        P2PManager.getInstance().sendMessage(message);
+        _manager.sendMessage(message);
     }   //end of sendMessage method
 
     /**
