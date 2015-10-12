@@ -92,14 +92,4 @@ public class ChatRoomManager
         _manager.close();
         _currentRoom.close();
     }   //end of close method
-
-    /**
-     * Returns the current chat room object.
-     *
-     * @return Returns the current chat room object.
-     */
-    public ChatRoom getCurrentChatRoom()
-    {
-        return _currentRoom;
-    }   //end of getCurrentChatRoom method
 }   //end of ChatRoomManager class
