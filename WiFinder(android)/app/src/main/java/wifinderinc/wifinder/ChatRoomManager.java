@@ -97,5 +97,5 @@ public class ChatRoomManager
     public ChatRoom getCurrentChatRoom()
     {
         return _currentRoom;
-    }
+    }   //end of getCurrentChatRoom method
 }   //end of ChatRoomManager class
