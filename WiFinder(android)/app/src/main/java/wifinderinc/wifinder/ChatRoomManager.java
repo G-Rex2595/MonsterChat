@@ -28,6 +28,7 @@ public class ChatRoomManager
      * ChatRoomManager constructor initializes fields.
      *
      * @param username  Holds a string of the username.
+     * @param activity  Holds the app's activity object.
      */
     public ChatRoomManager(String username, Activity activity)
     {
