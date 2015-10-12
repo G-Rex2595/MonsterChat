@@ -33,7 +33,7 @@ public class ChatRoomManager
     public ChatRoomManager(String username, Activity activity)
     {
         _username = username;
-        _manager = P2PManager(activity);
+        _manager = new P2PManager(activity);
         _currentRoom = null;
     }   //end of ChatRoomManager constructor
 

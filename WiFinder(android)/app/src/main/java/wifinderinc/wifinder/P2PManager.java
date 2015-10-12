@@ -16,15 +16,14 @@ import java.util.LinkedList;
   */
 public class P2PManager {
 	//Fields
-	private String roomName;                                    //Name of the room
-	private String passwd;                                      //Password for the room
-	private final HashSet<Integer> MESSAGE_HASHES;   //Incoming messages to send to room
+	private final HashSet<Integer> MESSAGE_HASHES;              //Incoming messages to send to room
 	private WifiP2pManager p2pManager;                          //The Wifip2pmanager system service
 	private WifiP2pManager.Channel channel;                     //The Wifi p2p channel
     private WifiBroadcastReceiver receiver;                     //The receiver listening for intents from other devices
     private Activity activity;                                  //Activity this p2p manager is associated with
     private IntentFilter intentFilter;                          //Filter for the intents the broadcast receiver will take
-    private final ArrayList<ObjectOutputStream> OUTPUT_STREAMS;        //List of socket outputs for writing messages
+    private final ArrayList<ObjectOutputStream> OUTPUT_STREAMS; //List of socket outputs for writing messages
+    private ChatRoom chatroom;                                  //Chat room the device is currently part of
 
 	/**
 	 * Constructor for P2PManager.
@@ -66,8 +65,7 @@ public class P2PManager {
         MESSAGE_HASHES = new HashSet<>();
         OUTPUT_STREAMS = new ArrayList<>();
 
-        roomName = null;
-        passwd = null;
+        chatroom = null;
         this.activity = activity;
 
     }
@@ -103,27 +101,16 @@ public class P2PManager {
      * @param msg
      */
     public void receiveMessage(Message msg) {
-
+        if (chatroom == null) return; //Not part of any room.
         synchronized (MESSAGE_HASHES) {
             if (MESSAGE_HASHES.contains(msg.hashCode())) return; //Already has got this message.
         }
+        chatroom.sendMessage(msg);
     }
 
-    /**
-     * Set the password for the room the device is connected to. To be finished on a later sprint.
-     * @param passwd
-     */
-	public void setPassword(String passwd) {
-		this.passwd = passwd;
-	}
-
-    /**
-     * Set the room that the device is connected to. To be finished on a later sprint.
-     * @param roomName
-     */
-	public void setRoom(String roomName) {
-		this.roomName = roomName;
-	}
+    public void setChatRoom(ChatRoom chatroom) {
+        this.chatroom = chatroom;
+    }
 
     /**
      * Registers the receiver for Wifi P2P connections for the app. Does nothing if the receiver
