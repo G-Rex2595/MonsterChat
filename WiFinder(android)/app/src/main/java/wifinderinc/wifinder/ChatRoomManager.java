@@ -92,4 +92,12 @@ public class ChatRoomManager
         _manager.close();
         _currentRoom.close();
     }   //end of close method
+
+    public void onResume() {
+        _manager.registerReceiver();
+    }
+
+    public void onPause() {
+        _manager.unregisterReceiver();
+    }
 }   //end of ChatRoomManager class

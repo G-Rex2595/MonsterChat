@@ -25,9 +25,10 @@ public class P2PManager {
     private final ArrayList<ObjectOutputStream> OUTPUT_STREAMS; //List of socket outputs for writing messages
     private ChatRoom chatroom;                                  //Chat room the device is currently part of
 
-	/**
-	 * Constructor for P2PManager.
-	 */
+    /**
+     * Construct for P2PManager.
+     * @param activity The activity the P2PManager is associated with.
+     */
 	public P2PManager(Activity activity) {
 
 		//Initialize components for Wifi p2p

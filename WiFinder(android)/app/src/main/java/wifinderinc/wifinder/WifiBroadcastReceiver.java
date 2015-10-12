@@ -39,6 +39,11 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
         this.p2pmanager = p2pmanager;
     }
 
+    /**
+     *
+     * @param context
+     * @param intent
+     */
     @Override
     public void onReceive(Context context, Intent intent) {
         String action = intent.getAction();
@@ -107,7 +112,10 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
         }
     };
 
-    private ConnectionInfoListener connectionListener= new ConnectionInfoListener() {
+    /**
+     *
+     */
+    private ConnectionInfoListener connectionListener = new ConnectionInfoListener() {
         @Override
         public void onConnectionInfoAvailable(WifiP2pInfo info) {
             InetAddress groupOwnerAddress = info.groupOwnerAddress;

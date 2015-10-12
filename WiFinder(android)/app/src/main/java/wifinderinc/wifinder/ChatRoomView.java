@@ -41,6 +41,19 @@ public class ChatRoomView extends AppCompatActivity{
         });
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        //TODO: call ChatRoomManager onresume
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        //TODO: call ChatRoomManager onpause
+    }
+
     public void btnSendMessage_Click(View v){
         String Default = "Message Here";
 
