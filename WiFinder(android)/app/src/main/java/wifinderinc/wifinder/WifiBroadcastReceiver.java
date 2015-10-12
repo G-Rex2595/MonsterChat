@@ -24,20 +24,20 @@ import java.util.ArrayList;
 /**
  * Created by Michael on 10/10/2015.
  */
-public class WifiBroadcastReceiver extends BroadcastReceiver{
+public class WifiBroadcastReceiver extends BroadcastReceiver {
 
     public static final int PORT = 6223;
 
     //Fields
     private WifiP2pManager manager;
     private WifiP2pManager.Channel channel;
-    private Activity activity;
+    private P2PManager p2pmanager;
 
-    public WifiBroadcastReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel, Activity activity) {
+    public WifiBroadcastReceiver(WifiP2pManager manager, WifiP2pManager.Channel channel, P2PManager p2pmanager) {
         super();
         this.manager = manager;
         this.channel = channel;
-        this.activity = activity;
+        this.p2pmanager = p2pmanager;
     }
 
     @Override
@@ -54,7 +54,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
             }
         }
         else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
-            //The list of peers has changed. Update the list of devices to conenct to
+            //The list of peers has changed. Update the list of devices to connect to
             if (manager != null) {
                 manager.requestPeers(channel, peerListListener);
             }
@@ -69,12 +69,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
 
             if (networkInfo.isConnected()) {
                 //Connection with some device
-                manager.requestConnectionInfo(channel, new ConnectionInfoListener() {
-                    @Override
-                    public void onConnectionInfoAvailable(WifiP2pInfo info) {
-
-                    }
-                });
+                manager.requestConnectionInfo(channel, connectionListener);
             }
             else {
                 //Disconnect
@@ -106,7 +101,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
 
                     @Override
                     public void onFailure(int reason) {
-                        //TODO error handle
+                        //TODO error handle (maybe?)
                     }
                 });
             }
@@ -166,15 +161,24 @@ public class WifiBroadcastReceiver extends BroadcastReceiver{
             try {
                 ObjectInputStream read = new ObjectInputStream(socket.getInputStream());
                 ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+                p2pmanager.addConnection(output);
                 while (socket.isConnected()) {
                     Message m = (Message) read.readObject();
+                    p2pmanager.receiveMessage(m);
                 }
+                socket.close();
+                //We only need to close the read end. The P2PManager will close all write ends.
+                read.close();
 
             }
             catch (IOException e) {
                 //TODO error handle
+                //Most likely cause of this is connection dropped
             } catch (ClassNotFoundException e) {
                 //TODO error handle
+                //If this happens, we have some major problems to consider.
+                //The first case I can see this happening is two different versions of the app
+                //and the message object has changed between them.
             }
         }
     }
