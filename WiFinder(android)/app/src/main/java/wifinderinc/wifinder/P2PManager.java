@@ -1,9 +1,11 @@
 package wifinderinc.wifinder;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pManager;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -19,9 +21,9 @@ public class P2PManager {
 	private final HashSet<Integer> MESSAGE_HASHES;              //Incoming messages to send to room
 	private WifiP2pManager p2pManager;                          //The Wifip2pmanager system service
 	private WifiP2pManager.Channel channel;                     //The Wifi p2p channel
-    private WifiBroadcastReceiver receiver;                     //The receiver listening for intents from other devices
-    private Activity activity;                                  //Activity this p2p manager is associated with
-    private IntentFilter intentFilter;                          //Filter for the intents the broadcast receiver will take
+	private WifiBroadcastReceiver receiver;                     //The receiver listening for intents from other devices
+	private Activity activity;                                  //Activity this p2p manager is associated with
+	private IntentFilter intentFilter;                          //Filter for the intents the broadcast receiver will take
     private final ArrayList<ObjectOutputStream> OUTPUT_STREAMS; //List of socket outputs for writing messages
     private ChatRoom chatroom;                                  //Chat room the device is currently part of
 
@@ -30,7 +32,6 @@ public class P2PManager {
      * @param activity The activity the P2PManager is associated with.
      */
 	public P2PManager(Activity activity) {
-
 		//Initialize components for Wifi p2p
         p2pManager = (WifiP2pManager) activity.getSystemService(Context.WIFI_P2P_SERVICE);
         channel = p2pManager.initialize(activity, activity.getMainLooper(), null);
@@ -54,11 +55,13 @@ public class P2PManager {
             @Override
             public void onSuccess() {
                 //Discovery service started, but nothing found. Ignore
+                Log.d("P2PManager", "discoverPeers success");
             }
 
             @Override
             public void onFailure(int reason) {
                 //TODO: tell user it failed
+                Log.d("P2PManager", "discoverPeers failed - " + reason);
             }
         });
 
@@ -106,11 +109,15 @@ public class P2PManager {
         synchronized (MESSAGE_HASHES) {
             if (MESSAGE_HASHES.contains(msg.hashCode())) return; //Already has got this message.
         }
-        chatroom.sendMessage(msg);
+        sendMessage(msg);           //Forward the message on to other devices. This will also add the hash.
+        //chatroom.sendMessage(msg);  //Send it to the app
+        ((ChatRoomView) (activity)).addMessage(msg);
     }
 
     public void setChatRoom(ChatRoom chatroom) {
+        Log.d("P2PManager", "setChatRoom called");
         this.chatroom = chatroom;
+        this.chatroom.sendMessage(new Message("SYSTEM", "P2PManager setChatRoom", null, "Global"));
     }
 
     /**
@@ -118,6 +125,7 @@ public class P2PManager {
      * has not been created yet.
      */
     public void registerReceiver() {
+        Log.d("P2PManager", "registerReceiver");
         if (receiver == null) return;
         activity.registerReceiver(receiver, intentFilter);
     }
@@ -127,6 +135,7 @@ public class P2PManager {
      * not been created yet.
      */
     public void unregisterReceiver() {
+        Log.d("P2PManager", "unregisterReceiver");
         if (receiver == null) return;
         activity.unregisterReceiver(receiver);
     }

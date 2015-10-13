@@ -45,7 +45,6 @@ public class ChatRoom
         _username = username;
         _roomName = roomName;
         _messages = new LinkedList<Message>();
-        _view = null;
     }   //end of ChatRoom constructor
 
     /**
@@ -80,6 +79,7 @@ public class ChatRoom
     {
         _messages.add(message);
         _view.addMessage(message);
+        _view.addMessage(new Message("SYSTEM", "ChatRoom addMessage", null, "Global"));
     }   //end of addMessage method
 
     /**
@@ -87,7 +87,7 @@ public class ChatRoom
      */
     public void failedConnect()
     {
-        _view.failedConnect();
+        //_view.failedConnect();
     }   //end of failedConnect method
 
     /**
@@ -106,6 +106,7 @@ public class ChatRoom
     public void setChatRoomView(ChatRoomView view)
     {
         _view = view;
+        view.addMessage(new Message("SYSTEM", "ChatRoom setChatRoomView", null, "Global"));
     }   //end of setChatRoomView method
 
     /**

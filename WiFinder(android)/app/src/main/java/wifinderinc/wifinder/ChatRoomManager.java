@@ -1,6 +1,7 @@
 package wifinderinc.wifinder;
 
 import android.app.Activity;
+import android.util.Log;
 
 import java.util.LinkedList;
 
@@ -24,6 +25,8 @@ public class ChatRoomManager
      */
     private P2PManager _manager;
 
+    private ChatRoomView crv;
+
     /**
      * ChatRoomManager constructor initializes fields.
      *
@@ -35,6 +38,7 @@ public class ChatRoomManager
         _username = username;
         _manager = new P2PManager(activity);
         _currentRoom = null;
+        crv = (ChatRoomView) activity;
     }   //end of ChatRoomManager constructor
 
     /**
@@ -71,6 +75,8 @@ public class ChatRoomManager
             _currentRoom.close();
 
         _currentRoom = new ChatRoom(_manager, _username, roomName);
+        crv.addMessage(new Message("SYSTEM", "ChatRoomManager joinRoom", null, "Global"));
+        _currentRoom.setChatRoomView(crv);
         _manager.setChatRoom(_currentRoom);
     }   //end of joinRoom method
 
@@ -100,4 +106,9 @@ public class ChatRoomManager
     public void onPause() {
         _manager.unregisterReceiver();
     }
+
+    public void sendMessage(String s) {
+        _manager.sendMessage(new Message(_username, s, null, "Global"));
+    }
+
 }   //end of ChatRoomManager class

@@ -5,6 +5,7 @@ import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -19,6 +20,7 @@ public class ChatRoomView extends AppCompatActivity{
     EditText txtbxInput;
     Button btnSend;
     TextView txtvDisplay;
+    ChatRoomManager manager;
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,7 +31,8 @@ public class ChatRoomView extends AppCompatActivity{
         btnSend = (Button)findViewById(R.id.btnSendMessage);
         txtvDisplay = (TextView)findViewById(R.id.txtChatDisplay);
 
-
+        manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
+        manager.joinRoom("Global");
 
         txtbxInput.clearFocus();
         txtbxInput.setOnClickListener(new View.OnClickListener() {
@@ -41,21 +44,28 @@ public class ChatRoomView extends AppCompatActivity{
         });
     }
 
+    public void addMessage(Message m) {
+        String message = String.format("%s - %s\n", m.getName(), m.getMessage());
+        txtvDisplay.append(message);
+    }
 
     @Override
     public void onResume() {
         super.onResume();
+        manager.onResume();
         //TODO: call ChatRoomManager onresume
     }
 
     @Override
     public void onPause() {
         super.onPause();
+        manager.onPause();
         //TODO: call ChatRoomManager onpause
     }
 
     public void btnSendMessage_Click(View v){
         String Default = "Message Here";
+        String message = txtbxInput.getText().toString();
 
         txtvDisplay.setText(txtvDisplay.getText()+ "\n"+txtbxInput.getText());
         txtbxInput.setText(Default.subSequence(0, Default.length()));
@@ -63,7 +73,7 @@ public class ChatRoomView extends AppCompatActivity{
 
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(txtbxInput.getWindowToken(), 0);
-
+        manager.sendMessage(message);
         return;
     }
 

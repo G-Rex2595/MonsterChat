@@ -11,6 +11,7 @@ import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pInfo;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
+import android.util.Log;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -37,6 +38,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
         this.manager = manager;
         this.channel = channel;
         this.p2pmanager = p2pmanager;
+        Log.d("WifiBroadcastReceiver", "constructor");
     }
 
     /**
@@ -46,8 +48,10 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
      */
     @Override
     public void onReceive(Context context, Intent intent) {
+        Log.d("WifiBroadcastReceiver", "onReceiver");
         String action = intent.getAction();
         if (WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION.equals(action)) {
+            Log.d("WifiBroadCastReceiver", "WIFI_P2P_STATE_CHANGED_ACTION");
             int state = intent.getIntExtra(WifiP2pManager.EXTRA_WIFI_STATE, -1);
             if (state == WifiP2pManager.WIFI_P2P_STATE_ENABLED) {
                 //Wifi direct is enabled
@@ -59,14 +63,15 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
         }
         else if (WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION.equals(action)) {
             //The list of peers has changed. Update the list of devices to connect to
+            Log.d("WifiBroadCastReceiver", "WIFI_P2P_PEERS_CHANGED_ACTION");
             if (manager != null) {
                 manager.requestPeers(channel, peerListListener);
             }
 
-
         }
         else if (WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION.equals(action)) {
             //Connection state changed.
+            Log.d("WifiBroadCastReceiver", "WIFI_P2P_CONNECTION_CHANGED_ACTION");
             if (manager == null) return;
 
             NetworkInfo networkInfo = (NetworkInfo) intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
@@ -80,7 +85,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             }
         }
         else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
-
+            Log.d("WifiBroadCastReceiver", "WIFI_P2P_THIS_DEVICE_CHANGED_ACTION");
         }
     }
 
