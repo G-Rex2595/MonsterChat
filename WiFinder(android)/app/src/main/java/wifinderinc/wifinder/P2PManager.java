@@ -88,12 +88,15 @@ public class P2PManager {
             @Override
             public void run() {
                 synchronized (OUTPUT_STREAMS) {
+                    Log.d("OOS", "Stream count:  " + OUTPUT_STREAMS.size());
                     for (ObjectOutputStream oos : OUTPUT_STREAMS) {
                         try {
                             oos.writeObject(msg);
                             oos.flush();
+                            Log.d("OOS", "We wrote");
                         } catch (IOException e) {
                             //TODO error handle
+                            Log.d("OOS", "Failed to send");
                         }
                     }
                 }

@@ -180,14 +180,17 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
                                 Log.d("ListeningThread", "Received message " + m.getMessage());
                                 p2pmanager.receiveMessage(m);
                             }
+                            Log.d("ConnectionInfoListener", "Left Socket Loop");
                             socket.close();
                             //We only need to close the read end. The P2PManager will close all write ends.
                             //read.close();
                         }
                         catch (IOException e) {
-
+                            Log.d("ConnectionInfoListener", "IOException");
                         }
-                        catch (ClassNotFoundException cnfe) {}
+                        catch (ClassNotFoundException cnfe) {
+                            Log.d("ConnectionInfoListener", "ClassNotFoundException");
+                        }
                     }
                 };
                 t.start();
@@ -213,21 +216,26 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
                                 //output.writeObject(new Message("ServerThread", "LOL U DIED", null, "Global"));
                                 //p2pmanager.addConnection(output);
                                 Log.d("Server dispatch thread", "Added connection");
-                                boolean notAdded = true;
+                                try
+                                {
+                                    Thread.sleep(1000);
+                                }
+                                catch (InterruptedException e)
+                                {
+
+                                }
+                                ObjectInputStream read = new ObjectInputStream(s.getInputStream());
+                                p2pmanager.addConnection(new ObjectOutputStream(s.getOutputStream()));
                                 while (s.isConnected()) {
-                                    if (notAdded)
-                                    {
-                                        notAdded = false;
-                                        p2pmanager.addConnection(new ObjectOutputStream(s.getOutputStream()));
-                                    }
                                     Log.d("Server dispatch thread", "Blocking on readObject");
                                     //Message m = (Message) read.readObject();
-                                    Message m = (Message)new ObjectInputStream(s.getInputStream()).readObject();
+                                    Message m = (Message)read.readObject();
                                     Log.d("Server dispatch thread", "Received message " + m.getMessage());
                                     p2pmanager.receiveMessage(m);
                                 }
-                                Log.d("Server dispatch thread", "Socket closed");
+                                Log.d("Serverthread", "Left Socket Loop");
                                 s.close();
+                                read.close();
                                 //We only need to close the read end. The P2PManager will close all write ends.
                                 //read.close();
                             }
@@ -281,6 +289,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
                     Message m = (Message)new ObjectInputStream(socket.getInputStream()).readObject();
                     p2pmanager.receiveMessage(m);
                 }
+                Log.d("Clientthread", "Left Socket Loop");
                 socket.close();
                 //We only need to close the read end. The P2PManager will close all write ends.
                 //read.close();
