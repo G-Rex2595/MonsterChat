@@ -80,6 +80,7 @@ public class P2PManager {
      * @param msg The message being sent.
      */
 	public void sendMessage(final Message msg) {
+        Log.d("P2PManager", "sendMessage " + msg.getMessage());
         synchronized (MESSAGE_HASHES) {
             MESSAGE_HASHES.add(msg.hashCode());
         }
@@ -105,6 +106,7 @@ public class P2PManager {
      * @param msg
      */
     public void receiveMessage(Message msg) {
+        Log.d("P2PManager", "receieveMessage " + msg.toString());
         if (chatroom == null) return; //Not part of any room.
         synchronized (MESSAGE_HASHES) {
             if (MESSAGE_HASHES.contains(msg.hashCode())) return; //Already has got this message.

@@ -79,9 +79,11 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             if (networkInfo.isConnected()) {
                 //Connection with some device
                 manager.requestConnectionInfo(channel, connectionListener);
+
             }
             else {
                 //Disconnect
+                Log.d("WifiBroadCastReceiver", "WIFI_P2P_CONNECTION_CHANGED_ACTION_Disconnection?");
             }
         }
         else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
@@ -93,7 +95,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
     private WifiP2pManager.PeerListListener peerListListener = new WifiP2pManager.PeerListListener() {
         @Override
         public void onPeersAvailable(WifiP2pDeviceList peerList) {
-
+            Log.d("peerListListener", "onPeersAvailable");
             //Clear the original list and add to the new list
             peers.clear();
             peers.addAll(peerList.getDeviceList());
@@ -106,11 +108,13 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
                     public void onSuccess() {
                         //The intent P2P_CONNECTION_CHANGED.. will notify us.
                         //This can be ignored.
+                        Log.d("Manager.connect", "Successful connection");
                     }
 
                     @Override
                     public void onFailure(int reason) {
                         //TODO error handle (maybe?)
+                        Log.d("Manager.connect", "Successful failed " + reason);
                     }
                 });
             }
@@ -123,14 +127,41 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
     private ConnectionInfoListener connectionListener = new ConnectionInfoListener() {
         @Override
         public void onConnectionInfoAvailable(WifiP2pInfo info) {
-            InetAddress groupOwnerAddress = info.groupOwnerAddress;
+            Log.d("ConnectionListener", "onConnectionInfoAvailable");
+            final InetAddress groupOwnerAddress = info.groupOwnerAddress;
 
             if (info.groupFormed && info.isGroupOwner) {
+                Log.d("ConnectionListener", "Start server thread");
                 new ServerThread().start();
 
             }
             else if (info.groupFormed) {
-                new ClientThread(info.groupOwnerAddress).start();
+                Log.d("ConnectionListener", "Start Client thread");
+                Thread t = new Thread() {
+                    @Override
+                    public void run() {
+                        try {
+                            Socket socket = new Socket(groupOwnerAddress, PORT);
+                            ObjectInputStream read = new ObjectInputStream(socket.getInputStream());
+                            ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+                            output.writeObject(new Message("SYSTEM", "LOL U DIED", null, "Global"));
+                            p2pmanager.addConnection(output);
+                            while (socket.isConnected()) {
+                                Message m = (Message) read.readObject();
+                                Log.d("ListeningThread", "Received message " + m.getMessage());
+                                p2pmanager.receiveMessage(m);
+                            }
+                            socket.close();
+                            //We only need to close the read end. The P2PManager will close all write ends.
+                            read.close();
+                        }
+                        catch (IOException e) {
+
+                        }
+                        catch (ClassNotFoundException cnfe) {}
+                    }
+                };
+                t.start();
             }
         }
     };
@@ -141,8 +172,36 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             try {
                 ServerSocket ss = new ServerSocket(PORT);
                 while (!isInterrupted()) {
-                    Socket s = ss.accept();
-                    new ClientThread(s).start();    //We can reuse the client thread class because it will do the same things
+                    final Socket s = ss.accept();
+                    Log.d("Server Thread", "Connection started, dispatching thread");
+                    Thread t = new Thread() {
+                        @Override
+                        public void run() {
+                            try {
+                                Log.d("Server dispatch thread", "Running");
+                                ObjectInputStream read = new ObjectInputStream(s.getInputStream());
+                                ObjectOutputStream output = new ObjectOutputStream(s.getOutputStream());
+                                output.writeObject(new Message("SYSTEM", "LOL U DIED", null, "Global"));
+                                //p2pmanager.addConnection(output);
+                                Log.d("Server dispatch thread", "Added connection");
+                                while (s.isConnected()) {
+                                    Log.d("Server dispatch thread", "Blocking on readObject");
+                                    Message m = (Message) read.readObject();
+                                    Log.d("Server dispatch thread", "Received message " + m.getMessage());
+                                    p2pmanager.receiveMessage(m);
+                                }
+                                Log.d("Server dispatch thread", "Socket closed");
+                                s.close();
+                                //We only need to close the read end. The P2PManager will close all write ends.
+                                read.close();
+                            }
+                            catch (IOException e) {
+
+                            }
+                            catch (ClassNotFoundException cnfe) {}
+                        }
+                    };
+                    t.start();
                 }
             }
             catch (IOException e) {
@@ -156,11 +215,12 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
         private Socket socket;
 
         public ClientThread(InetAddress address) {
+            Log.d("Clientthread", "Constructor");
             try {
                 socket = new Socket(address, PORT);
             }
             catch (IOException e) {
-                //TODO error handle
+                e.printStackTrace();
             }
         }
 
