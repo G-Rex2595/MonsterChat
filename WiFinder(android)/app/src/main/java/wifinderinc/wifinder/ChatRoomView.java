@@ -45,8 +45,13 @@ public class ChatRoomView extends AppCompatActivity{
     }
 
     public void addMessage(Message m) {
-        String message = String.format("%s - %s\n", m.getName(), m.getMessage());
-        txtvDisplay.append(message);
+        final String message = String.format("%s - %s\n", m.getName(), m.getMessage());
+        runOnUiThread(new Runnable(){
+            public void run()
+            {
+                txtvDisplay.append(message);
+            }
+        });
     }
 
     @Override
@@ -67,7 +72,7 @@ public class ChatRoomView extends AppCompatActivity{
         String Default = "Message Here";
         String message = txtbxInput.getText().toString();
 
-        txtvDisplay.setText(txtvDisplay.getText()+ "\n"+txtbxInput.getText());
+        txtvDisplay.setText(txtvDisplay.getText()+ "\n" + txtbxInput.getText() + "\n");
         txtbxInput.setText(Default.subSequence(0, Default.length()));
         txtbxInput.setTextColor(Color.GRAY);
 

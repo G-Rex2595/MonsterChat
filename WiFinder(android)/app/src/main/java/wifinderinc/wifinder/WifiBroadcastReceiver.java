@@ -92,6 +92,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
     }
 
     private ArrayList<WifiP2pDevice> peers = new ArrayList();
+    private ArrayList<String> successes = new ArrayList<>();
     private WifiP2pManager.PeerListListener peerListListener = new WifiP2pManager.PeerListListener() {
         @Override
         public void onPeersAvailable(WifiP2pDeviceList peerList) {
@@ -100,6 +101,20 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             peers.clear();
             peers.addAll(peerList.getDeviceList());
             for (WifiP2pDevice device : peers) {
+                boolean exists = false;
+                for (String s: successes)
+                {
+                    if (s.equals(device.deviceAddress)) {
+                        exists = true;
+                        break;
+                    }
+                }
+
+                if (exists)
+                    continue;
+                else
+                    successes.add(device.deviceAddress);
+
                 WifiP2pConfig config = new WifiP2pConfig();
                 config.deviceAddress = device.deviceAddress;
                 config.wps.setup = WpsInfo.PBC;
@@ -109,6 +124,13 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
                         //The intent P2P_CONNECTION_CHANGED.. will notify us.
                         //This can be ignored.
                         Log.d("Manager.connect", "Successful connection");
+                        try {
+                            Thread.sleep(1000);
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
                     }
 
                     @Override
@@ -142,18 +164,25 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
                     public void run() {
                         try {
                             Socket socket = new Socket(groupOwnerAddress, PORT);
-                            ObjectInputStream read = new ObjectInputStream(socket.getInputStream());
-                            ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
-                            output.writeObject(new Message("SYSTEM", "LOL U DIED", null, "Global"));
-                            p2pmanager.addConnection(output);
+                            //ObjectInputStream read = new ObjectInputStream(socket.getInputStream());
+                            //ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+                            //output.writeObject(new Message("ConnectionInfoListener", "LOL U DIED", null, "Global"));
+                            //p2pmanager.addConnection(output);
+                            boolean notAdded = true;
                             while (socket.isConnected()) {
-                                Message m = (Message) read.readObject();
+                                if (notAdded)
+                                {
+                                    notAdded = false;
+                                    p2pmanager.addConnection(new ObjectOutputStream(socket.getOutputStream()));
+                                }
+                                //Message m = (Message) read.readObject();
+                                Message m = (Message)new ObjectInputStream(socket.getInputStream()).readObject();
                                 Log.d("ListeningThread", "Received message " + m.getMessage());
                                 p2pmanager.receiveMessage(m);
                             }
                             socket.close();
                             //We only need to close the read end. The P2PManager will close all write ends.
-                            read.close();
+                            //read.close();
                         }
                         catch (IOException e) {
 
@@ -179,21 +208,28 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
                         public void run() {
                             try {
                                 Log.d("Server dispatch thread", "Running");
-                                ObjectInputStream read = new ObjectInputStream(s.getInputStream());
-                                ObjectOutputStream output = new ObjectOutputStream(s.getOutputStream());
-                                output.writeObject(new Message("SYSTEM", "LOL U DIED", null, "Global"));
+                                //ObjectInputStream read = new ObjectInputStream(s.getInputStream());
+                                //ObjectOutputStream output = new ObjectOutputStream(s.getOutputStream());
+                                //output.writeObject(new Message("ServerThread", "LOL U DIED", null, "Global"));
                                 //p2pmanager.addConnection(output);
                                 Log.d("Server dispatch thread", "Added connection");
+                                boolean notAdded = true;
                                 while (s.isConnected()) {
+                                    if (notAdded)
+                                    {
+                                        notAdded = false;
+                                        p2pmanager.addConnection(new ObjectOutputStream(s.getOutputStream()));
+                                    }
                                     Log.d("Server dispatch thread", "Blocking on readObject");
-                                    Message m = (Message) read.readObject();
+                                    //Message m = (Message) read.readObject();
+                                    Message m = (Message)new ObjectInputStream(s.getInputStream()).readObject();
                                     Log.d("Server dispatch thread", "Received message " + m.getMessage());
                                     p2pmanager.receiveMessage(m);
                                 }
                                 Log.d("Server dispatch thread", "Socket closed");
                                 s.close();
                                 //We only need to close the read end. The P2PManager will close all write ends.
-                                read.close();
+                                //read.close();
                             }
                             catch (IOException e) {
 
@@ -231,16 +267,23 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
         @Override
         public void run() {
             try {
-                ObjectInputStream read = new ObjectInputStream(socket.getInputStream());
-                ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
-                p2pmanager.addConnection(output);
+                //ObjectInputStream read = new ObjectInputStream(socket.getInputStream());
+                //ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
+                //p2pmanager.addConnection(output);
+                boolean notAdded = true;
                 while (socket.isConnected()) {
-                    Message m = (Message) read.readObject();
+                    if (notAdded)
+                    {
+                        notAdded = false;
+                        p2pmanager.addConnection(new ObjectOutputStream(socket.getOutputStream()));
+                    }
+                    //Message m = (Message) read.readObject();
+                    Message m = (Message)new ObjectInputStream(socket.getInputStream()).readObject();
                     p2pmanager.receiveMessage(m);
                 }
                 socket.close();
                 //We only need to close the read end. The P2PManager will close all write ends.
-                read.close();
+                //read.close();
 
             }
             catch (IOException e) {
