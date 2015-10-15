@@ -129,7 +129,6 @@ public class P2PManager {
     public void setChatRoom(ChatRoom chatroom) {
         Log.d("P2PManager", "setChatRoom called");
         this.chatroom = chatroom;
-        this.chatroom.sendMessage(new Message("SYSTEM", "P2PManager setChatRoom", null, "Global"));
     }
 
     /**

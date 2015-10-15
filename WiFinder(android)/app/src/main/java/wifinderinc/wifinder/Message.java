@@ -45,7 +45,7 @@ public class Message implements Serializable
         _username = username;
         _message = message;
         _id = id;
-        _time = 0;
+        _time = System.currentTimeMillis();
         _roomName = roomName;
     }   //end of Message constructor
 
@@ -112,8 +112,8 @@ public class Message implements Serializable
      *
      * @return  Returns the chat room name as a string.
      */
-    public String getRoomName()
+    public String getChatRoomName()
     {
         return _roomName;
-    }   //end of getRoomName method
+    }   //end of getChatRoomName method
 }   //end of Message class

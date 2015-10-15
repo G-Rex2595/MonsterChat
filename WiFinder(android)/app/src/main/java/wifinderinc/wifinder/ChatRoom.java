@@ -20,10 +20,10 @@ public class ChatRoom
     /**
      * Holds a string of the chat room name.
      */
-    private String _roomName;
+    private String _chatRoomName;
 
     /**
-     * Contains a reference to the ChatRoomView
+     * Contains a reference to the ChatRoomView.
      */
     private ChatRoomView _view;
 
@@ -31,6 +31,11 @@ public class ChatRoom
      * Holds a list of Messages.
      */
     private LinkedList<Message> _messages;
+
+    /**
+     * Holds a string of the id.
+     */
+    private String _id;
 
     /**
      * ChatRoom constructor initializes fields.
@@ -43,8 +48,9 @@ public class ChatRoom
     {
         _manager = manager;
         _username = username;
-        _roomName = roomName;
+        _chatRoomName = roomName;
         _messages = new LinkedList<Message>();
+        _id = null;
     }   //end of ChatRoom constructor
 
     /**
@@ -61,11 +67,13 @@ public class ChatRoom
      * Adds the message received from the ChatRoomView to the message list.
      * Calls P2PManager's sendMessage to send a message.
      *
-     * @param message   Holds the message to be saved and sent.
+     * @param str   Holds the message to be saved and sent.
      */
-    public void sendMessage(Message message)
+    public void sendMessage(String str)
     {
+        Message message = new Message(_username, str, _id, _chatRoomName);
         _messages.add(message);
+        _view.addMessage(message);
         _manager.sendMessage(message);
     }   //end of sendMessage method
 
@@ -79,7 +87,6 @@ public class ChatRoom
     {
         _messages.add(message);
         _view.addMessage(message);
-        _view.addMessage(new Message("SYSTEM", "ChatRoom addMessage", null, "Global"));
     }   //end of addMessage method
 
     /**
@@ -106,7 +113,6 @@ public class ChatRoom
     public void setChatRoomView(ChatRoomView view)
     {
         _view = view;
-        view.addMessage(new Message("SYSTEM", "ChatRoom setChatRoomView", null, "Global"));
     }   //end of setChatRoomView method
 
     /**
@@ -118,4 +124,14 @@ public class ChatRoom
     {
         _username = username;
     }   //end of setUsername method
+
+    /**
+     * Returns the chat room name as a string.
+     *
+     * @return  Returns the chat room name as a string.
+     */
+    public String getChatRoomName()
+    {
+        return _chatRoomName;
+    }   //end of getChatRoomName method
 }   //end of ChatRoom class
