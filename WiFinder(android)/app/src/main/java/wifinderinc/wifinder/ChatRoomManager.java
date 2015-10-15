@@ -18,14 +18,12 @@ public class ChatRoomManager
     /**
      * Keeps track of the current chat room the user is in.
      */
-    private ChatRoom _currentRoom;
+    private ChatRoom _currentChatRoom;
 
     /**
      * Contains reference to the P2PManager.
      */
     private P2PManager _manager;
-
-    private ChatRoomView crv;
 
     /**
      * ChatRoomManager constructor initializes fields.
@@ -37,8 +35,7 @@ public class ChatRoomManager
     {
         _username = username;
         _manager = new P2PManager(activity);
-        _currentRoom = null;
-        crv = (ChatRoomView) activity;
+        _currentChatRoom = null;
     }   //end of ChatRoomManager constructor
 
     /**
@@ -49,7 +46,7 @@ public class ChatRoomManager
     public LinkedList<String> getAvailableRooms()
     {
         return _manager.getAvailableRooms();
-    }   //end of getAvailablRooms method
+    }   //end of getAvailableRooms method
 
     /**
      * Sets the username to the given string.
@@ -60,8 +57,8 @@ public class ChatRoomManager
     {
         _username = username;
 
-        if (_currentRoom != null)
-            _currentRoom.setUsername(username);
+        if (_currentChatRoom != null)
+            _currentChatRoom.setUsername(username);
     }   //end of setUsername method
 
     /**
@@ -69,15 +66,15 @@ public class ChatRoomManager
      *
      * @param roomName  Holds the name of the chat room.
      */
-    public void joinRoom(String roomName)
+    public ChatRoom joinRoom(String roomName)
     {
-        if (_currentRoom != null)
-            _currentRoom.close();
+        if (_currentChatRoom != null)
+            _currentChatRoom.close();
 
-        _currentRoom = new ChatRoom(_manager, _username, roomName);
-        crv.addMessage(new Message("SYSTEM", "ChatRoomManager joinRoom", null, "Global"));
-        _currentRoom.setChatRoomView(crv);
-        _manager.setChatRoom(_currentRoom);
+        _currentChatRoom = new ChatRoom(_manager, _username, roomName);
+        _manager.setChatRoom(_currentChatRoom);
+
+        return _currentChatRoom;
     }   //end of joinRoom method
 
     /**
@@ -96,20 +93,22 @@ public class ChatRoomManager
     public void close()
     {
         _manager.close();
-        _currentRoom.close();
+        _currentChatRoom.close();
     }   //end of close method
 
-    public void onResume() {
+    /**
+     * Lets the P2PManager know the app has been reopened.
+     */
+    public void onResume()
+    {
         _manager.registerReceiver();
-    }
+    }   //end of onResume method
 
-    public void onPause() {
+    /**
+     * Lets the P2PManager know the app has been closed.
+     */
+    public void onPause()
+    {
         _manager.unregisterReceiver();
-    }
-
-    public void sendMessage(Message m) {
-        m.setTime();
-        _manager.sendMessage(m);
-    }
-
+    }   //end of onPause method
 }   //end of ChatRoomManager class

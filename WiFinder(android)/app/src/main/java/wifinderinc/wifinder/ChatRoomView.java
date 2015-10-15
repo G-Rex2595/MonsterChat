@@ -21,12 +21,13 @@ import java.util.Calendar;
 
 public class ChatRoomView extends AppCompatActivity{
 
-    EditText txtbxInput;
-    Button btnSend;
-    TextView txtvDisplay;
-    ChatRoomManager manager;
-    String RoomName;
-    String UserName;
+    private EditText txtbxInput;
+    private Button btnSend;
+    private TextView txtvDisplay;
+    private ChatRoomManager manager;
+    private String RoomName;
+    private String UserName;
+    private ChatRoom CurrentChatRoom;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,8 +39,10 @@ public class ChatRoomView extends AppCompatActivity{
         RoomName = "Global";
         UserName = "Default";
 
+        //manager = new ChatRoomManager(UserName, this);
         manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
-        manager.joinRoom(RoomName);
+        CurrentChatRoom = manager.joinRoom(RoomName);
+        CurrentChatRoom.setChatRoomView(this);
 
         txtvDisplay.setMovementMethod(new ScrollingMovementMethod());
 
@@ -90,7 +93,6 @@ public class ChatRoomView extends AppCompatActivity{
         }
 
         String message = txtbxInput.getText().toString();
-        Message SendM = new Message(UserName, message, null, RoomName);
 
         txtbxInput.setText(Default.subSequence(0, Default.length()));
         txtbxInput.setTextColor(Color.GRAY);
@@ -98,11 +100,9 @@ public class ChatRoomView extends AppCompatActivity{
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(txtbxInput.getWindowToken(), 0);
 
-        addMessage(SendM);
-        manager.sendMessage(SendM);
+        CurrentChatRoom.sendMessage(message);
 
         txtbxInput.clearFocus();
-        return;
     }
 
 }
