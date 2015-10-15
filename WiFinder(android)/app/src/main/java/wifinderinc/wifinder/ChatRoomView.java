@@ -3,8 +3,10 @@ package wifinderinc.wifinder;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.provider.CalendarContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -15,13 +17,16 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.util.Calendar;
+
 public class ChatRoomView extends AppCompatActivity{
 
     EditText txtbxInput;
     Button btnSend;
     TextView txtvDisplay;
     ChatRoomManager manager;
-
+    String RoomName;
+    String UserName;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,22 +35,29 @@ public class ChatRoomView extends AppCompatActivity{
         txtbxInput = (EditText)findViewById(R.id.txtMessageInput);
         btnSend = (Button)findViewById(R.id.btnSendMessage);
         txtvDisplay = (TextView)findViewById(R.id.txtChatDisplay);
+        RoomName = "Global";
+        UserName = "Default";
 
         manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
-        manager.joinRoom("Global");
+        manager.joinRoom(RoomName);
 
-        txtbxInput.clearFocus();
-        txtbxInput.setOnClickListener(new View.OnClickListener() {
+        txtvDisplay.setMovementMethod(new ScrollingMovementMethod());
+
+        txtbxInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onClick(View v) {
-                txtbxInput.setText("");
-                txtbxInput.setTextColor(Color.BLACK);
+            public void onFocusChange(View v, boolean bool) {
+                if(bool == true) {
+                    txtbxInput.setText("");
+                    txtbxInput.setTextColor(Color.BLACK);
+                }
             }
         });
     }
 
     public void addMessage(Message m) {
-        final String message = String.format("%s - %s\n", m.getName(), m.getMessage());
+        Calendar c = Calendar.getInstance();
+
+        final String message = String.format("%s:         %tr\n%s\n", m.getName(), c, m.getMessage());
         runOnUiThread(new Runnable(){
             public void run()
             {
@@ -53,6 +65,8 @@ public class ChatRoomView extends AppCompatActivity{
             }
         });
     }
+
+
 
     @Override
     public void onResume() {
@@ -70,15 +84,24 @@ public class ChatRoomView extends AppCompatActivity{
 
     public void btnSendMessage_Click(View v){
         String Default = "Message Here";
-        String message = txtbxInput.getText().toString();
 
-        txtvDisplay.setText(txtvDisplay.getText()+ "\n" + txtbxInput.getText() + "\n");
+        if(txtbxInput.getCurrentTextColor() == Color.GRAY){
+            return;
+        }
+
+        String message = txtbxInput.getText().toString();
+        Message SendM = new Message(UserName, message, null, RoomName);
+
         txtbxInput.setText(Default.subSequence(0, Default.length()));
         txtbxInput.setTextColor(Color.GRAY);
 
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(txtbxInput.getWindowToken(), 0);
-        manager.sendMessage(message);
+
+        addMessage(SendM);
+        manager.sendMessage(SendM);
+
+        txtbxInput.clearFocus();
         return;
     }
 

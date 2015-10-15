@@ -107,8 +107,7 @@ public class ChatRoomManager
         _manager.unregisterReceiver();
     }
 
-    public void sendMessage(String s) {
-        Message m = new Message(_username, s, null, "Global");
+    public void sendMessage(Message m) {
         m.setTime();
         _manager.sendMessage(m);
     }
