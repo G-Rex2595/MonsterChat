@@ -122,8 +122,7 @@ public class P2PManager {
             }
         }
         sendMessage(msg);           //Forward the message on to other devices. This will also add the hash.
-        //chatroom.sendMessage(msg);  //Send it to the app
-        ((ChatRoomView) (activity)).addMessage(msg);
+        chatroom.addMessage(msg);
     }
 
     public void setChatRoom(ChatRoom chatroom) {
