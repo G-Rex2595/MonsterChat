@@ -27,7 +27,6 @@ public class ChatRoomView extends AppCompatActivity{
     private ChatRoomManager manager;
     private String RoomName;
     private String UserName;
-    private ChatRoom CurrentChatRoom;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,8 +40,8 @@ public class ChatRoomView extends AppCompatActivity{
 
         //manager = new ChatRoomManager(UserName, this);
         manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
-        CurrentChatRoom = manager.joinRoom(RoomName);
-        CurrentChatRoom.setChatRoomView(this);
+        manager.joinRoom(RoomName);
+        manager.getCurrentChatRoom().setChatRoomView(this);
 
         txtvDisplay.setMovementMethod(new ScrollingMovementMethod());
 
@@ -100,7 +99,7 @@ public class ChatRoomView extends AppCompatActivity{
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(txtbxInput.getWindowToken(), 0);
 
-        CurrentChatRoom.sendMessage(message);
+        manager.getCurrentChatRoom().sendMessage(message);
 
         txtbxInput.clearFocus();
     }

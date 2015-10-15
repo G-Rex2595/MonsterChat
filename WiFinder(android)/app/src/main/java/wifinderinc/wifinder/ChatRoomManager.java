@@ -66,15 +66,13 @@ public class ChatRoomManager
      *
      * @param roomName  Holds the name of the chat room.
      */
-    public ChatRoom joinRoom(String roomName)
+    public void joinRoom(String roomName)
     {
         if (_currentChatRoom != null)
             _currentChatRoom.close();
 
         _currentChatRoom = new ChatRoom(_manager, _username, roomName);
         _manager.setChatRoom(_currentChatRoom);
-
-        return _currentChatRoom;
     }   //end of joinRoom method
 
     /**
@@ -111,4 +109,14 @@ public class ChatRoomManager
     {
         _manager.unregisterReceiver();
     }   //end of onPause method
+
+    /**
+     * Returns a reference to the current chat room.
+     *
+     * @return  Returns a reference to the current chat room.
+     */
+    public ChatRoom getCurrentChatRoom()
+    {
+        return _currentChatRoom;
+    }   //end of getCurrentChatRoom method
 }   //end of ChatRoomManager class
