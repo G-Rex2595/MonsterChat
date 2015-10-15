@@ -9,6 +9,7 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -18,7 +19,7 @@ import java.util.LinkedList;
   */
 public class P2PManager {
 	//Fields
-	private final HashSet<Integer> MESSAGE_HASHES;              //Incoming messages to send to room
+	//private final HashSet<Integer> MESSAGE_HASHES;              //Incoming messages to send to room
 	private WifiP2pManager p2pManager;                          //The Wifip2pmanager system service
 	private WifiP2pManager.Channel channel;                     //The Wifi p2p channel
 	private WifiBroadcastReceiver receiver;                     //The receiver listening for intents from other devices
@@ -26,6 +27,7 @@ public class P2PManager {
 	private IntentFilter intentFilter;                          //Filter for the intents the broadcast receiver will take
     private final ArrayList<ObjectOutputStream> OUTPUT_STREAMS; //List of socket outputs for writing messages
     private ChatRoom chatroom;                                  //Chat room the device is currently part of
+    private final HashSet<String> MESSAGE_HASHES;
 
     /**
      * Construct for P2PManager.
@@ -82,7 +84,8 @@ public class P2PManager {
 	public void sendMessage(final Message msg) {
         Log.d("P2PManager", "sendMessage " + msg.getMessage());
         synchronized (MESSAGE_HASHES) {
-            MESSAGE_HASHES.add(msg.hashCode());
+            MESSAGE_HASHES.add(msg.getMessage() + msg.getTime());
+            Log.d("sendMessage", "Added:  " + msg.hashCode());
         }
 		new Thread() {
             @Override
@@ -112,7 +115,11 @@ public class P2PManager {
         Log.d("P2PManager", "receieveMessage " + msg.toString());
         if (chatroom == null) return; //Not part of any room.
         synchronized (MESSAGE_HASHES) {
-            if (MESSAGE_HASHES.contains(msg.hashCode())) return; //Already has got this message.
+            if (MESSAGE_HASHES.contains(msg.getMessage() + msg.getTime()))
+            {
+                Log.d("receiveMessage", "Message exists");
+                return; //Already has got this message.
+            }
         }
         sendMessage(msg);           //Forward the message on to other devices. This will also add the hash.
         //chatroom.sendMessage(msg);  //Send it to the app

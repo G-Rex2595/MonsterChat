@@ -108,7 +108,9 @@ public class ChatRoomManager
     }
 
     public void sendMessage(String s) {
-        _manager.sendMessage(new Message(_username, s, null, "Global"));
+        Message m = new Message(_username, s, null, "Global");
+        m.setTime();
+        _manager.sendMessage(m);
     }
 
 }   //end of ChatRoomManager class
