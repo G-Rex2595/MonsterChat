@@ -25,6 +25,8 @@ public class ChatRoomManager
      */
     private P2PManager _manager;
 
+    private ChatRoomView crv;
+
     /**
      * ChatRoomManager constructor initializes fields.
      *
@@ -36,6 +38,7 @@ public class ChatRoomManager
         _username = username;
         _manager = new P2PManager(activity);
         _currentRoom = null;
+        crv = (ChatRoomView) activity;
     }   //end of ChatRoomManager constructor
 
     /**
@@ -46,7 +49,7 @@ public class ChatRoomManager
     public LinkedList<String> getAvailableRooms()
     {
         return _manager.getAvailableRooms();
-    }   //end of getAvailableRooms method
+    }   //end of getAvailablRooms method
 
     /**
      * Sets the username to the given string.
@@ -66,15 +69,15 @@ public class ChatRoomManager
      *
      * @param roomName  Holds the name of the chat room.
      */
-    public ChatRoom joinRoom(String roomName)
+    public void joinRoom(String roomName)
     {
         if (_currentRoom != null)
             _currentRoom.close();
 
         _currentRoom = new ChatRoom(_manager, _username, roomName);
+        crv.addMessage(new Message("SYSTEM", "ChatRoomManager joinRoom", null, "Global"));
+        _currentRoom.setChatRoomView(crv);
         _manager.setChatRoom(_currentRoom);
-
-        return _currentRoom;
     }   //end of joinRoom method
 
     /**
@@ -96,15 +99,12 @@ public class ChatRoomManager
         _currentRoom.close();
     }   //end of close method
 
-    public void onResume()
-    {
+    public void onResume() {
         _manager.registerReceiver();
-    }   //end of onResume method
+    }
 
-    public void onPause()
-    {
+    public void onPause() {
         _manager.unregisterReceiver();
-<<<<<<< HEAD
     }
 
     public void sendMessage(Message m) {
@@ -112,7 +112,4 @@ public class ChatRoomManager
         _manager.sendMessage(m);
     }
 
-=======
-    }   //end of onPause method
->>>>>>> origin/master
 }   //end of ChatRoomManager class
