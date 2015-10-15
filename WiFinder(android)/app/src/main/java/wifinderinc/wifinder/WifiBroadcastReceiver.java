@@ -179,7 +179,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
                                 }
                                 Log.d("ConnectionInfoListener", "Left Socket Loop");
                                 socket.close();
-                                read.close();;
+                                read.close();
                                 break;
                                 //We only need to close the read end. The P2PManager will close all write ends.
                                 //read.close();

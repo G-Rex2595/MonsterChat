@@ -17,11 +17,11 @@ import org.w3c.dom.Text;
 
 public class ChatRoomView extends AppCompatActivity{
 
-    EditText txtbxInput;
-    Button btnSend;
-    TextView txtvDisplay;
-    ChatRoomManager manager;
-
+    private EditText txtbxInput;
+    private Button btnSend;
+    private TextView txtvDisplay;
+    private ChatRoomManager manager;
+    private ChatRoom currentChatRoom;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,7 +32,8 @@ public class ChatRoomView extends AppCompatActivity{
         txtvDisplay = (TextView)findViewById(R.id.txtChatDisplay);
 
         manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
-        manager.joinRoom("Global");
+        currentChatRoom = manager.joinRoom("Global");
+        currentChatRoom.setChatRoomView(this);
 
         txtbxInput.clearFocus();
         txtbxInput.setOnClickListener(new View.OnClickListener() {
@@ -72,14 +73,10 @@ public class ChatRoomView extends AppCompatActivity{
         String Default = "Message Here";
         String message = txtbxInput.getText().toString();
 
-        txtvDisplay.setText(txtvDisplay.getText()+ "\n" + txtbxInput.getText() + "\n");
-        txtbxInput.setText(Default.subSequence(0, Default.length()));
-        txtbxInput.setTextColor(Color.GRAY);
-
         InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(txtbxInput.getWindowToken(), 0);
-        manager.sendMessage(message);
-        return;
+
+        currentChatRoom.sendMessage(message);
     }
 
 }
