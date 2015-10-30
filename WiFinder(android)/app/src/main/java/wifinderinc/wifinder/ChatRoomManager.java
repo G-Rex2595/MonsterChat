@@ -26,6 +26,11 @@ public class ChatRoomManager
     private P2PManager _manager;
 
     /**
+     * Contains a reference to the activity
+     */
+    private Activity _activity;
+
+    /**
      * ChatRoomManager constructor initializes fields.
      *
      * @param username  Holds a string of the username.
@@ -36,6 +41,7 @@ public class ChatRoomManager
         _username = username;
         _manager = new P2PManager(activity);
         _currentChatRoom = null;
+        _activity = activity;
     }   //end of ChatRoomManager constructor
 
     /**
@@ -71,7 +77,7 @@ public class ChatRoomManager
         if (_currentChatRoom != null)
             _currentChatRoom.close();
 
-        _currentChatRoom = new ChatRoom(_manager, _username, roomName);
+        _currentChatRoom = new ChatRoom(_manager, _username, roomName, _activity);
         _manager.setChatRoom(_currentChatRoom);
     }   //end of joinRoom method
 

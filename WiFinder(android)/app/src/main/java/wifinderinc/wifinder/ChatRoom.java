@@ -1,5 +1,7 @@
 package wifinderinc.wifinder;
 
+import android.app.Activity;
+
 import java.util.LinkedList;
 
 /**
@@ -38,19 +40,25 @@ public class ChatRoom
     private String _id;
 
     /**
+     * Contains a reference to the chat room's log writer
+     */
+    private ChatLogWriter _chatLogWriter;
+
+    /**
      * ChatRoom constructor initializes fields.
      *
      * @param manager   Contains a reference to the P2PManager
      * @param username  Holds a string of the username.
      * @param roomName  Holds a string of the chat room name.
      */
-    public ChatRoom(P2PManager manager, String username, String roomName)
+    public ChatRoom(P2PManager manager, String username, String roomName, Activity activity)
     {
         _manager = manager;
         _username = username;
         _chatRoomName = roomName;
         _messages = new LinkedList<Message>();
         _id = null;
+        _chatLogWriter = new ChatLogWriter(activity, roomName);
     }   //end of ChatRoom constructor
 
     /**
@@ -74,6 +82,7 @@ public class ChatRoom
         Message message = new Message(_username, str, _id, _chatRoomName);
         _messages.add(message);
         _view.addMessage(message);
+        _chatLogWriter.addToBuffer(message);
         _manager.sendMessage(message);
     }   //end of sendMessage method
 
@@ -87,6 +96,7 @@ public class ChatRoom
     {
         _messages.add(message);
         _view.addMessage(message);
+        _chatLogWriter.addToBuffer(message);
     }   //end of addMessage method
 
     /**
@@ -102,7 +112,7 @@ public class ChatRoom
      */
     public void close()
     {
-        //call LogWriter's close
+        _chatLogWriter.close();
     }   //end of close method
 
     /**
