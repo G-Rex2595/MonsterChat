@@ -92,7 +92,7 @@ public class ChatRoomManager
     }   //end of joinPrivateRoom method
 
     /**
-     * TODO:  Finish in a later sprint
+     * Closes the P2PManager and the current chat room.
      */
     public void close()
     {
