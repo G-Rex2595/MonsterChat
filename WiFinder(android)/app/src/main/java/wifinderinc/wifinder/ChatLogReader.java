@@ -12,6 +12,9 @@ public class ChatLogReader
     /**
      * Holds a string representation of the name of the log.
      */
+    private BufferedReader reader;
+    private int currentLine;
+    private final int MAX_MESSAGES = 500;
     private final String logName;
 
     /**
@@ -21,25 +24,34 @@ public class ChatLogReader
      */
     public ChatLogReader(String logName)
     {
+        try
+        {
+            this.reader = new BufferedReader(new FileReader(logName));
+        }
+        catch (Exception exception)
+        {
+        }   //end try
+
+        this.currentLine = 0;
         this.logName = logName;
     }   //end of ChatLogReader constructor
 
     /**
-     * Returns a list of messages read from the given log file.
+     * Returns a list of messages from the log containing the next
+     * block of messages.  The amount of messages returned is less
+     * than or equal to the maximum specified value.
      *
-     * @return Returns a list of messages.
+     * @return  Returns a list of messages.
      */
-    public LinkedList<Message> getMessages()
+    public LinkedList<Message> getNewerMessages()
     {
         LinkedList<Message> messages = new LinkedList<Message>();
 
-        try
+        for (int x = 0; x < this.MAX_MESSAGES; x += 1)
         {
-            BufferedReader reader = new BufferedReader(new FileReader(logName));
-
-            while (true)
+            try
             {
-                String line = reader.readLine();
+                String line = this.reader.readLine();
                 if (line == null)
                 {
                     break;
@@ -49,17 +61,70 @@ public class ChatLogReader
                 String username = line.substring(0, indexOfFirstSpace);
                 String message = line.substring(line.indexOf(' ', indexOfFirstSpace + 1) + 1);
                 String id = "";
-                String roomName = logName.substring(logName.lastIndexOf('/') + 1, logName.indexOf('-'));
+                String roomName = this.logName.substring(this.logName.lastIndexOf('/') + 1, this.logName.indexOf('-'));
 
                 messages.add(new Message(username, message, id, roomName));
-            }   //end while
-            reader.close();
+                this.currentLine += 1;
+            }
+            catch (Exception exception)
+            {
+
+            }   //end try
+        }   //end for
+
+        return messages;
+    }   //end of getNewerMessages method
+
+    /**
+     * Returns a list of messages from the log containing the previous
+     * block of messages.  The amount of messages returned is equal
+     * to the maximum specified value.
+     *
+     * If an error occurs, null is returned.
+     *
+     * @return  Returns a list of messages.
+     * @error Returns null.
+     */
+    public LinkedList<Message> getOlderMessages()
+    {
+        if (this.currentLine < this.MAX_MESSAGES * 2)
+        {
+            return null;
+        }   //end if
+
+        try
+        {
+            this.reader.close();
+            this.reader = new BufferedReader(new FileReader(this.logName));
+
+            for (int x = 0; this.currentLine - x != this.MAX_MESSAGES * 2; x++)
+            {
+                this.reader.readLine();
+            }   //end for
+            this.currentLine -= this.MAX_MESSAGES * 2;
+
+            return getNewerMessages();
         }
         catch (Exception exception)
         {
 
         }   //end try
 
-        return messages;
-    }   //end of getMessages method
+        return null;
+    }   //end of getOlderMessages method
+
+    /**
+     * Closes the currently opened log reader.
+     */
+    public void close()
+    {
+        try
+        {
+            this.reader.close();
+        }
+        catch (Exception exception)
+        {
+
+        }   //end try
+    }   //end of close method
 }   //end of ChatLogReader class

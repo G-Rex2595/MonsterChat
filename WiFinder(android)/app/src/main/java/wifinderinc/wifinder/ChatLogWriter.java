@@ -83,7 +83,7 @@ public class ChatLogWriter
 
         try
         {
-            PrintWriter writer = new PrintWriter(new FileWriter(logName, true));
+            PrintWriter writer = new PrintWriter(new FileWriter(this.logName, true));
 
             for (Message message : this.messageBuffer)
             {
