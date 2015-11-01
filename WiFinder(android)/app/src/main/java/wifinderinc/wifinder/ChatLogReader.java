@@ -10,11 +10,24 @@ import java.util.LinkedList;
 public class ChatLogReader
 {
     /**
-     * Holds a string representation of the name of the log.
+     * Holds a reference to the current log file.
      */
     private BufferedReader reader;
+
+    /**
+     * Holds the location of the current line.
+     */
     private int currentLine;
+
+    /**
+     * Holds the maximum number of messages
+     * allowed to be returned in a list.
+     */
     private final int MAX_MESSAGES = 500;
+
+    /**
+     * Holds the name of the current log.
+     */
     private final String logName;
 
     /**
