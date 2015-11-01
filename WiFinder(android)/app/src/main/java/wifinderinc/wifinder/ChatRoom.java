@@ -108,7 +108,7 @@ public class ChatRoom
     }   //end of failedConnect method
 
     /**
-     * TODO:  Finish in a later sprint
+     * Closes the chat room's log writer.
      */
     public void close()
     {
