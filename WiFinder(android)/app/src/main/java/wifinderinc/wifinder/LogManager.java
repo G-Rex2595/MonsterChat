@@ -40,7 +40,7 @@ public class LogManager
             {
                 String fileName = file.getName();
                 String chatRoomName = fileName.substring(0, fileName.indexOf('-'));
-                int date = Integer.parseInt(fileName.substring(fileName.indexOf('-') + 1));
+                long date = Long.parseLong(fileName.substring(fileName.indexOf('-') + 1));
                 fileName = file.getAbsolutePath();
 
                 logs.add(new LoggedChat(chatRoomName, date, fileName));

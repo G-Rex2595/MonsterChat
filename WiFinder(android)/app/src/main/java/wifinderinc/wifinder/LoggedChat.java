@@ -13,7 +13,7 @@ public class LoggedChat
     /**
      * Holds the date as a number.
      */
-    private final int date;
+    private final long date;
 
     /**
      * Holds the name of the log.
@@ -27,7 +27,7 @@ public class LoggedChat
      * @param date          Holds the date as number.
      * @param fileName      Holds the name of the log.
      */
-    public LoggedChat(String chatRoomName, int date, String fileName)
+    public LoggedChat(String chatRoomName, long date, String fileName)
     {
         this.chatRoomName = chatRoomName;
         this.date = date;
@@ -49,7 +49,7 @@ public class LoggedChat
      *
      * @return  Returns the date as number.
      */
-    public int getDate()
+    public long getDate()
     {
         return this.date;
     }   //end of getDate method
