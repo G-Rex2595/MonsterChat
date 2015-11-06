@@ -27,7 +27,8 @@ public class P2PManager {
     private final ArrayList<ObjectOutputStream> OUTPUT_STREAMS; //List of socket outputs for writing messages
     private ChatRoom chatroom;                                  //Chat room the device is currently part of
     private final HashSet<String> MESSAGE_HASHES;               //Incoming messages to send to room
-
+    private ServerThread serverThread;
+    public static final int PORT = 6223;
 
 
     /**
@@ -74,7 +75,8 @@ public class P2PManager {
 
         chatroom = null;
         this.activity = activity;
-
+        serverThread = new ServerThread(this, PORT);
+        serverThread.start();
     }
 
     /**
@@ -157,6 +159,7 @@ public class P2PManager {
      */
     public void close() {
         p2pManager.stopPeerDiscovery(channel, null);
+        serverThread.close();
         clearConnections();
     }
 
@@ -181,7 +184,7 @@ public class P2PManager {
     /**
      * Clears all the output streams associated with the P2PManager.
      */
-    public void clearConnections() {
+    private void clearConnections() {
         synchronized (OUTPUT_STREAMS) {
             //First, we need to close all streams
             for (ObjectOutputStream oos : OUTPUT_STREAMS) {

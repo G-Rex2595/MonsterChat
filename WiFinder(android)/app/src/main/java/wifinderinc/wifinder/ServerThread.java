@@ -71,6 +71,7 @@ public class ServerThread extends Thread {
     }
 
     public void close() {
+        interrupt();
         try {
             if (ss != null) ss.close();
         }

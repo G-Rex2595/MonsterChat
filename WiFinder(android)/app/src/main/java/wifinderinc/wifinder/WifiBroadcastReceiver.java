@@ -29,7 +29,6 @@ import java.util.ArrayList;
 public class WifiBroadcastReceiver extends BroadcastReceiver {
 
     private static final String p2pInt = "p2p-p2p0";
-    public static final int PORT = 6223;
 
     //Fields
     private WifiP2pManager manager;
@@ -156,7 +155,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
 
             if (info.groupFormed && info.isGroupOwner) {
                 Log.d("ConnectionListener", "Start server thread");
-                new ServerThread(p2pmanager, PORT).start();
+                //new ServerThread(p2pmanager, P2PManager.PORT).start();
 
             }
             else if (info.groupFormed) {
@@ -166,7 +165,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
                     public void run() {
                         while (true) {
                             try {
-                                Socket socket = new Socket(groupOwnerAddress, PORT);
+                                Socket socket = new Socket(groupOwnerAddress, P2PManager.PORT);
                                 //ObjectInputStream read = new ObjectInputStream(socket.getInputStream());
                                 //ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
                                 //output.writeObject(new Message("ConnectionInfoListener", "LOL U DIED", null, "Global"));
@@ -208,7 +207,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
         public ClientThread(InetAddress address) {
             Log.d("Clientthread", "Constructor");
             try {
-                socket = new Socket(address, PORT);
+                socket = new Socket(address, P2PManager.PORT);
             }
             catch (IOException e) {
                 e.printStackTrace();
@@ -287,7 +286,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            e.printStackTrace(); //This will break everything
         } finally {
             try {
                 br.close();
