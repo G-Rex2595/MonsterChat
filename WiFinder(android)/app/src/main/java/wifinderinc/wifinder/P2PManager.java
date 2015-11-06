@@ -19,7 +19,6 @@ import java.util.LinkedList;
   */
 public class P2PManager {
 	//Fields
-	//private final HashSet<Integer> MESSAGE_HASHES;              //Incoming messages to send to room
 	private WifiP2pManager p2pManager;                          //The Wifip2pmanager system service
 	private WifiP2pManager.Channel channel;                     //The Wifi p2p channel
 	private WifiBroadcastReceiver receiver;                     //The receiver listening for intents from other devices
@@ -27,7 +26,9 @@ public class P2PManager {
 	private IntentFilter intentFilter;                          //Filter for the intents the broadcast receiver will take
     private final ArrayList<ObjectOutputStream> OUTPUT_STREAMS; //List of socket outputs for writing messages
     private ChatRoom chatroom;                                  //Chat room the device is currently part of
-    private final HashSet<String> MESSAGE_HASHES;
+    private final HashSet<String> MESSAGE_HASHES;               //Incoming messages to send to room
+
+
 
     /**
      * Construct for P2PManager.

@@ -13,6 +13,8 @@ import android.net.wifi.p2p.WifiP2pManager;
 import android.net.wifi.p2p.WifiP2pManager.ConnectionInfoListener;
 import android.util.Log;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -26,6 +28,7 @@ import java.util.ArrayList;
  */
 public class WifiBroadcastReceiver extends BroadcastReceiver {
 
+    private static final String p2pInt = "p2p-p2p0";
     public static final int PORT = 6223;
 
     //Fields
@@ -75,7 +78,6 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             if (manager == null) return;
 
             NetworkInfo networkInfo = (NetworkInfo) intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
-
             if (networkInfo.isConnected()) {
                 //Connection with some device
                 manager.requestConnectionInfo(channel, connectionListener);
@@ -117,6 +119,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
 
                 WifiP2pConfig config = new WifiP2pConfig();
                 config.deviceAddress = device.deviceAddress;
+
                 config.wps.setup = WpsInfo.PBC;
                 manager.connect(channel, config, new WifiP2pManager.ActionListener() {
                     @Override
@@ -127,8 +130,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
                         try {
                             Thread.sleep(1000);
                         }
-                        catch (Exception e)
-                        {
+                        catch (Exception e) {
 
                         }
                     }
@@ -154,7 +156,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
 
             if (info.groupFormed && info.isGroupOwner) {
                 Log.d("ConnectionListener", "Start server thread");
-                new ServerThread().start();
+                new ServerThread(p2pmanager, PORT).start();
 
             }
             else if (info.groupFormed) {
@@ -197,53 +199,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
         }
     };
 
-    private class ServerThread extends Thread {
-        @Override
-        public void run() {
-            try {
-                ServerSocket ss = new ServerSocket(PORT);
-                while (!isInterrupted()) {
-                    final Socket s = ss.accept();
-                    Log.d("Server Thread", "Connection started, dispatching thread");
-                    Thread t = new Thread() {
-                        @Override
-                        public void run() {
-                            try {
-                                Log.d("Server dispatch thread", "Running");
-                                //ObjectInputStream read = new ObjectInputStream(s.getInputStream());
-                                //ObjectOutputStream output = new ObjectOutputStream(s.getOutputStream());
-                                //output.writeObject(new Message("ServerThread", "LOL U DIED", null, "Global"));
-                                //p2pmanager.addConnection(output);
-                                Log.d("Server dispatch thread", "Added connection");
-                                p2pmanager.addConnection(new ObjectOutputStream(s.getOutputStream()));
-                                ObjectInputStream read = new ObjectInputStream(s.getInputStream());
-                                while (s.isConnected()) {
-                                    Log.d("Server dispatch thread", "Blocking on readObject");
-                                    //Message m = (Message) read.readObject();
-                                    Message m = (Message)read.readObject();
-                                    Log.d("Server dispatch thread", "Received message " + m.getMessage());
-                                    p2pmanager.receiveMessage(m);
-                                }
-                                Log.d("Serverthread", "Left Socket Loop");
-                                s.close();
-                                read.close();
-                                //We only need to close the read end. The P2PManager will close all write ends.
-                                //read.close();
-                            }
-                            catch (IOException e) {
 
-                            }
-                            catch (ClassNotFoundException cnfe) {}
-                        }
-                    };
-                    t.start();
-                }
-            }
-            catch (IOException e) {
-                //TODO error handle
-            }
-        }
-    }
 
     private class ClientThread extends Thread {
 
@@ -296,5 +252,49 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
                 //and the message object has changed between them.
             }
         }
+    }
+
+
+    /**
+     * Get the IP of some device from the ARP cache.
+     * We assume the ARP cache is in /proc/net/arp since Android is Linux based.
+     * We also assume /proc/net/arp has the following format
+     * IP address       HW type     Flags       HW address            Mask     Device
+     * 192.168.18.11    0x1         0x2         00:04:20:06:55:1a     *        eth0
+     * 192.168.18.36    0x1         0x2         00:22:43:ab:2a:5b     *        eth0
+     * This is a modification of http://www.flattermann.net/2011/02/android-howto-find-the-hardware-mac-address-of-a-remote-host/
+     * @param MAC The MAC address of the device being looked up
+     * @return The IP of the device that was looked up, or null
+     */
+    private InetAddress getIPFromMac(String MAC) {
+
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new FileReader("/proc/net/arp"));
+            String line;
+            while ((line = br.readLine()) != null) {
+
+                String[] split = line.split(" +");
+                if (split != null && split.length >= 4) {
+                    // Basic sanity check
+                    String device = split[5];
+                    if (device.matches(".*" +p2pInt+ ".*")){
+                        String mac = split[3];
+                        if (mac.matches(MAC)) {
+                            return InetAddress.getByName(split[0]);
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                br.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
     }
 }
