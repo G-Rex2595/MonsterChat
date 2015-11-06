@@ -28,8 +28,7 @@ import java.util.ArrayList;
  */
 public class WifiBroadcastReceiver extends BroadcastReceiver {
 
-    private static final String p2pInt = "p2p-p2p0";
-
+    private static final String p2pInt = "p2p";
     //Fields
     private WifiP2pManager manager;
     private WifiP2pManager.Channel channel;
@@ -75,17 +74,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             //Connection state changed.
             Log.d("WifiBroadCastReceiver", "WIFI_P2P_CONNECTION_CHANGED_ACTION");
             if (manager == null) return;
-
-            NetworkInfo networkInfo = (NetworkInfo) intent.getParcelableExtra(WifiP2pManager.EXTRA_NETWORK_INFO);
-            if (networkInfo.isConnected()) {
-                //Connection with some device
-                manager.requestConnectionInfo(channel, connectionListener);
-
-            }
-            else {
-                //Disconnect
-                Log.d("WifiBroadCastReceiver", "WIFI_P2P_CONNECTION_CHANGED_ACTION_Disconnection?");
-            }
+            manager.requestConnectionInfo(channel, connectionListener);
         }
         else if (WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION.equals(action)) {
             Log.d("WifiBroadCastReceiver", "WIFI_P2P_THIS_DEVICE_CHANGED_ACTION");
@@ -102,6 +91,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             peers.clear();
             peers.addAll(peerList.getDeviceList());
             for (WifiP2pDevice device : peers) {
+                getIPFromMac(device.deviceAddress);
                 boolean exists = false;
                 for (String s: successes)
                 {
@@ -137,9 +127,11 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
                     @Override
                     public void onFailure(int reason) {
                         //TODO error handle (maybe?)
-                        Log.d("Manager.connect", "Successful failed " + reason);
+                        Log.d("Manager.connect", "connect failed " + reason);
                     }
                 });
+
+                //new ClientThread(this, getIPFromMac(device.deviceAddress)).start();
             }
         }
     };
@@ -155,7 +147,6 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
 
             if (info.groupFormed && info.isGroupOwner) {
                 Log.d("ConnectionListener", "Start server thread");
-                //new ServerThread(p2pmanager, P2PManager.PORT).start();
 
             }
             else if (info.groupFormed) {
@@ -198,69 +189,14 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
         }
     };
 
-
-
-    private class ClientThread extends Thread {
-
-        private Socket socket;
-
-        public ClientThread(InetAddress address) {
-            Log.d("Clientthread", "Constructor");
-            try {
-                socket = new Socket(address, P2PManager.PORT);
-            }
-            catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        public ClientThread(Socket socket) {
-            this.socket = socket;
-        }
-
-        @Override
-        public void run() {
-            try {
-                //ObjectInputStream read = new ObjectInputStream(socket.getInputStream());
-                //ObjectOutputStream output = new ObjectOutputStream(socket.getOutputStream());
-                //p2pmanager.addConnection(output);
-                boolean notAdded = true;
-                while (socket.isConnected()) {
-                    if (notAdded)
-                    {
-                        notAdded = false;
-                        p2pmanager.addConnection(new ObjectOutputStream(socket.getOutputStream()));
-                    }
-                    //Message m = (Message) read.readObject();
-                    Message m = (Message)new ObjectInputStream(socket.getInputStream()).readObject();
-                    p2pmanager.receiveMessage(m);
-                }
-                Log.d("Clientthread", "Left Socket Loop");
-                socket.close();
-                //We only need to close the read end. The P2PManager will close all write ends.
-                //read.close();
-
-            }
-            catch (IOException e) {
-                //TODO error handle
-                //Most likely cause of this is connection dropped
-            } catch (ClassNotFoundException e) {
-                //TODO error handle
-                //If this happens, we have some major problems to consider.
-                //The first case I can see this happening is two different versions of the app
-                //and the message object has changed between them.
-            }
-        }
-    }
-
-
     /**
      * Get the IP of some device from the ARP cache.
      * We assume the ARP cache is in /proc/net/arp since Android is Linux based.
      * We also assume /proc/net/arp has the following format
      * IP address       HW type     Flags       HW address            Mask     Device
      * 192.168.18.11    0x1         0x2         00:04:20:06:55:1a     *        eth0
-     * 192.168.18.36    0x1         0x2         00:22:43:ab:2a:5b     *        eth0
+     * 192.168.18.36    0x1         0x2         00:22:43:ab:2a:5b     *        wlan0
+     * .....
      * This is a modification of http://www.flattermann.net/2011/02/android-howto-find-the-hardware-mac-address-of-a-remote-host/
      * @param MAC The MAC address of the device being looked up
      * @return The IP of the device that was looked up, or null
@@ -272,7 +208,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
             br = new BufferedReader(new FileReader("/proc/net/arp"));
             String line;
             while ((line = br.readLine()) != null) {
-
+                Log.d("getIPFromMac(" + MAC + ")", line);
                 String[] split = line.split(" +");
                 if (split != null && split.length >= 4) {
                     // Basic sanity check
