@@ -13,6 +13,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 
 /**
   * @author Michael Young
@@ -27,8 +28,10 @@ public class P2PManager {
     private final ArrayList<ObjectOutputStream> OUTPUT_STREAMS; //List of socket outputs for writing messages
     private ChatRoom chatroom;                                  //Chat room the device is currently part of
     private final HashSet<String> MESSAGE_HASHES;               //Incoming messages to send to room
-    private ServerThread serverThread;
-    public static final int PORT = 6223;
+    private ServerThread serverThread;                          //Thread running the server portion of the app
+    public static final int PORT = 6223;                        //Port we will use for connections
+    private Thread roomThread;                                  //Thread that will check the available rooms
+    private final PriorityQueue<String> availableRooms;         //Available rooms
 
 
     /**
@@ -77,6 +80,24 @@ public class P2PManager {
         this.activity = activity;
         serverThread = new ServerThread(this, PORT);
         serverThread.start();
+
+        availableRooms = new PriorityQueue<>();
+        roomThread = new Thread() {
+            @Override
+            public void run() {
+                while (!isInterrupted()) {
+                    try {
+                        //Send a blank message as a check
+                        availableRooms.clear();
+                        sendMessage(new Message(null, null, null, null));
+                        Thread.sleep(5000);
+                    }
+                    catch (InterruptedException e) { break; }
+                }
+            }
+
+        };
+        roomThread.start();
     }
 
     /**
@@ -125,7 +146,22 @@ public class P2PManager {
             }
         }
         sendMessage(msg);           //Forward the message on to other devices. This will also add the hash.
-        chatroom.addMessage(msg);
+        if (msg.getName() != null && chatroom.getChatRoomName().equals(msg.getChatRoomName())) {
+            //It's a user message and belongs in the current chatroom
+            chatroom.addMessage(msg);
+        }
+        else if (msg.getName() == null){
+            //This is a message sent by the app itself
+            if (msg.getChatRoomName() == null) {
+                //Request for room name
+                sendMessage(new Message(null, null, null, chatroom.getChatRoomName()));
+            }
+            else {
+                //We received a possible room. Make sure it doesn't already exist
+                if (availableRooms.contains(msg.getChatRoomName())) availableRooms.add(msg.getChatRoomName());
+            }
+        }
+        //If we reach here, the message was valid but for the wrong room
     }
 
     public void setChatRoom(ChatRoom chatroom) {
@@ -164,11 +200,15 @@ public class P2PManager {
     }
 
     /**
-     * Get a list of rooms that the device can join. To be finished on a later sprint.
+     * Get a list of rooms that the device can join.
      * @return
      */
     public LinkedList<String> getAvailableRooms() {
-        return null;
+        LinkedList<String> roomNames = new LinkedList<>();
+        for (String s : availableRooms) {
+            roomNames.add(s);
+        }
+        return roomNames;
     }
 
     /**
