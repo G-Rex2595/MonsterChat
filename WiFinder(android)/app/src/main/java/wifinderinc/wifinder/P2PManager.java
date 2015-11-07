@@ -1,7 +1,6 @@
 package wifinderinc.wifinder;
 
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.net.wifi.p2p.WifiP2pManager;
@@ -9,7 +8,6 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.ObjectOutputStream;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -31,7 +29,7 @@ public class P2PManager {
     private ServerThread serverThread;                          //Thread running the server portion of the app
     public static final int PORT = 6223;                        //Port we will use for connections
     private Thread roomThread;                                  //Thread that will check the available rooms
-    private final PriorityQueue<String> availableRooms;         //Available rooms
+    private final PriorityQueue<String> AVAILABLE_ROOMS;         //Available rooms
 
 
     /**
@@ -81,14 +79,16 @@ public class P2PManager {
         serverThread = new ServerThread(this, PORT);
         serverThread.start();
 
-        availableRooms = new PriorityQueue<>();
+        AVAILABLE_ROOMS = new PriorityQueue<>();
         roomThread = new Thread() {
             @Override
             public void run() {
                 while (!isInterrupted()) {
                     try {
                         //Send a blank message as a check
-                        availableRooms.clear();
+                        synchronized (getAvailableRooms()) {
+                            AVAILABLE_ROOMS.clear();
+                        }
                         sendMessage(new Message(null, null, null, null));
                         Thread.sleep(5000);
                     }
@@ -158,7 +158,9 @@ public class P2PManager {
             }
             else {
                 //We received a possible room. Make sure it doesn't already exist
-                if (availableRooms.contains(msg.getChatRoomName())) availableRooms.add(msg.getChatRoomName());
+                synchronized (AVAILABLE_ROOMS) {
+                    if (AVAILABLE_ROOMS.contains(msg.getChatRoomName())) AVAILABLE_ROOMS.add(msg.getChatRoomName());
+                }
             }
         }
         //If we reach here, the message was valid but for the wrong room
@@ -196,6 +198,7 @@ public class P2PManager {
     public void close() {
         p2pManager.stopPeerDiscovery(channel, null);
         serverThread.close();
+        roomThread.interrupt();
         clearConnections();
     }
 
@@ -205,8 +208,10 @@ public class P2PManager {
      */
     public LinkedList<String> getAvailableRooms() {
         LinkedList<String> roomNames = new LinkedList<>();
-        for (String s : availableRooms) {
-            roomNames.add(s);
+        synchronized (AVAILABLE_ROOMS) {
+            for (String s : AVAILABLE_ROOMS) {
+                roomNames.add(s);
+            }
         }
         return roomNames;
     }
