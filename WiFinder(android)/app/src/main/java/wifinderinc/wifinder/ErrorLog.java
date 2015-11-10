@@ -1,71 +1,64 @@
 package wifinderinc.wifinder;
 
-import java.io.BufferedWriter;
+import android.content.Context;
+
 import java.io.FileWriter;
-import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Arrays;
 
 /**
- * The ErrorLog class will be used to create an error log file for reporting
- * bugs.
- * @author Michael Young
+ * @author  Andrew Sytsma <asytsma@purdue.edu>
+ *
+ * Referenced a file created by Michael Young.
  */
-public final class ErrorLog {
-    private BufferedWriter bw = null;
-	private static ErrorLog errorLogger;
-	
-	/**
-     * Initiate error logging. Creates the output stream and keeps the file
-     * open to continuously write errors.
-     */
-	private ErrorLog() {
-		try {
-            bw = new BufferedWriter(new FileWriter("error.log", true));
-        }
-        catch (IOException e) {
-            //This should never happen, but it could so.... TODO: something
-            bw = null;
-        }
-	}
-    
+public final class ErrorLog
+{
     /**
-     * Write to the log. This writes the line that it occurred at and the actual
-     * exception that happened.
-     * @param e The exception being logged (error)
+     * Holds the name of the log to write to.
      */
-    public synchronized void writeToLog(Exception e) {
-        if (bw != null) {
-            try {
-                bw.append(e.toString() + "\tStack trace: " + Arrays.toString(e.getStackTrace()) + "\n");
-                bw.flush();
-            }
-            catch (IOException ex) {
-				//TODO: something?
-            }
-        }
-    }
-    
-    /**
-     * Close error logging. If it can't be closed, report it (because we're
-     * logging errors that's why.)
-     */
-    public void closeErrorLog() {
-        if (bw == null) return; //It was either already closed or never initiated.
-        try {
-            bw.close();
-        }
-        catch (IOException e) {
-            ErrorLog.getLogger().writeToLog(e);
-            bw = null; //Couldn't close it, so I guess just null it out?
-        }
-    }
+    private static String logName = null;
 
     /**
-     * Get the error logger for logging purposes.
-     * @return The error logger object.
+     * Writes the error to the log.  Does nothing if
+     * ErrorLog has not been initialized.
+     *
+     * @param e The exception to be logged.
      */
-	public static ErrorLog getLogger() {
-		if (errorLogger == null) errorLogger = new ErrorLog();
-		return errorLogger;
-	}
-}
+    public static synchronized void writeToLog(Exception e)
+    {
+        if (logName == null)
+        {
+            return;
+        }   //end if
+
+        try
+        {
+            PrintWriter writer = new PrintWriter(new FileWriter(logName, true));
+            writer.println(e.toString() + "\tStack trace: " + Arrays.toString(e.getStackTrace()));
+            writer.close();
+        }
+        catch (Exception exception)
+        {
+
+        }   //end try
+    }   //end of writeToLog method
+
+    /**
+     * Initializes the ErrorLog.  Does nothing if
+     * ErrorLog has already been initialized.
+     *
+     * Note:  This should be called by the homepage
+     *        when the app first loads.
+     *
+     * @param context   Holds a reference to the activity
+     */
+    public static void initialize(Context context)
+    {
+        if (logName != null)
+        {
+            return;
+        }   //end if
+
+        logName = context.getFilesDir() + "/ErrorLog";
+    }   //end of initialize method
+}   //end of ErrorLog class
