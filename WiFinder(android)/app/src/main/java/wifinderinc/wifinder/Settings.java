@@ -79,7 +79,7 @@ public class Settings
         }
         catch (Exception exception)
         {
-
+            ErrorLog.writeToLog(exception);
         }   //end try
     }	//end of Settings constructor
 
@@ -221,7 +221,7 @@ public class Settings
         }
         catch (Exception exception)
         {
-
+            ErrorLog.writeToLog(exception);
         }   //end try
     }   //end of writeToFile method
 }   //end of Settings class

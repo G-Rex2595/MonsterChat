@@ -96,6 +96,7 @@ public class ChatLogWriter
         }
         catch (Exception exception)
         {
+            ErrorLog.writeToLog(exception);
         }	//end try
     }   //end of writeToLog method
 }   //end of ChatLogWriter Class

@@ -43,6 +43,7 @@ public class ChatLogReader
         }
         catch (Exception exception)
         {
+            ErrorLog.writeToLog(exception);
         }   //end try
 
         this.currentLine = 0;
@@ -81,7 +82,7 @@ public class ChatLogReader
             }
             catch (Exception exception)
             {
-
+                ErrorLog.writeToLog(exception);
             }   //end try
         }   //end for
 
@@ -120,7 +121,7 @@ public class ChatLogReader
         }
         catch (Exception exception)
         {
-
+            ErrorLog.writeToLog(exception);
         }   //end try
 
         return null;
@@ -137,7 +138,7 @@ public class ChatLogReader
         }
         catch (Exception exception)
         {
-
+            ErrorLog.writeToLog(exception);
         }   //end try
     }   //end of close method
 }   //end of ChatLogReader class
