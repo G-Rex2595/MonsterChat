@@ -1,6 +1,7 @@
 package wifinderinc.wifinder;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.provider.CalendarContract;
@@ -10,23 +11,29 @@ import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 public class ChatRoomView extends AppCompatActivity{
 
     private EditText txtbxInput;
     private Button btnSend;
-    private TextView txtvDisplay;
+    private ListView lstDisplay;
     private ChatRoomManager manager;
     private String RoomName;
     private String UserName;
+
+    private ArrayList<String> Chat = new ArrayList<>();
+    private ArrayAdapter<String> adapter;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,16 +41,24 @@ public class ChatRoomView extends AppCompatActivity{
 
         txtbxInput = (EditText)findViewById(R.id.txtMessageInput);
         btnSend = (Button)findViewById(R.id.btnSendMessage);
-        txtvDisplay = (TextView)findViewById(R.id.txtChatDisplay);
-        RoomName = "Global";
+        lstDisplay = (ListView)findViewById(R.id.lstChatDisp);
+
+        Intent intent = getIntent();
+        String Room = intent.getStringExtra(ChatRoomsList.ROOM_NAME);
+        RoomName = Room;
         UserName = "Default";
+
+        Chat.add("Welcome to " + RoomName + ", " + UserName + "!");
+
+
+        adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Chat);
+        lstDisplay.setAdapter(adapter);
 
         //manager = new ChatRoomManager(UserName, this);
         manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
         manager.joinRoom(RoomName);
         manager.getCurrentChatRoom().setChatRoomView(this);
 
-        txtvDisplay.setMovementMethod(new ScrollingMovementMethod());
 
         txtbxInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
@@ -61,9 +76,9 @@ public class ChatRoomView extends AppCompatActivity{
 
         final String message = String.format("%s:         %tr\n%s\n", m.getName(), c, m.getMessage());
         runOnUiThread(new Runnable(){
-            public void run()
-            {
-                txtvDisplay.append(message);
+            public void run() {
+                Chat.add(message);
+                adapter.notifyDataSetChanged();
             }
         });
     }

@@ -14,7 +14,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
-        <activity android:name=".ChatRoomView" >
+        <activity android:name=".HomePage" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -23,6 +23,46 @@
             </intent-filter>
 
 
+        </activity>
+
+        <activity
+            android:name=".ChatRoomsList"
+            android:parentActivityName=".HomePage" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".HomePage" />
+        </activity>
+
+        <activity
+            android:name=".ChatRoomView"
+            android:parentActivityName=".ChatRoomsList" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ChatRoomsList" />
+        </activity>
+
+        <activity
+            android:name=".LogsList"
+            android:parentActivityName=".HomePage" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".HomePage" />
+        </activity>
+
+        <activity
+            android:name=".LogView"
+            android:parentActivityName=".LogsList" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".LogsList" />
+        </activity>
+
+        <activity
+            android:name=".SettingForm"
+            android:parentActivityName=".HomePage" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".HomePage" />
         </activity>
 
     </application>
