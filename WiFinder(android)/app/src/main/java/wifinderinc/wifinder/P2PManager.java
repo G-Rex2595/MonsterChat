@@ -89,7 +89,8 @@ public class P2PManager {
                         synchronized (getAvailableRooms()) {
                             AVAILABLE_ROOMS.clear();
                         }
-                        sendMessage(new Message(null, null, null, null));
+                        //Instead of null messages, why not broadcast the chatroom (and maybe the user?)
+                        sendMessage(new Message(null, null, chatroom.getChatRoomName(), null));
                         Thread.sleep(5000);
                     }
                     catch (InterruptedException e) { break; }
@@ -122,8 +123,9 @@ public class P2PManager {
                             oos.flush();
                             Log.d("OOS", "We wrote");
                         } catch (IOException e) {
-                            //TODO error handle
+                            //Most likely occured due to the stream no longer existing.
                             Log.d("OOS", "Failed to send");
+                            OUTPUT_STREAMS.remove(oos);
                         }
                     }
                 }
@@ -138,28 +140,24 @@ public class P2PManager {
     public void receiveMessage(Message msg) {
         Log.d("P2PManager", "receieveMessage " + msg.toString());
         if (chatroom == null) return; //Not part of any room.
-        synchronized (MESSAGE_HASHES) {
-            if (MESSAGE_HASHES.contains(msg.getMessage() + msg.getTime()))
-            {
-                Log.d("receiveMessage", "Message exists");
-                return; //Already has got this message.
-            }
-        }
-        sendMessage(msg);           //Forward the message on to other devices. This will also add the hash.
-        if (msg.getName() != null && chatroom.getChatRoomName().equals(msg.getChatRoomName())) {
+
+        else if (msg.getMessage() != null && chatroom.getChatRoomName().equals(msg.getChatRoomName())) {
             //It's a user message and belongs in the current chatroom
+            synchronized (MESSAGE_HASHES) {
+                if (MESSAGE_HASHES.contains(msg.getMessage() + msg.getTime()))
+                {
+                    Log.d("receiveMessage", "Message exists");
+                    return; //Already has got this message.
+                }
+            }
+            sendMessage(msg);           //Forward the message on to other devices. This will also add the hash.
             chatroom.addMessage(msg);
         }
-        else if (msg.getName() == null){
-            //This is a message sent by the app itself
-            if (msg.getChatRoomName() == null) {
-                //Request for room name
-                sendMessage(new Message(null, null, null, chatroom.getChatRoomName()));
-            }
-            else {
-                //We received a possible room. Make sure it doesn't already exist
+        else if (msg.getMessage() == null){
+            if (msg.getChatRoomName() != null) {
+                String name = msg.getChatRoomName();
                 synchronized (AVAILABLE_ROOMS) {
-                    if (AVAILABLE_ROOMS.contains(msg.getChatRoomName())) AVAILABLE_ROOMS.add(msg.getChatRoomName());
+                    if (AVAILABLE_ROOMS.contains(name)) AVAILABLE_ROOMS.add(name);
                 }
             }
         }
