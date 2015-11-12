@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory android:key="Settings">
+
+        <CheckBoxPreference
+            android:key="TimeStampEnabled"
+            android:title="Time Stamps Enabled "
+            android:summary="Controls whether time stamps or displayed in Chat Rooms"
+            android:defaultValue="false"/>
+
+        <ListPreference
+            android:key="Colors"
+            android:title="Color Scheme "
+            android:summary="Controls the color scheme of the app"
+            android:defaultValue="Default"
+            android:entries="@array/ColorEntries"
+            android:entryValues="@array/ColorEntries" />
+
+        <ListPreference
+            android:key="Fonts"
+            android:title="Fonts "
+            android:summary="The font used in the app"
+            android:defaultValue="Default"
+            android:entries="@array/FontEntries"
+            android:entryValues="@array/FontEntries" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

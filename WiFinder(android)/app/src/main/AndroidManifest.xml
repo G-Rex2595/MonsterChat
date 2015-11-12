@@ -58,7 +58,7 @@
         </activity>
 
         <activity
-            android:name=".SettingForm"
+            android:name=".Preferences"
             android:parentActivityName=".HomePage" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

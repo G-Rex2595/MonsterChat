@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="ColorEntries">
+        <item>Default</item>
+        <item>Nuclear</item>
+        <item>DOS</item>
+        <item>1969</item>
+    </string-array>
+
+    <string-array name="FontEntries">
+        <item>Default</item>
+        <item>Nuclear</item>
+        <item>DOS</item>
+        <item>1969</item>
+    </string-array>
+
+
+</resources>
