@@ -30,18 +30,20 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 public class ChatRoomView extends AppCompatActivity{
-
+    //UI Globals
     private EditText txtbxInput;
     private Button btnSend;
     private ListView lstDisplay;
+    private TextView InputBox;
+    private TextView SendBox;
     private RelativeLayout Back;
 
+    //Various Globals
     private ChatRoomManager manager;
-    private int textColor;
-    private Typeface FontStyle;
     private String RoomName;
     private String UserName;
 
+    //Adapter Globals
     private ArrayList<String> Chat = new ArrayList<>();
     private ArrayAdapter<String> adapter;
 
@@ -49,6 +51,8 @@ public class ChatRoomView extends AppCompatActivity{
     private String ColorScheme;
     private String Font;
     private Boolean TimeStamps;
+    private int textColor;
+    private Typeface FontStyle;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,6 +68,8 @@ public class ChatRoomView extends AppCompatActivity{
         txtbxInput = (EditText)findViewById(R.id.txtMessageInput);
         btnSend = (Button)findViewById(R.id.btnSendMessage);
         lstDisplay = (ListView)findViewById(R.id.lstChatDisp);
+        InputBox = (TextView) findViewById(R.id.InputBack);
+        SendBox = (TextView)findViewById(R.id.SendBack);
         Back = (RelativeLayout)findViewById(R.id.Background);
 
         SetColors(ColorScheme);
@@ -74,7 +80,7 @@ public class ChatRoomView extends AppCompatActivity{
         RoomName = intent.getStringExtra(ChatRoomsList.ROOM_NAME);
         UserName = intent.getStringExtra(ChatRoomsList.USER_NAME);
 
-        Chat.add("Welcome to " + RoomName + ", " + UserName + "!" +ColorScheme);
+        Chat.add("Welcome to " + RoomName + ", " + UserName + "!");
 
         //set up adapter
         adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Chat){
@@ -93,10 +99,10 @@ public class ChatRoomView extends AppCompatActivity{
         lstDisplay.setAdapter(adapter);
 
         //manager = new ChatRoomManager(UserName, this);
-        manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
+        /*manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
         manager.joinRoom(RoomName);
         manager.setUsername(UserName);
-        manager.getCurrentChatRoom().setChatRoomView(this);
+        manager.getCurrentChatRoom().setChatRoomView(this);*/
 
 
         //make it so text color changes to black when selected
@@ -113,6 +119,7 @@ public class ChatRoomView extends AppCompatActivity{
 
     private void SetColors(String ColorScheme){
         int backColor = Color.WHITE;
+        int btnColor = Color.LTGRAY;
         int txtBackColor = Color.WHITE;
         textColor = Color.BLACK;
         switch (ColorScheme){
@@ -120,29 +127,41 @@ public class ChatRoomView extends AppCompatActivity{
                 break;
             case "Nuclear":
                 backColor = Color.BLACK;
+                btnColor = Color.BLACK;
                 txtBackColor = Color.argb(255, 17, 100, 5);
                 textColor = Color.argb(255, 29, 255, 31);
                 break;
             case "DOS":
                 backColor = Color.BLACK;
+                btnColor = Color.BLACK;
                 txtBackColor = Color.BLACK;
                 textColor = Color.WHITE;
                 break;
             case "1969":
                 backColor = Color.CYAN;
+                btnColor = Color.argb(255,245,159,159);
                 txtBackColor = Color.RED;
                 textColor = Color.YELLOW;
                 break;
         }
 
-
+        //set background colors
         ChatRoomView.this.Back.setBackgroundColor(backColor);
         lstDisplay.setBackgroundColor(backColor);
-        btnSend.setBackgroundColor(backColor);
         txtbxInput.setBackgroundColor(txtBackColor);
+
+        //set button background
+        btnSend.setBackgroundColor(btnColor);
+
+        //set highlights
+        InputBox.setBackgroundColor(textColor);
+        SendBox.setBackgroundColor(textColor);
+
+        //set text colors
         txtbxInput.setTextColor(textColor);
         btnSend.setTextColor(textColor);
 
+        //set divider colors
         ColorDrawable divColor = new ColorDrawable(textColor);
         lstDisplay.setDivider(divColor);
         lstDisplay.setDividerHeight(3);
@@ -186,14 +205,14 @@ public class ChatRoomView extends AppCompatActivity{
     @Override
     public void onResume() {
         super.onResume();
-        manager.onResume();
+        //manager.onResume();
         //TODO: call ChatRoomManager onresume
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        manager.onPause();
+        //manager.onPause();
         //TODO: call ChatRoomManager onpause
     }
 

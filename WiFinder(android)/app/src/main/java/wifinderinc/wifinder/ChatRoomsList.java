@@ -5,21 +5,28 @@ import android.content.ClipData;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 
 /**
  * Created by Cole Baughn on 11/10/2015.
@@ -34,9 +41,12 @@ public class ChatRoomsList extends AppCompatActivity {
     private Button btnCreate;
     private ListView lstRooms;
     private TextView lblTitle;
+    private RelativeLayout Back;
+    private TextView CreateBox;
 
     //set up adapter
-    private ArrayList<String> RoomList = new ArrayList<>();
+    //private LinkedList<String> RoomList = new LinkedList<>();
+    ArrayList<String> RoomNames = new ArrayList<>();
     private ArrayAdapter<String> RoomAdpt;
 
     //other globals
@@ -44,22 +54,49 @@ public class ChatRoomsList extends AppCompatActivity {
     //private String NewRoomPass = "";
     private String user;
 
+    //Preference Globals
+    private String ColorScheme;
+    private String Font;
+    private int textColor;
+    private Typeface FontStyle;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_rooms_list);
+
+        //Setup UI Globals
         btnCreate = (Button)findViewById(R.id.btnCreateRoom);
         lstRooms = (ListView) findViewById(R.id.lstChatRooms);
         lblTitle = (TextView) findViewById(R.id.txtChatRoomsList);
+        CreateBox = (TextView) findViewById(R.id.CreateBack);
+        Back = (RelativeLayout) findViewById(R.id.Layout);
 
         Intent intent = getIntent();
         user = intent.getStringExtra(HomePage.USER_NAME);
 
 
-        manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
+        //manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
+        //RoomList = manager.getAvailableRooms();
 
-        //list of rooms
+        RoomNames.add("Golbal");
 
-        RoomList.add("Global");
+        /*int count = 0;
+        RoomNames.get(0);
+        while(count < RoomList.size()){
+            RoomNames.add(RoomList.get(count));
+            count++;
+        }*/
+
+        //Get Preferences
+        SharedPreferences SharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        ColorScheme = SharedPrefs.getString("Colors", "Default");
+        Font = SharedPrefs.getString("Fonts", "Default");
+
+        //Set Preferences
+        SetColors(ColorScheme);
+        SetFont(Font);
+
+
 
         //set item listener
         lstRooms.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -77,8 +114,87 @@ public class ChatRoomsList extends AppCompatActivity {
         });
 
         //part of creating the list
-        RoomAdpt = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1 ,RoomList);
+        RoomAdpt = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1 , RoomNames){
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+                View view = super.getView(position, convertView, parent);
+                TextView text = (TextView) view.findViewById(android.R.id.text1);
+
+                text.setTextColor(textColor);
+                text.setTypeface(FontStyle);
+
+
+                return view;
+            }
+        };
         lstRooms.setAdapter(RoomAdpt);
+    }
+
+    private void SetColors(String ColorScheme){
+        int backColor = Color.WHITE;
+        int btnColor = Color.LTGRAY;
+        int txtBackColor = Color.WHITE;
+        textColor = Color.BLACK;
+        switch (ColorScheme){
+            case "Default":
+                break;
+            case "Nuclear":
+                backColor = Color.BLACK;
+                btnColor = Color.BLACK;
+                txtBackColor = Color.argb(255, 17, 100, 5);
+                textColor = Color.argb(255, 29, 255, 31);
+                break;
+            case "DOS":
+                backColor = Color.BLACK;
+                btnColor = Color.BLACK;
+                txtBackColor = Color.BLACK;
+                textColor = Color.WHITE;
+                break;
+            case "1969":
+                backColor = Color.CYAN;
+                btnColor = Color.argb(255,245,159,159);
+                txtBackColor = Color.RED;
+                textColor = Color.YELLOW;
+                break;
+        }
+
+        //Set Backgrounds
+        ChatRoomsList.this.Back.setBackgroundColor(backColor);
+        lblTitle.setBackgroundColor(backColor);
+        lstRooms.setBackgroundColor(backColor);
+
+        //Set Button Background
+        btnCreate.setBackgroundColor(btnColor);
+
+        //Set Highlights
+        CreateBox.setBackgroundColor(textColor);
+
+        //Set text color
+        lblTitle.setTextColor(textColor);
+        btnCreate.setTextColor(textColor);
+
+        //Set divider color
+        ColorDrawable divColor = new ColorDrawable(textColor);
+        lstRooms.setDivider(divColor);
+        lstRooms.setDividerHeight(3);
+
+    }
+
+    private void SetFont(String ColorScheme){
+        FontStyle = Typeface.DEFAULT;
+
+        switch (ColorScheme){
+            case "Nuclear":
+            case "DOS":
+                FontStyle = Typeface.MONOSPACE;
+                break;
+            case "1969":
+                FontStyle = Typeface.SANS_SERIF;
+                break;
+        }
+
+        btnCreate.setTypeface(FontStyle);
+        lblTitle.setTypeface(FontStyle);
     }
 
     public void btnCreateRoom_Click(View v){
@@ -104,7 +220,8 @@ public class ChatRoomsList extends AppCompatActivity {
                 if(NewRoomName.compareTo("") == 0){
                     return;
                 }else {
-                    RoomList.add(NewRoomName);
+                    RoomNames.add(NewRoomName);
+                    //manager.joinRoom(NewRoomName);
                     RoomAdpt.notifyDataSetChanged();
                 }
             }
@@ -117,5 +234,6 @@ public class ChatRoomsList extends AppCompatActivity {
         });
 
         builder.show();
+
     }
 }

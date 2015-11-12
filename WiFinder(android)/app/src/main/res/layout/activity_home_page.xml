@@ -2,7 +2,51 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    style="@style/Whatever.xml">
+    style="@style/Whatever.xml"
+    android:id="@+id/Layout">
+
+    <TextView
+        android:layout_width="253dp"
+        android:layout_height="63dp"
+        android:text="      ."
+        android:id="@+id/UserBack"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="78dp"
+        android:background="#040404" />
+
+    <TextView
+        android:layout_width="203dp"
+        android:layout_height="53dp"
+        android:id="@+id/ChatRoomsBack"
+        android:layout_alignParentTop="false"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="33dp"
+        android:background="#040404"
+        android:layout_below="@+id/UserBack"
+        android:text="       ." />
+
+    <TextView
+        android:layout_width="203dp"
+        android:layout_height="53dp"
+        android:text="       ."
+        android:id="@+id/ChatLogsBack"
+        android:layout_alignParentTop="false"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="27dp"
+        android:background="#040404"
+        android:layout_below="@+id/ChatRoomsBack" />
+
+    <TextView
+        android:layout_width="203dp"
+        android:layout_height="53dp"
+        android:text="         ."
+        android:id="@+id/SettingsBack"
+        android:layout_alignParentTop="false"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="29dp"
+        android:background="#040404"
+        android:layout_below="@+id/btnChatLogs" />
 
     <Button
         android:layout_width="200dp"
@@ -10,7 +54,7 @@
         android:text="Chat Rooms"
         android:id="@+id/btnChatRooms"
         android:textSize="25dp"
-        android:layout_below="@+id/txtLogsList"
+        android:layout_below="@+id/UserBack"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="34dp"
         android:onClick="btnChatRooms_Click" />
@@ -39,16 +83,6 @@
         android:layout_alignStart="@+id/btnChatLogs"
         android:onClick="btnSettings_Click" />
 
-    <TextView
-        android:layout_width="253dp"
-        android:layout_height="63dp"
-        android:text="New Text"
-        android:id="@+id/txtLogsList"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="78dp"
-        android:background="#040404" />
-
     <EditText
         style="@style/Base.TextAppearance.AppCompat.Display2"
         android:layout_width="250dp"
@@ -66,4 +100,5 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="79dp"
         android:background="#ffffff" />
+
 </RelativeLayout>
