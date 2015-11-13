@@ -97,7 +97,7 @@ public class ChatRoomManager
     public void close()
     {
         _manager.close();
-        _currentChatRoom.close();
+        if(_currentChatRoom != null) _currentChatRoom.close();
     }   //end of close method
 
     /**

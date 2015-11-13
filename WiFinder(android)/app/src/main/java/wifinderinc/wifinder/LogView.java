@@ -1,10 +1,12 @@
 package wifinderinc.wifinder;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.LinkedList;
 
 /**
  * Created by Cole Baughn on 11/11/2015.
@@ -39,6 +43,7 @@ public class LogView extends AppCompatActivity {
     //Preference Globals
     private String ColorScheme;
     private String Font;
+    private Boolean TimeStamp;
     private int textColor;
     private Typeface FontStyle;
 
@@ -54,8 +59,38 @@ public class LogView extends AppCompatActivity {
         Intent intent = getIntent();
         LogName = intent.getStringExtra(LogsList.LOG_NAME);
 
+        //Get Preferences
+        SharedPreferences SharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        ColorScheme = SharedPrefs.getString("Colors", "Default");
+        Font = SharedPrefs.getString("Fonts", "Default");
+        TimeStamp = SharedPrefs.getBoolean("TimeStampEnabled", false);
+
+        //Set Preferences
+        SetColors(ColorScheme);
+        SetFont(Font);
+
         //Setup the Chat Log Reader
         readChat = new ChatLogReader(LogName);
+
+        LinkedList<Message> MsgList = readChat.getNewerMessages();
+
+        int count = 0;
+        while(count < MsgList.size()){
+            Message Msg = MsgList.get(count);
+
+            String timeStamp = "";
+            if(TimeStamp) {
+                timeStamp = String.format("%tr", Msg.getTime());
+            }
+            final String message = String.format("%s:         %s\n%s\n", Msg.getName(), timeStamp, Msg.getMessage());
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    Log.add(message);
+                    adapter.notifyDataSetChanged();
+                }
+            });
+            count++;
+        }
 
 
 

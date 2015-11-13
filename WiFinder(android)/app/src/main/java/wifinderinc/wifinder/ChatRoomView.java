@@ -99,17 +99,17 @@ public class ChatRoomView extends AppCompatActivity{
         lstDisplay.setAdapter(adapter);
 
         //manager = new ChatRoomManager(UserName, this);
-        /*manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
+        manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
         manager.joinRoom(RoomName);
         manager.setUsername(UserName);
-        manager.getCurrentChatRoom().setChatRoomView(this);*/
+        manager.getCurrentChatRoom().setChatRoomView(this);
 
 
         //make it so text color changes to black when selected
         txtbxInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean bool) {
-                if(bool == true) {
+                if(bool) {
                     txtbxInput.setText("");
                     txtbxInput.setTextColor(textColor);
                 }

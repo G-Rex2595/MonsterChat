@@ -45,14 +45,15 @@ public class ChatRoomsList extends AppCompatActivity {
     private TextView CreateBox;
 
     //set up adapter
-    //private LinkedList<String> RoomList = new LinkedList<>();
-    ArrayList<String> RoomNames = new ArrayList<>();
+    private LinkedList<String> RoomList = new LinkedList<>();
+    private ArrayList<String> RoomNames = new ArrayList<>();
     private ArrayAdapter<String> RoomAdpt;
 
     //other globals
     private String NewRoomName = "";
     //private String NewRoomPass = "";
     private String user;
+    private boolean isFocus = true;
 
     //Preference Globals
     private String ColorScheme;
@@ -75,17 +76,16 @@ public class ChatRoomsList extends AppCompatActivity {
         user = intent.getStringExtra(HomePage.USER_NAME);
 
 
-        //manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
-        //RoomList = manager.getAvailableRooms();
+        manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
+        RoomList = manager.getAvailableRooms();
 
-        RoomNames.add("Golbal");
+        RoomNames.add("Global");
 
-        /*int count = 0;
-        RoomNames.get(0);
+        int count = 0;
         while(count < RoomList.size()){
             RoomNames.add(RoomList.get(count));
             count++;
-        }*/
+        }
 
         //Get Preferences
         SharedPreferences SharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -128,6 +128,21 @@ public class ChatRoomsList extends AppCompatActivity {
             }
         };
         lstRooms.setAdapter(RoomAdpt);
+    }
+
+    protected void onResume() {
+        super.onResume();
+        if(!isFocus){
+            finish();
+            startActivity(getIntent());
+        }
+
+        isFocus = true;
+    }
+
+    protected void onPause() {
+        super.onPause();
+        isFocus = false;
     }
 
     private void SetColors(String ColorScheme){
@@ -220,9 +235,10 @@ public class ChatRoomsList extends AppCompatActivity {
                 if(NewRoomName.compareTo("") == 0){
                     return;
                 }else {
-                    RoomNames.add(NewRoomName);
-                    //manager.joinRoom(NewRoomName);
-                    RoomAdpt.notifyDataSetChanged();
+                    Intent intent = new Intent(ChatRoomsList.this, ChatRoomView.class);
+                    intent.putExtra(ROOM_NAME, NewRoomName);
+                    intent.putExtra(USER_NAME, ChatRoomsList.this.user);
+                    startActivity(intent);
                 }
             }
         });

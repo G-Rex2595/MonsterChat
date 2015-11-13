@@ -47,18 +47,23 @@ public class LogsList extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_logs_list);
 
+        //setup UI globals
         lstLogs = (ListView) findViewById(R.id.lstLogList);
         lblTitle = (TextView) findViewById(R.id.UserBack);
         Back = (RelativeLayout) findViewById(R.id.Layout);
+
+
         logMan = new LogManager(this);
 
         //Array of Logs
         LogList = logMan.getLogs();
-        LogNames = new ArrayList<>();
 
+        LogNames = new ArrayList<>();
         int count = 0;
+        LogNames.add("Test");
         while(count < LogList.size()){
-            LogNames.add(LogList.get(count).getFileName());
+            LoggedChat logInfo = LogList.get(count);
+            LogNames.add(logInfo.getRoomName() + " " + logInfo.getDate());
             count++;
         }
 
@@ -78,7 +83,8 @@ public class LogsList extends AppCompatActivity {
                 //Open Log and send log name
                 Intent intent = new Intent(LogsList.this, LogView.class);
                 TextView temp = (TextView) view;
-                intent.putExtra(LOG_NAME, temp.getText().toString());
+                LoggedChat log = LogList.get(position);
+                intent.putExtra(LOG_NAME, log.getFileName());
                 startActivity(intent);
             }
 

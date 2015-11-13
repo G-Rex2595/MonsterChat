@@ -90,7 +90,7 @@ public class P2PManager {
                             AVAILABLE_ROOMS.clear();
                         }
                         //Instead of null messages, why not broadcast the chatroom (and maybe the user?)
-                        sendMessage(new Message(null, null, chatroom.getChatRoomName(), null));
+                        if (chatroom != null) sendMessage(new Message(null, null, chatroom.getChatRoomName(), null));
                         Thread.sleep(5000);
                     }
                     catch (InterruptedException e) { break; }
