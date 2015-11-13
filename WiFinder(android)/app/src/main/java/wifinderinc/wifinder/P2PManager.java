@@ -115,16 +115,25 @@ public class P2PManager {
             public void run() {
                 synchronized (OUTPUT_STREAMS) {
                     Log.d("OOS", "Stream count:  " + OUTPUT_STREAMS.size());
-                    for (ObjectOutputStream oos : OUTPUT_STREAMS) {
-                        try {
-                            oos.writeObject(msg);
-                            oos.flush();
-                            Log.d("OOS", "We wrote");
-                        } catch (IOException e) {
-                            //Most likely occured due to the stream no longer existing.
-                            Log.d("OOS", "Failed to send");
-                            OUTPUT_STREAMS.remove(oos);
+                    ObjectOutputStream current = null;
+                    try {
+                        for (ObjectOutputStream oos : OUTPUT_STREAMS) {
+                            current = oos;
+                            try {
+                                oos.writeObject(msg);
+                                oos.flush();
+                                Log.d("OOS", "We wrote");
+                            } catch (IOException e) {
+                                //Most likely occured due to the stream no longer existing.
+                                Log.d("OOS", "Failed to send");
+                                OUTPUT_STREAMS.remove(oos);
+                            }
                         }
+                    }
+                    catch (Exception e)
+                    {
+                        if (current != null)
+                            OUTPUT_STREAMS.remove(current);
                     }
                 }
             }

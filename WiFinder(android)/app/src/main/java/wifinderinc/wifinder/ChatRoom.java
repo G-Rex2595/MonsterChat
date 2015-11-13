@@ -113,7 +113,6 @@ public class ChatRoom
     public void close()
     {
         _chatLogWriter.close();
-        _manager.setChatRoom(null);
     }   //end of close method
 
     /**

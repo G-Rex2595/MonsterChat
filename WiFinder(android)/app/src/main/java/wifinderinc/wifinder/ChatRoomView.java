@@ -252,7 +252,8 @@ public class ChatRoomView extends AppCompatActivity{
 
     public void onBackPressed()
     {
-        manager.getCurrentChatRoom().close();
+        manager.close();
+        ChatRoomsList.manager = null;
         super.onBackPressed();
         Log.d("BackButton", "Pressed");
     }
