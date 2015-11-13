@@ -99,7 +99,7 @@ public class ChatRoomView extends AppCompatActivity{
         lstDisplay.setAdapter(adapter);
 
         //manager = new ChatRoomManager(UserName, this);
-        manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
+        manager = ChatRoomsList.manager;
         manager.joinRoom(RoomName);
         manager.setUsername(UserName);
         manager.getCurrentChatRoom().setChatRoomView(this);

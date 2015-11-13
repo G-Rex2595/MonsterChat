@@ -38,7 +38,7 @@ public class ChatRoomsList extends AppCompatActivity {
     public final static String MANAGER_NAME = ".MANAGER";
 
     //global variable for objects
-    private ChatRoomManager manager;
+    public static ChatRoomManager manager = null;
     private Button btnCreate;
     private ListView lstRooms;
     private TextView lblTitle;
@@ -80,7 +80,8 @@ public class ChatRoomsList extends AppCompatActivity {
         Intent intent = getIntent();
         user = intent.getStringExtra(HomePage.USER_NAME);
 
-        manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
+        if (manager == null)
+            manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
         RoomList = manager.getAvailableRooms();
 
         RoomNames.add("Global");
@@ -228,6 +229,7 @@ public class ChatRoomsList extends AppCompatActivity {
             Log.d("Rooms", s);
 
         RoomNames.clear();
+
         RoomNames.add("Global");
         int count = 0;
         while(count < RoomList.size()){
