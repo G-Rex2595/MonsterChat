@@ -109,10 +109,20 @@ public class ChatRoomView extends AppCompatActivity{
         txtbxInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean bool) {
-                if(bool) {
+                if (bool) {
                     txtbxInput.setText("");
                     txtbxInput.setTextColor(textColor);
                 }
+            }
+        });
+    }
+
+    private void scrollMyListViewToBottom() {
+        lstDisplay.post(new Runnable() {
+            @Override
+            public void run() {
+                // Select the last row so it will scroll into view...
+                lstDisplay.setSelection(adapter.getCount() - 1);
             }
         });
     }
@@ -188,8 +198,8 @@ public class ChatRoomView extends AppCompatActivity{
         Calendar c = Calendar.getInstance();
 
         String timeStamp = "";
-        if(TimeStamps) {
-             timeStamp = String.format("%tr", c);
+        if (TimeStamps) {
+            timeStamp = String.format("%tr", c);
         }
         final String message = String.format("%s:         %s\n%s\n", m.getName(), timeStamp, m.getMessage());
         runOnUiThread(new Runnable() {
@@ -198,13 +208,14 @@ public class ChatRoomView extends AppCompatActivity{
                 adapter.notifyDataSetChanged();
             }
         });
+        scrollMyListViewToBottom();
     }
-
-
 
     @Override
     public void onResume() {
         super.onResume();
+        //finish();
+        //startActivity(getIntent());
         //manager.onResume();
         //TODO: call ChatRoomManager onresume
     }
@@ -212,6 +223,8 @@ public class ChatRoomView extends AppCompatActivity{
     @Override
     public void onPause() {
         super.onPause();
+        manager.close();
+
         //manager.onPause();
         //TODO: call ChatRoomManager onpause
     }
