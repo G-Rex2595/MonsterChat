@@ -219,6 +219,15 @@ public class ChatRoomsList extends AppCompatActivity {
     }
 
     public void btnRef_Click(View v){
+        manager.close();
+        manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
+        RoomList = manager.getAvailableRooms();
+
+        int count = 0;
+        while(count < RoomList.size()){
+            RoomNames.add(RoomList.get(count));
+            count++;
+        }
         RoomAdpt.notifyDataSetChanged();
     }
 
