@@ -69,6 +69,22 @@ public class LogView extends AppCompatActivity {
         SetColors(ColorScheme);
         SetFont(Font);
 
+        adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1 ,Log){
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+                View view = super.getView(position, convertView, parent);
+                TextView text = (TextView) view.findViewById(android.R.id.text1);
+
+                text.setTextColor(textColor);
+                text.setTypeface(FontStyle);
+
+
+                return view;
+            }
+        };
+
+        lstDisplay.setAdapter(adapter);
+
         //Setup the Chat Log Reader
         readChat = new ChatLogReader(LogName);
 
