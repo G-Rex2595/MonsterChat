@@ -60,7 +60,7 @@ public class LogsList extends AppCompatActivity {
 
         LogNames = new ArrayList<>();
         int count = 0;
-      //  LogNames.add("Test" + LogList.size());
+        LogNames.add("Test");
         while(count < LogList.size()){
             LoggedChat logInfo = LogList.get(count);
             LogNames.add(logInfo.getRoomName() + " " + logInfo.getDate());
