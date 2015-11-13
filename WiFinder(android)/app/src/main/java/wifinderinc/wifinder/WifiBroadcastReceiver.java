@@ -147,6 +147,7 @@ public class WifiBroadcastReceiver extends BroadcastReceiver {
 
             if (info.groupFormed && info.isGroupOwner) {
                 Log.d("ConnectionListener", "Start server thread");
+                new ServerThread(p2pmanager, P2PManager.PORT).start();
 
             }
             else if (info.groupFormed) {

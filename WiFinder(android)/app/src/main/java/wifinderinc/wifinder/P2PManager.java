@@ -26,7 +26,6 @@ public class P2PManager {
     private final ArrayList<ObjectOutputStream> OUTPUT_STREAMS; //List of socket outputs for writing messages
     private ChatRoom chatroom;                                  //Chat room the device is currently part of
     private final HashSet<String> MESSAGE_HASHES;               //Incoming messages to send to room
-    private ServerThread serverThread;                          //Thread running the server portion of the app
     public static final int PORT = 6223;                        //Port we will use for connections
     private Thread roomThread;                                  //Thread that will check the available rooms
     private final PriorityQueue<String> AVAILABLE_ROOMS;         //Available rooms
@@ -76,8 +75,6 @@ public class P2PManager {
 
         chatroom = null;
         this.activity = activity;
-        serverThread = new ServerThread(this, PORT);
-        serverThread.start();
 
         AVAILABLE_ROOMS = new PriorityQueue<>();
         roomThread = new Thread() {
@@ -195,7 +192,6 @@ public class P2PManager {
      */
     public void close() {
         p2pManager.stopPeerDiscovery(channel, null);
-        serverThread.close();
         roomThread.interrupt();
         clearConnections();
     }

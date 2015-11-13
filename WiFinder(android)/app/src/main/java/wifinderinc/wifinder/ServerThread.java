@@ -56,7 +56,7 @@ public class ServerThread extends Thread {
                             //read.close();
                         }
                         catch (IOException e) {
-
+                            e.printStackTrace();
                         }
                         catch (ClassNotFoundException cnfe) {
 

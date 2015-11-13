@@ -216,14 +216,15 @@ public class ChatRoomView extends AppCompatActivity{
         super.onResume();
         //finish();
         //startActivity(getIntent());
-        //manager.onResume();
+        manager.onResume();
         //TODO: call ChatRoomManager onresume
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        manager.close();
+        manager.onPause();
+        //manager.close();
 
         //manager.onPause();
         //TODO: call ChatRoomManager onpause
