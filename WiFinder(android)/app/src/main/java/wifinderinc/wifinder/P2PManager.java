@@ -87,7 +87,7 @@ public class P2PManager {
                             AVAILABLE_ROOMS.clear();
                         }
                         //Instead of null messages, why not broadcast the chatroom (and maybe the user?)
-                        if (chatroom != null) sendMessage(new Message(null, null, chatroom.getChatRoomName(), null));
+                        if (chatroom != null) sendMessage(new Message(null, null, null, chatroom.getChatRoomName()));
                         Thread.sleep(5000);
                     }
                     catch (InterruptedException e) { break; }
@@ -137,8 +137,8 @@ public class P2PManager {
     public void receiveMessage(Message msg) {
         Log.d("P2PManager", "receieveMessage " + msg.toString());
         if (chatroom == null) return; //Not part of any room.
-
-        else if (msg.getMessage() != null && chatroom.getChatRoomName().equals(msg.getChatRoomName())) {
+        Log.d("P2PManager", String.format("User: %s\t Msg %s\tRoom: %s", msg.getName(), msg.getMessage(), msg.getChatRoomName()));
+        if (msg.getMessage() != null && chatroom.getChatRoomName().equals(msg.getChatRoomName())) {
             //It's a user message and belongs in the current chatroom
             synchronized (MESSAGE_HASHES) {
                 if (MESSAGE_HASHES.contains(msg.getMessage() + msg.getTime()))
@@ -152,9 +152,10 @@ public class P2PManager {
         }
         else if (msg.getMessage() == null){
             if (msg.getChatRoomName() != null) {
+                Log.d("receiveMessage roomname", msg.getChatRoomName());
                 String name = msg.getChatRoomName();
                 synchronized (AVAILABLE_ROOMS) {
-                    if (AVAILABLE_ROOMS.contains(name)) AVAILABLE_ROOMS.add(name);
+                    if (!AVAILABLE_ROOMS.contains(name)) AVAILABLE_ROOMS.add(name);
                 }
             }
         }
@@ -201,10 +202,12 @@ public class P2PManager {
      * @return
      */
     public LinkedList<String> getAvailableRooms() {
+        Log.d("P2PManager", "getAvailableRooms");
         LinkedList<String> roomNames = new LinkedList<>();
         synchronized (AVAILABLE_ROOMS) {
             for (String s : AVAILABLE_ROOMS) {
                 roomNames.add(s);
+                Log.d("getAvailableRooms", s);
             }
         }
         return roomNames;
