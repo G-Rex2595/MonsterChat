@@ -26,11 +26,11 @@ public class P2PManager {
 	private Activity activity;                                  //Activity this p2p manager is associated with
 	private IntentFilter intentFilter;                          //Filter for the intents the broadcast receiver will take
     private final ArrayList<ObjectOutputStream> OUTPUT_STREAMS; //List of socket outputs for writing messages
-    private ChatRoom chatroom;                                  //Chat room the device is currently part of
+    private static ChatRoom chatroom;                                  //Chat room the device is currently part of
     private final HashSet<String> MESSAGE_HASHES;               //Incoming messages to send to room
     public static final int PORT = 6223;                        //Port we will use for connections
     private Thread roomThread;                                  //Thread that will check the available rooms
-    private List<String> AVAILABLE_ROOMS;         //Available rooms
+    private static List<String> AVAILABLE_ROOMS;         //Available rooms
 
 
     /**
@@ -171,6 +171,7 @@ public class P2PManager {
     public void setChatRoom(ChatRoom chatroom) {
         Log.d("P2PManager", "setChatRoom called");
         this.chatroom = chatroom;
+        clearConnections();
     }
 
     /**
