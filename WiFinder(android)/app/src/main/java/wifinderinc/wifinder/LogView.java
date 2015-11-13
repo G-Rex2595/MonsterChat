@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -43,6 +44,7 @@ public class LogView extends AppCompatActivity {
     //Preference Globals
     private String ColorScheme;
     private String Font;
+    private Boolean TimeFormat;
     private Boolean TimeStamp;
     private int textColor;
     private Typeface FontStyle;
@@ -64,6 +66,7 @@ public class LogView extends AppCompatActivity {
         ColorScheme = SharedPrefs.getString("Colors", "Default");
         Font = SharedPrefs.getString("Fonts", "Default");
         TimeStamp = SharedPrefs.getBoolean("TimeStampEnabled", false);
+        TimeFormat = SharedPrefs.getBoolean("24hrEnabled", false);
 
         //Set Preferences
         SetColors(ColorScheme);
@@ -96,7 +99,15 @@ public class LogView extends AppCompatActivity {
 
             String timeStamp = "";
             if(TimeStamp) {
-                timeStamp = String.format("%tr", Msg.getTime());
+
+                SimpleDateFormat formatT = new SimpleDateFormat("hh:mm a");
+                if(TimeFormat){
+                    formatT = new SimpleDateFormat("HH:mm");
+                }
+
+                Calendar c = Calendar.getInstance();
+                c.setTimeInMillis(Msg.getTime());
+                timeStamp = formatT.format(c.getTime());
             }
             final String message = String.format("%s:         %s\n%s\n", Msg.getName(), timeStamp, Msg.getMessage());
             runOnUiThread(new Runnable() {

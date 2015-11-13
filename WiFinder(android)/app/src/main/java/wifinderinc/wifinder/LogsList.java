@@ -17,7 +17,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 /**
  * Created by Cole Baughn on 11/11/2015.
@@ -39,6 +41,7 @@ public class LogsList extends AppCompatActivity {
 
     //Preference Globals
     private String ColorScheme;
+    private Boolean TimeFormat;
     private String Font;
     private int textColor;
     private Typeface FontStyle;
@@ -52,6 +55,16 @@ public class LogsList extends AppCompatActivity {
         lblTitle = (TextView) findViewById(R.id.UserBack);
         Back = (RelativeLayout) findViewById(R.id.Layout);
 
+        //Get Preferences
+        SharedPreferences SharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        ColorScheme = SharedPrefs.getString("Colors", "Default");
+        Font = SharedPrefs.getString("Fonts", "Default");
+        TimeFormat = SharedPrefs.getBoolean("24hrEnabled", false);
+
+        //Set Preferences
+        SetColors(ColorScheme);
+        SetFont(Font);
+
 
         logMan = new LogManager(this);
 
@@ -63,18 +76,18 @@ public class LogsList extends AppCompatActivity {
       //  LogNames.add("Test" + LogList.size());
         while(count < LogList.size()){
             LoggedChat logInfo = LogList.get(count);
-            LogNames.add(logInfo.getRoomName() + " " + logInfo.getDate());
+            SimpleDateFormat formatT = new SimpleDateFormat("MM/dd hh:mm a");
+            if(TimeFormat){
+                formatT = new SimpleDateFormat("MM/dd HH:mm");
+            }
+
+            Calendar c = Calendar.getInstance();
+            c.setTimeInMillis(logInfo.getDate());
+            String logDate = formatT.format(c.getTime());
+            LogNames.add(logInfo.getRoomName() + "     " + logDate);
             count++;
         }
 
-        //Get Preferences
-        SharedPreferences SharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        ColorScheme = SharedPrefs.getString("Colors", "Default");
-        Font = SharedPrefs.getString("Fonts", "Default");
-
-        //Set Preferences
-        SetColors(ColorScheme);
-        SetFont(Font);
 
         //set up click listener
         lstLogs.setOnItemClickListener(new AdapterView.OnItemClickListener() {

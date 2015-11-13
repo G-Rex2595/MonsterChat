@@ -83,7 +83,7 @@ public class HomePage extends AppCompatActivity {
                 String user = txtbxUser.getText().toString();
                 if(!user.matches("[a-zA-Z0-9]+") && user.length() > 0){
                     txtbxUser.setText(user.replaceAll("[^A-Za-z0-9]", ""));
-                    incorrectUser();
+                    incorrectUser("Your User Name may only contain letters and numbers.");
                     return;
                 }
             }
@@ -122,9 +122,9 @@ public class HomePage extends AppCompatActivity {
         isFocus = false;
     }
 
-    private void incorrectUser(){
+    private void incorrectUser(String msg){
         AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
-        dlgAlert.setMessage("Your User Name may only contain letters and numbers.");
+        dlgAlert.setMessage(msg);
         dlgAlert.setTitle("Incorrect User Name");
         dlgAlert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -206,9 +206,14 @@ public class HomePage extends AppCompatActivity {
 
     //Opens the Chat Rooms List page
     public void btnChatRooms_Click(View v){
+        String userN = txtbxUser.getText().toString();
+        if (userN.length() == 0){
+            incorrectUser("User name cannot be empty");
+            return;
+        }
 
         Intent intent = new Intent(this, ChatRoomsList.class);
-        intent.putExtra(USER_NAME, txtbxUser.getText().toString());
+        intent.putExtra(USER_NAME, userN);
         this.startActivity(intent);
     }
 
