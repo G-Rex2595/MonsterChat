@@ -1,6 +1,7 @@
 package wifinderinc.wifinder;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.FileWriter;
 import java.io.PrintWriter;
@@ -31,6 +32,7 @@ public final class ErrorLog
             return;
         }   //end if
 
+        Log.d("ErrorLog", e.toString() + "\tStack trace: " + Arrays.toString(e.getStackTrace()));
         try
         {
             PrintWriter writer = new PrintWriter(new FileWriter(logName, true));
@@ -39,7 +41,7 @@ public final class ErrorLog
         }
         catch (Exception exception)
         {
-
+            ErrorLog.writeToLog(exception);
         }   //end try
     }   //end of writeToLog method
 
