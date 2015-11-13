@@ -9,8 +9,10 @@ import android.util.Log;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 /**
@@ -28,7 +30,7 @@ public class P2PManager {
     private final HashSet<String> MESSAGE_HASHES;               //Incoming messages to send to room
     public static final int PORT = 6223;                        //Port we will use for connections
     private Thread roomThread;                                  //Thread that will check the available rooms
-    private final PriorityQueue<String> AVAILABLE_ROOMS;         //Available rooms
+    private List<String> AVAILABLE_ROOMS;         //Available rooms
 
 
     /**
@@ -76,16 +78,16 @@ public class P2PManager {
         chatroom = null;
         this.activity = activity;
 
-        AVAILABLE_ROOMS = new PriorityQueue<>();
+        AVAILABLE_ROOMS = Collections.synchronizedList(new ArrayList<String>());
         roomThread = new Thread() {
             @Override
             public void run() {
                 while (!isInterrupted()) {
                     try {
                         //Send a blank message as a check
-                        synchronized (getAvailableRooms()) {
+                        /*synchronized (getAvailableRooms()) {
                             AVAILABLE_ROOMS.clear();
-                        }
+                        }*/
                         //Instead of null messages, why not broadcast the chatroom (and maybe the user?)
                         if (chatroom != null) sendMessage(new Message(null, null, null, chatroom.getChatRoomName()));
                         Thread.sleep(5000);
@@ -136,7 +138,7 @@ public class P2PManager {
      */
     public void receiveMessage(Message msg) {
         Log.d("P2PManager", "receieveMessage " + msg.toString());
-        if (chatroom == null) return; //Not part of any room.
+        //if (chatroom == null) return; //Not part of any room.
         Log.d("P2PManager", String.format("User: %s\t Msg %s\tRoom: %s", msg.getName(), msg.getMessage(), msg.getChatRoomName()));
         if (msg.getMessage() != null && chatroom.getChatRoomName().equals(msg.getChatRoomName())) {
             //It's a user message and belongs in the current chatroom
@@ -155,7 +157,11 @@ public class P2PManager {
                 Log.d("receiveMessage roomname", msg.getChatRoomName());
                 String name = msg.getChatRoomName();
                 synchronized (AVAILABLE_ROOMS) {
-                    if (!AVAILABLE_ROOMS.contains(name)) AVAILABLE_ROOMS.add(name);
+                    Log.d("AvailBefore", "" + AVAILABLE_ROOMS.size());
+                    if (!AVAILABLE_ROOMS.contains(name)) {
+                        AVAILABLE_ROOMS.add(name);
+                        Log.d("AvailableSize", "" + AVAILABLE_ROOMS.size());
+                    }
                 }
             }
         }
@@ -204,7 +210,9 @@ public class P2PManager {
     public LinkedList<String> getAvailableRooms() {
         Log.d("P2PManager", "getAvailableRooms");
         LinkedList<String> roomNames = new LinkedList<>();
+        Log.d("noSync", "" + AVAILABLE_ROOMS.size());
         synchronized (AVAILABLE_ROOMS) {
+            Log.d("getAvailSize", "" + AVAILABLE_ROOMS.size());
             for (String s : AVAILABLE_ROOMS) {
                 roomNames.add(s);
                 Log.d("getAvailableRooms", s);

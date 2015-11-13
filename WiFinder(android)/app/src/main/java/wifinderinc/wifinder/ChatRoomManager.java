@@ -125,4 +125,10 @@ public class ChatRoomManager
     {
         return _currentChatRoom;
     }   //end of getCurrentChatRoom method
+
+    public void leaveChatRoom()
+    {
+        if (_currentChatRoom != null)
+            _currentChatRoom.close();
+    }
 }   //end of ChatRoomManager class

@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -219,9 +220,12 @@ public class ChatRoomsList extends AppCompatActivity {
     }
 
     public void btnRef_Click(View v){
-        manager.close();
-        manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
+        manager.leaveChatRoom();
         RoomList = manager.getAvailableRooms();
+
+        Log.d("RoomsCount", "" + RoomList.size());
+        for (String s : RoomList)
+            Log.d("Rooms", s);
 
         RoomNames.clear();
         RoomNames.add("Global");
