@@ -11,6 +11,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -41,6 +43,7 @@ public class HomePage extends AppCompatActivity {
     private RelativeLayout Back;
 
     //Preference Globals
+    private SharedPreferences SharedPrefs;
     private String ColorScheme;
     private String Font;
     private int textColor;
@@ -64,11 +67,33 @@ public class HomePage extends AppCompatActivity {
         SettingsBox = (TextView) findViewById(R.id.SettingsBack);
         Back = (RelativeLayout) findViewById(R.id.Layout);
 
+        //set up text change lisener for user input
+        txtbxUser.addTextChangedListener(new TextWatcher() {
+            public void afterTextChanged(Editable s) {
+                SharedPreferences.Editor editPref = SharedPrefs.edit();
+                editPref.putString("UserName", txtbxUser.getText().toString());
+                editPref.commit();
+            }
+
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                String user = txtbxUser.getText().toString();
+                if(!user.matches("[a-zA-Z0-9]+") && user.length() > 0){
+                    txtbxUser.setText(user.replaceAll("[^A-Za-z0-9]", ""));
+                    incorrectUser();
+                    return;
+                }
+            }
+        });
+
         //setup errorlog
         ErrorLog.initialize(this);
 
         //Get Preferences
-        SharedPreferences SharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         ColorScheme = SharedPrefs.getString("Colors", "Default");
         Font = SharedPrefs.getString("Fonts", "Default");
         String userN = SharedPrefs.getString("UserName", "Anonymous");
@@ -181,15 +206,6 @@ public class HomePage extends AppCompatActivity {
 
     //Opens the Chat Rooms List page
     public void btnChatRooms_Click(View v){
-        String user = txtbxUser.getText().toString();
-        if(!user.matches("[a-zA-Z0-9]+")){
-            incorrectUser();
-            return;
-        }
-
-        SharedPreferences SharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editPref = SharedPrefs.edit();
-        editPref.putString("UserName", user);
 
         Intent intent = new Intent(this, ChatRoomsList.class);
         intent.putExtra(USER_NAME, txtbxUser.getText().toString());

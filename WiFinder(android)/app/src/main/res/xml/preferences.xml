@@ -9,6 +9,12 @@
             android:summary="Controls whether time stamps or displayed in Chat Rooms"
             android:defaultValue="false"/>
 
+        <CheckBoxPreference
+            android:key="24hrEnabled"
+            android:title="24hr format enabled "
+            android:summary="Controls whether time stamps are displayed in 24hr or 12hr format"
+            android:defaultValue="false"/>
+
         <ListPreference
             android:key="Colors"
             android:title="Color Scheme "

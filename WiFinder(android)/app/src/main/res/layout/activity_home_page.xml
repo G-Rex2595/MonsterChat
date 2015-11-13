@@ -96,6 +96,8 @@
         android:elegantTextHeight="false"
         android:editable="true"
         android:enabled="true"
+        android:imeOptions="actionDone"
+        android:singleLine="true"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="79dp"

@@ -26,6 +26,7 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -50,6 +51,7 @@ public class ChatRoomView extends AppCompatActivity{
     //Preference globals
     private String ColorScheme;
     private String Font;
+    private Boolean TimeFormat;
     private Boolean TimeStamps;
     private int textColor;
     private Typeface FontStyle;
@@ -63,6 +65,7 @@ public class ChatRoomView extends AppCompatActivity{
         ColorScheme = SharedPrefs.getString("Colors", "Default");
         Font = SharedPrefs.getString("Fonts", "Default");
         TimeStamps = SharedPrefs.getBoolean("TimeStampEnabled", false);
+        TimeFormat = SharedPrefs.getBoolean("24hrEnabled", false);
 
         //assign globals to the proper controls
         txtbxInput = (EditText)findViewById(R.id.txtMessageInput);
@@ -199,7 +202,11 @@ public class ChatRoomView extends AppCompatActivity{
 
         String timeStamp = "";
         if (TimeStamps) {
-            timeStamp = String.format("%tr", c);
+            SimpleDateFormat formatT = new SimpleDateFormat("hh:mm a");
+            if(TimeFormat){
+                formatT = new SimpleDateFormat("HH:mm");
+            }
+            timeStamp = formatT.format(c.getTime());
         }
         final String message = String.format("%s:         %s\n%s\n", m.getName(), timeStamp, m.getMessage());
         runOnUiThread(new Runnable() {
@@ -242,8 +249,8 @@ public class ChatRoomView extends AppCompatActivity{
         txtbxInput.setText(Default.subSequence(0, Default.length()));
         txtbxInput.setTextColor(Color.GRAY);
 
-        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(txtbxInput.getWindowToken(), 0);
+        //InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+        //imm.hideSoftInputFromWindow(txtbxInput.getWindowToken(), 0);
 
         manager.getCurrentChatRoom().sendMessage(message);
 
