@@ -73,11 +73,14 @@ public class ChatLogReader
 
                 int indexOfFirstSpace = line.indexOf(' ');
                 String username = line.substring(0, indexOfFirstSpace);
+                long time = Long.parseLong(line.substring(indexOfFirstSpace + 1, line.indexOf(' ', indexOfFirstSpace + 1)));
                 String message = line.substring(line.indexOf(' ', indexOfFirstSpace + 1) + 1);
                 String id = "";
                 String roomName = this.logName.substring(this.logName.lastIndexOf('/') + 1, this.logName.indexOf('-'));
 
-                messages.add(new Message(username, message, id, roomName));
+                Message m = new Message(username, message, id, roomName);
+                m.setTime(time);
+                messages.add(m);
                 this.currentLine += 1;
             }
             catch (Exception exception)

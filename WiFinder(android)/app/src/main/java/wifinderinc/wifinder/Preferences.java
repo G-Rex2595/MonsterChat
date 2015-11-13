@@ -42,4 +42,8 @@ public class Preferences extends PreferenceActivity {
         }
     }
 
+    protected boolean isValidFragment (String fragmentName)
+    {
+        return Prefs.class.getName().equals(fragmentName);
+    }
 }
