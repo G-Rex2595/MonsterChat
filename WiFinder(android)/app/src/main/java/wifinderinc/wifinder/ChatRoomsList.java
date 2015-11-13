@@ -223,6 +223,8 @@ public class ChatRoomsList extends AppCompatActivity {
         manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
         RoomList = manager.getAvailableRooms();
 
+        RoomNames.clear();
+        RoomNames.add("Global");
         int count = 0;
         while(count < RoomList.size()){
             RoomNames.add(RoomList.get(count));
