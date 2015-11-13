@@ -10,10 +10,11 @@
         android:layout_height="63dp"
         android:text="      ."
         android:id="@+id/UserBack"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentTop="false"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="78dp"
-        android:background="#040404" />
+        android:background="#040404"
+        android:layout_below="@+id/lblTitle" />
 
     <TextView
         android:layout_width="203dp"
@@ -98,9 +99,21 @@
         android:enabled="true"
         android:imeOptions="actionDone"
         android:singleLine="true"
-        android:layout_alignParentTop="true"
+        android:layout_alignParentTop="false"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="79dp"
-        android:background="#ffffff" />
+        android:background="#ffffff"
+        android:layout_alignParentEnd="false"
+        android:layout_below="@+id/lblTitle" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="MonsterChat"
+        android:id="@+id/lblTitle"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:textSize="50dp"
+        android:layout_marginTop="20dp" />
 
 </RelativeLayout>

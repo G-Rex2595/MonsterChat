@@ -41,6 +41,7 @@ public class HomePage extends AppCompatActivity {
     private TextView LogsBox;
     private TextView SettingsBox;
     private RelativeLayout Back;
+    private TextView Title;
 
     //Preference Globals
     private SharedPreferences SharedPrefs;
@@ -65,6 +66,7 @@ public class HomePage extends AppCompatActivity {
         RoomsBox = (TextView) findViewById(R.id.ChatRoomsBack);
         LogsBox = (TextView) findViewById(R.id.ChatLogsBack);
         SettingsBox = (TextView) findViewById(R.id.SettingsBack);
+        Title = (TextView)findViewById(R.id.lblTitle);
         Back = (RelativeLayout) findViewById(R.id.Layout);
 
         //set up text change lisener for user input
@@ -178,6 +180,7 @@ public class HomePage extends AppCompatActivity {
         LogsBox.setBackgroundColor(textColor);
         SettingsBox.setBackgroundColor(textColor);
 
+        Title.setTextColor(textColor);
         txtbxUser.setTextColor(textColor);
         btnChatList.setTextColor(textColor);
         btnLogs.setTextColor(textColor);
