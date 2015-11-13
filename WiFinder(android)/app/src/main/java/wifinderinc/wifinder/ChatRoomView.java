@@ -250,4 +250,11 @@ public class ChatRoomView extends AppCompatActivity{
         txtbxInput.clearFocus();
     }
 
+    public void onBackPressed()
+    {
+        manager.getCurrentChatRoom().close();
+        super.onBackPressed();
+        Log.d("BackButton", "Pressed");
+    }
+
 }

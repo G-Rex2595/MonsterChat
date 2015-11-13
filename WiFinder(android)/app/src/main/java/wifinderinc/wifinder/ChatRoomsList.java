@@ -221,7 +221,6 @@ public class ChatRoomsList extends AppCompatActivity {
     }
 
     public void btnRef_Click(View v){
-        manager.leaveChatRoom();
         RoomList = manager.getAvailableRooms();
 
         Log.d("RoomsCount", "" + RoomList.size());
@@ -241,7 +240,7 @@ public class ChatRoomsList extends AppCompatActivity {
 
     public void btnCreateRoom_Click(View v){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Title");
+        builder.setTitle("Enter chat room name");
 
         // Set up the input
         final EditText NewName = new EditText(this);
@@ -259,9 +258,10 @@ public class ChatRoomsList extends AppCompatActivity {
                 NewRoomName = NewName.getText().toString();
                 //NewRoomPass = NewPass.getText().toString();
 
-                if(NewRoomName.compareTo("") == 0){
+                if (!NewRoomName.matches("[a-zA-Z0-9]+")) {
+                    incorrectChatRoomName();
                     return;
-                }else {
+                } else {
                     Intent intent = new Intent(ChatRoomsList.this, ChatRoomView.class);
                     intent.putExtra(ROOM_NAME, NewRoomName);
                     intent.putExtra(USER_NAME, ChatRoomsList.this.user);
@@ -278,5 +278,19 @@ public class ChatRoomsList extends AppCompatActivity {
 
         builder.show();
 
+    }
+
+    public void incorrectChatRoomName()
+    {
+        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
+        dlgAlert.setMessage("The Chat Room Name may only contain letters and numbers.");
+        dlgAlert.setTitle("Incorrect Chat Room Name");
+        dlgAlert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                //dismiss the dialog
+            }
+        });
+        dlgAlert.setCancelable(true);
+        dlgAlert.create().show();
     }
 }

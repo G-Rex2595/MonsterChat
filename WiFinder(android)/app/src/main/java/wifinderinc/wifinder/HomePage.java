@@ -99,7 +99,7 @@ public class HomePage extends AppCompatActivity {
 
     private void incorrectUser(){
         AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
-        dlgAlert.setMessage("Your User Name can not contain spaces");
+        dlgAlert.setMessage("Your User Name may only contain letters and numbers.");
         dlgAlert.setTitle("Incorrect User Name");
         dlgAlert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
@@ -182,7 +182,7 @@ public class HomePage extends AppCompatActivity {
     //Opens the Chat Rooms List page
     public void btnChatRooms_Click(View v){
         String user = txtbxUser.getText().toString();
-        if(user.contains(" ")){
+        if(!user.matches("[a-zA-Z0-9]+")){
             incorrectUser();
             return;
         }
@@ -205,6 +205,8 @@ public class HomePage extends AppCompatActivity {
     //Opens the Settings Page
     public void btnSettings_Click(View v){
         Intent intent = new Intent(this, Preferences.class);
+        intent.putExtra(Preferences.EXTRA_SHOW_FRAGMENT, Preferences.Prefs.class.getName());
+        intent.putExtra(Preferences.EXTRA_NO_HEADERS, true);
         this.startActivity(intent);
     }
 }
