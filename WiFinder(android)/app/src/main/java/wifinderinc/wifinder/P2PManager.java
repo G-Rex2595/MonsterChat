@@ -32,7 +32,6 @@ public class P2PManager {
     private Thread roomThread;                                  //Thread that will check the available rooms
     private static List<String> AVAILABLE_ROOMS;         //Available rooms
 
-
     /**
      * Construct for P2PManager.
      * @param activity The activity the P2PManager is associated with.
@@ -85,9 +84,9 @@ public class P2PManager {
                 while (!isInterrupted()) {
                     try {
                         //Send a blank message as a check
-                        /*synchronized (getAvailableRooms()) {
+                        synchronized (AVAILABLE_ROOMS) {
                             AVAILABLE_ROOMS.clear();
-                        }*/
+                        }
                         //Instead of null messages, why not broadcast the chatroom (and maybe the user?)
                         if (chatroom != null) sendMessage(new Message(null, null, null, chatroom.getChatRoomName()));
                         Thread.sleep(5000);
@@ -137,10 +136,13 @@ public class P2PManager {
      * @param msg
      */
     public void receiveMessage(Message msg) {
+        if (msg == null)
+        {
+            return;
+        }
         Log.d("P2PManager", "receieveMessage " + msg.toString());
-        //if (chatroom == null) return; //Not part of any room.
         Log.d("P2PManager", String.format("User: %s\t Msg %s\tRoom: %s", msg.getName(), msg.getMessage(), msg.getChatRoomName()));
-        if (msg.getMessage() != null && chatroom.getChatRoomName().equals(msg.getChatRoomName())) {
+        if (chatroom != null && msg.getMessage() != null && chatroom.getChatRoomName().equals(msg.getChatRoomName())) {
             //It's a user message and belongs in the current chatroom
             synchronized (MESSAGE_HASHES) {
                 if (MESSAGE_HASHES.contains(msg.getMessage() + msg.getTime()))
@@ -158,7 +160,7 @@ public class P2PManager {
                 String name = msg.getChatRoomName();
                 synchronized (AVAILABLE_ROOMS) {
                     Log.d("AvailBefore", "" + AVAILABLE_ROOMS.size());
-                    if (!AVAILABLE_ROOMS.contains(name)) {
+                    if (!"Global".equals(name) && !AVAILABLE_ROOMS.contains(name)) {
                         AVAILABLE_ROOMS.add(name);
                         Log.d("AvailableSize", "" + AVAILABLE_ROOMS.size());
                     }
