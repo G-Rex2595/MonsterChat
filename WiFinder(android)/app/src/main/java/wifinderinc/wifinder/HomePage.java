@@ -71,7 +71,9 @@ public class HomePage extends AppCompatActivity {
         SharedPreferences SharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         ColorScheme = SharedPrefs.getString("Colors", "Default");
         Font = SharedPrefs.getString("Fonts", "Default");
+        String userN = SharedPrefs.getString("UserName", "Anonymous");
 
+        txtbxUser.setText(userN);
         //Set Preferences
         SetColors(ColorScheme);
         SetFont(Font);
@@ -184,6 +186,10 @@ public class HomePage extends AppCompatActivity {
             incorrectUser();
             return;
         }
+
+        SharedPreferences SharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        SharedPreferences.Editor editPref = SharedPrefs.edit();
+        editPref.putString("UserName", user);
 
         Intent intent = new Intent(this, ChatRoomsList.class);
         intent.putExtra(USER_NAME, txtbxUser.getText().toString());

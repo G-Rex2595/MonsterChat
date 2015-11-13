@@ -5,25 +5,37 @@
     android:id="@+id/Layout">
 
     <TextView
-        android:layout_width="253dp"
+        android:layout_width="248dp"
         android:layout_height="53dp"
         android:text="     ."
         android:id="@+id/CreateBack"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="8dp"
         android:background="#000000"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginLeft="6dp" />
+
+    <TextView
+        android:layout_width="103dp"
+        android:layout_height="53dp"
+        android:text="     ."
+        android:id="@+id/RefreshBack"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="8dp"
+        android:background="#000000"
+        android:layout_marginRight="6dp"
+        android:layout_alignParentRight="true" />
 
     <Button
-        android:layout_width="250dp"
+        android:layout_width="245dp"
         android:layout_height="50dp"
         android:text="Create Your Own Chat Room"
         android:id="@+id/btnCreateRoom"
         android:width="300dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
-        android:onClick="btnCreateRoom_Click" />
+        android:onClick="btnCreateRoom_Click"
+        android:layout_marginLeft="7dp"
+        android:layout_alignParentLeft="true" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -48,5 +60,16 @@
         android:focusable="true"
         android:layout_above="@+id/CreateBack"
         android:layout_marginBottom="5dp" />
+
+    <Button
+        android:layout_width="100dp"
+        android:layout_height="50dp"
+        android:text="Refresh"
+        android:id="@+id/btnRefresh"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="7dp"
+        android:onClick="btnRef_Click" />
 
 </RelativeLayout>

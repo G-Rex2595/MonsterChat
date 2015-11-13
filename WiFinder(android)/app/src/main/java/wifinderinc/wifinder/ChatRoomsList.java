@@ -43,6 +43,8 @@ public class ChatRoomsList extends AppCompatActivity {
     private TextView lblTitle;
     private RelativeLayout Back;
     private TextView CreateBox;
+    private Button btnRef;
+    private TextView RefBox;
 
     //set up adapter
     private LinkedList<String> RoomList = new LinkedList<>();
@@ -70,6 +72,8 @@ public class ChatRoomsList extends AppCompatActivity {
         lstRooms = (ListView) findViewById(R.id.lstChatRooms);
         lblTitle = (TextView) findViewById(R.id.txtChatRoomsList);
         CreateBox = (TextView) findViewById(R.id.CreateBack);
+        btnRef = (Button) findViewById(R.id.btnRefresh);
+        RefBox = (TextView) findViewById(R.id.RefreshBack);
         Back = (RelativeLayout) findViewById(R.id.Layout);
 
         Intent intent = getIntent();
@@ -179,13 +183,16 @@ public class ChatRoomsList extends AppCompatActivity {
 
         //Set Button Background
         btnCreate.setBackgroundColor(btnColor);
+        btnRef.setBackgroundColor(btnColor);
 
         //Set Highlights
         CreateBox.setBackgroundColor(textColor);
+        RefBox.setBackgroundColor(textColor);
 
         //Set text color
         lblTitle.setTextColor(textColor);
         btnCreate.setTextColor(textColor);
+        btnRef.setTextColor(textColor);
 
         //Set divider color
         ColorDrawable divColor = new ColorDrawable(textColor);
@@ -209,6 +216,10 @@ public class ChatRoomsList extends AppCompatActivity {
 
         btnCreate.setTypeface(FontStyle);
         lblTitle.setTypeface(FontStyle);
+    }
+
+    public void btnRef_Click(View v){
+        RoomAdpt.notifyDataSetChanged();
     }
 
     public void btnCreateRoom_Click(View v){
