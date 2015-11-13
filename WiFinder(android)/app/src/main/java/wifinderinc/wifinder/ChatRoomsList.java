@@ -75,7 +75,6 @@ public class ChatRoomsList extends AppCompatActivity {
         Intent intent = getIntent();
         user = intent.getStringExtra(HomePage.USER_NAME);
 
-
         manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
         RoomList = manager.getAvailableRooms();
 

@@ -19,7 +19,12 @@ public class Preferences extends PreferenceActivity {
     }
 
     public void onBuildHeaders(List<Header> target) {
-        loadHeadersFromResource(R.xml.header, target);
+        try {
+            loadHeadersFromResource(R.xml.header, target);
+        }
+        catch (Exception e) {
+            ErrorLog.writeToLog(e);
+        }
     }
 
     public static class Prefs extends PreferenceFragment {
@@ -28,9 +33,12 @@ public class Preferences extends PreferenceActivity {
             super.onCreate(savedInstanceState);
 
 
-
             // Load the preferences from an XML resource
-            addPreferencesFromResource(R.xml.preferences);
+            try {
+                addPreferencesFromResource(R.xml.preferences);
+            } catch (Exception e) {
+                ErrorLog.writeToLog(e);
+            }
         }
     }
 

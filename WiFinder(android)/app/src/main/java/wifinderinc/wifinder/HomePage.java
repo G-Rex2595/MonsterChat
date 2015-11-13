@@ -64,6 +64,9 @@ public class HomePage extends AppCompatActivity {
         SettingsBox = (TextView) findViewById(R.id.SettingsBack);
         Back = (RelativeLayout) findViewById(R.id.Layout);
 
+        //setup errorlog
+        ErrorLog.initialize(this);
+
         //Get Preferences
         SharedPreferences SharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         ColorScheme = SharedPrefs.getString("Colors", "Default");
