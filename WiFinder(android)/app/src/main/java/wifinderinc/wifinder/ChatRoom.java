@@ -2,6 +2,7 @@ package wifinderinc.wifinder;
 
 import android.app.Activity;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
@@ -94,6 +95,16 @@ public class ChatRoom
      */
     public void addMessage(Message message)
     {
+        ArrayList<BlockedUser> users = Blocker.getBlockedUsers();
+
+        for (BlockedUser u : users)
+        {
+            if (u.getId().equals(message.getID()))
+            {
+                return;
+            }   //end if
+        }   //end for
+
         _messages.add(message);
         _view.addMessage(message);
         _chatLogWriter.addToBuffer(message);
