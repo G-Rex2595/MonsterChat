@@ -49,15 +49,4 @@ public class LogManager
 
         return logs;
     }   //end of getLogs method
-
-    /**
-     * Returns a log opened for reading.
-     *
-     * @param log   Holds a reference to a log to be opened.
-     * @return  Returns a log opened for reading.
-     */
-    public ChatLogReader openLog(LoggedChat log)
-    {
-        return new ChatLogReader(log.getRoomName());
-    }   //end of openLog method
 }   //end of LogManager class
