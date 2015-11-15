@@ -51,8 +51,29 @@ public class ChatRoomManager
      */
     public LinkedList<String> getAvailableRooms()
     {
-        return _manager.getAvailableRooms();
+        LinkedList<String> rooms = _manager.getAvailableRooms();
+
+        for (int x = 0; x < rooms.size(); x++)
+        {
+            if (rooms.get(x).contains("-"))
+            {
+                rooms.set(x, rooms.get(x).substring(0, rooms.get(x).indexOf('-')));
+            }   //end if
+        }   //end for
+
+        return rooms;
     }   //end of getAvailableRooms method
+
+    /**
+     * Returns a list of the available chat rooms with
+     * their passwords still intact.
+     *
+     * @return  Returns a list of available chat rooms.
+     */
+    private LinkedList<String> getUnformattedRooms()
+    {
+        return _manager.getAvailableRooms();
+    }   //end of getUnformattedRooms method
 
     /**
      * Sets the username to the given string.
@@ -71,24 +92,53 @@ public class ChatRoomManager
      * Joins a chat room and closes an old one if it exists.
      *
      * @param roomName  Holds the name of the chat room.
+     * @param password  Holds the password used to try to enter the chat room.
      */
-    public void joinRoom(String roomName)
+    public void joinRoom(String roomName, String password)
     {
         if (_currentChatRoom != null)
             _currentChatRoom.close();
+
+        if (password != null)
+        {
+            LinkedList<String> rooms = getUnformattedRooms();
+
+            for (String s : rooms)
+            {
+                if (s.contains("-") && s.substring(0, s.indexOf('-')).equals(roomName))
+                {
+                    joinPrivateRoom(roomName, password, s.substring(s.indexOf('-') + 1));
+                    return;
+                }   //end if
+            }   //end for
+
+            joinPrivateRoom(roomName, password, password);
+            return;
+        }   //end if
 
         _currentChatRoom = new ChatRoom(_manager, _username, roomName, _activity);
         _manager.setChatRoom(_currentChatRoom);
     }   //end of joinRoom method
 
     /**
-     * TODO:  Finish in a later sprint
+     * Joins a private chat room and closes the old chat room if it exists.
      *
-     * @param roomName
+     * @param roomName          Holds the name of the chat room.
+     * @param password          Holds the password used to try to enter the chat room.
+     * @param correctPassword   Holds the correct password.
      */
-    public void joinPrivateRoom(String roomName)
+    private void joinPrivateRoom(String roomName, String password, String correctPassword)
     {
-        //join PrivateChatRoom
+        if (!correctPassword.equals(password))
+        {
+            return;
+        }   //end if
+
+        if (_currentChatRoom != null)
+            _currentChatRoom.close();
+
+        _currentChatRoom = new PrivateChatRoom(_manager, _username, roomName, _activity, password);
+        _manager.setChatRoom(_currentChatRoom);
     }   //end of joinPrivateRoom method
 
     /**

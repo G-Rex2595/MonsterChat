@@ -13,37 +13,37 @@ public class ChatRoom
     /**
      * Contains a reference to the P2PManager
      */
-    private P2PManager _manager;
+    protected P2PManager manager;
 
     /**
      * Holds a string of the username.
      */
-    private String _username;
+    protected String username;
 
     /**
      * Holds a string of the chat room name.
      */
-    private String _chatRoomName;
+    protected String chatRoomName;
 
     /**
      * Contains a reference to the ChatRoomView.
      */
-    private ChatRoomView _view;
+    protected ChatRoomView view;
 
     /**
      * Holds a list of Messages.
      */
-    private LinkedList<Message> _messages;
+    protected LinkedList<Message> messages;
 
     /**
      * Holds a string of the id.
      */
-    private String _id;
+    protected String id;
 
     /**
      * Contains a reference to the chat room's log writer
      */
-    private ChatLogWriter _chatLogWriter;
+    protected ChatLogWriter chatLogWriter;
 
     /**
      * ChatRoom constructor initializes fields.
@@ -51,15 +51,16 @@ public class ChatRoom
      * @param manager   Contains a reference to the P2PManager
      * @param username  Holds a string of the username.
      * @param roomName  Holds a string of the chat room name.
+     * @param activity  Holds a reference to the activity.
      */
     public ChatRoom(P2PManager manager, String username, String roomName, Activity activity)
     {
-        _manager = manager;
-        _username = username;
-        _chatRoomName = roomName;
-        _messages = new LinkedList<Message>();
-        _id = null;
-        _chatLogWriter = new ChatLogWriter(activity, roomName);
+        this.manager = manager;
+        this.username = username;
+        this.chatRoomName = roomName;
+        this.messages = new LinkedList<Message>();
+        this.id = null;
+        this.chatLogWriter = new ChatLogWriter(activity, roomName);
     }   //end of ChatRoom constructor
 
     /**
@@ -69,7 +70,7 @@ public class ChatRoom
      */
     public LinkedList<Message> getMessages()
     {
-        return _messages;
+        return this.messages;
     }   //end of getMessages method
 
     /**
@@ -80,11 +81,11 @@ public class ChatRoom
      */
     public void sendMessage(String str)
     {
-        Message message = new Message(_username, str, _id, _chatRoomName);
-        _messages.add(message);
-        _view.addMessage(message);
-        _chatLogWriter.addToBuffer(message);
-        _manager.sendMessage(message);
+        Message message = new Message(this.username, str, this.id, this.chatRoomName);
+        this.messages.add(message);
+        this.view.addMessage(message);
+        this.chatLogWriter.addToBuffer(message);
+        this.manager.sendMessage(message);
     }   //end of sendMessage method
 
     /**
@@ -105,9 +106,9 @@ public class ChatRoom
             }   //end if
         }   //end for
 
-        _messages.add(message);
-        _view.addMessage(message);
-        _chatLogWriter.addToBuffer(message);
+        this.messages.add(message);
+        this.view.addMessage(message);
+        this.chatLogWriter.addToBuffer(message);
     }   //end of addMessage method
 
     /**
@@ -123,7 +124,7 @@ public class ChatRoom
      */
     public void close()
     {
-        _chatLogWriter.close();
+        this.chatLogWriter.close();
     }   //end of close method
 
     /**
@@ -133,7 +134,7 @@ public class ChatRoom
      */
     public void setChatRoomView(ChatRoomView view)
     {
-        _view = view;
+        this.view = view;
     }   //end of setChatRoomView method
 
     /**
@@ -143,7 +144,7 @@ public class ChatRoom
      */
     public void setUsername(String username)
     {
-        _username = username;
+        this.username = username;
     }   //end of setUsername method
 
     /**
@@ -153,6 +154,6 @@ public class ChatRoom
      */
     public String getChatRoomName()
     {
-        return _chatRoomName;
+        return this.chatRoomName;
     }   //end of getChatRoomName method
 }   //end of ChatRoom class
