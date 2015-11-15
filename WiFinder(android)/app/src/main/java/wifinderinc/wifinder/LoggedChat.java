@@ -1,5 +1,7 @@
 package wifinderinc.wifinder;
 
+import java.io.File;
+
 /**
  * @author  Andrew Sytsma <asytsma@purdue.edu>
  */
@@ -63,4 +65,17 @@ public class LoggedChat
     {
         return this.fileName;
     }   //end of getFileName method
+
+    /**
+     * Deletes the log.
+     */
+    public void delete()
+    {
+        File f = new File(this.fileName);
+
+        if (f.exists())
+        {
+            f.delete();
+        }   //end if
+    }   //end of delete method
 }   //end of LoggedChat class
