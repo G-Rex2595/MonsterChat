@@ -94,6 +94,9 @@ public class HomePage extends AppCompatActivity {
         //setup errorlog
         ErrorLog.initialize(this);
 
+        //setup blocker
+        Blocker.initialize(this);
+
         //Get Preferences
         SharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         ColorScheme = SharedPrefs.getString("Colors", "Default");
