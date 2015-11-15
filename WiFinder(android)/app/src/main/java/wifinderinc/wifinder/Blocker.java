@@ -143,8 +143,10 @@ public final class Blocker
 
     /**
      * Returns a list of currently blocked users.
+     * Returns null if Blocker is not initialized.
      *
      * @return  Returns a list of currently blocked users.
+     * @return  Returns null if Blocker is not initialized.
      */
     public static ArrayList<BlockedUser> getBlockedUsers()
     {
