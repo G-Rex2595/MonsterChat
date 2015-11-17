@@ -88,6 +88,7 @@ public class ChatLogWriter
             for (Message message : this.messageBuffer)
             {
                 writer.print(message.getName() + " ");
+                writer.print(message.getID() + " ");
                 writer.print(message.getTime() + " ");
                 writer.println(message.getMessage());
             }	//end for
