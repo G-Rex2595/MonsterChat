@@ -10,27 +10,27 @@ public class Message implements Serializable
     /**
      * Holds a string of the username.
      */
-    private String _username;
+    private String username;
 
     /**
      * Holds a string of the message.
      */
-    private String _message;
+    private String message;
 
     /**
      * Holds a string of the id.
      */
-    private String _id;
+    private String id;
 
     /**
      * Holds a long of the time.
      */
-    private long _time;
+    private long time;
 
     /**
      * Holds a string of the chat room name.
      */
-    private String _roomName;
+    private String chatRoomName;
 
     /**
      * Message constructor initializes the fields.
@@ -42,11 +42,11 @@ public class Message implements Serializable
      */
     public Message(String username, String message, String id, String roomName)
     {
-        _username = username;
-        _message = message;
-        _id = id;
-        _time = System.currentTimeMillis();
-        _roomName = roomName;
+        this.username = username;
+        this.message = message;
+        this.id = id;
+        this.time = System.currentTimeMillis();
+        this.chatRoomName = roomName;
     }   //end of Message constructor
 
     /**
@@ -56,7 +56,7 @@ public class Message implements Serializable
      */
     public String getName()
     {
-        return _username;
+        return this.username;
     }   //end of getName method
 
     /**
@@ -66,7 +66,7 @@ public class Message implements Serializable
      */
     public String getMessage()
     {
-        return _message;
+        return this.message;
     }   //end of getMessage method
 
     /**
@@ -76,7 +76,7 @@ public class Message implements Serializable
      */
     public long getTime()
     {
-        return _time;
+        return this.time;
     }   //end of getTime method
 
     /**
@@ -86,7 +86,7 @@ public class Message implements Serializable
      */
     public String getID()
     {
-        return _id;
+        return this.id;
     }   //end of getID method
 
     /**
@@ -96,7 +96,7 @@ public class Message implements Serializable
      */
     public void setTime(long time)
     {
-        _time = time;
+        this.time = time;
     }   //end of setTime method
 
     /**
@@ -104,7 +104,7 @@ public class Message implements Serializable
      */
     public void setTime()
     {
-        _time = System.currentTimeMillis();
+        this.time = System.currentTimeMillis();
     }   //end of setTime method
 
     /**
@@ -114,6 +114,6 @@ public class Message implements Serializable
      */
     public String getChatRoomName()
     {
-        return _roomName;
+        return this.chatRoomName;
     }   //end of getChatRoomName method
 }   //end of Message class
