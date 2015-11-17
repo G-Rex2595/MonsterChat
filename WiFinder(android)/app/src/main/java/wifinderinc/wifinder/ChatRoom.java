@@ -1,6 +1,7 @@
 package wifinderinc.wifinder;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -77,11 +78,12 @@ public class ChatRoom
      * Adds the message received from the ChatRoomView to the message list.
      * Calls P2PManager's sendMessage to send a message.
      *
-     * @param str   Holds the message to be saved and sent.
+     * @param str       Holds the message to be saved and sent.
+     * @param picture   Holds the picture to be saved and sent.
      */
-    public void sendMessage(String str)
+    public void sendMessage(String str, Bitmap picture)
     {
-        Message message = new Message(this.username, str, this.id, this.chatRoomName);
+        Message message = new Message(this.username, str, this.id, this.chatRoomName, picture);
         this.messages.add(message);
         this.view.addMessage(message);
         this.chatLogWriter.addToBuffer(message);

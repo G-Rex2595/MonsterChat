@@ -1,5 +1,7 @@
 package wifinderinc.wifinder;
 
+import android.graphics.Bitmap;
+
 import java.io.Serializable;
 
 /**
@@ -33,20 +35,37 @@ public class Message implements Serializable
     private String chatRoomName;
 
     /**
+     * Holds the message's picture.
+     */
+    private final Bitmap picture;
+
+    /**
+     * Holds the max width of the picture.
+     */
+    private final int MAX_PIC_WIDTH = 256;
+
+    /**
+     * Holds the max height of the picture.
+     */
+    private final int MAX_PIC_HEIGHT = 256;
+
+    /**
      * Message constructor initializes the fields.
      *
      * @param username  Holds a string of the username.
      * @param message   Holds a string of the message.
      * @param id        Holds a string of the id.
      * @param roomName  Holds a string of the chat room name.
+     * @param picture   Holds the message's picture.
      */
-    public Message(String username, String message, String id, String roomName)
+    public Message(String username, String message, String id, String roomName, Bitmap picture)
     {
         this.username = username;
         this.message = message;
         this.id = id;
         this.time = System.currentTimeMillis();
         this.chatRoomName = roomName;
+        this.picture = Bitmap.createScaledBitmap(picture, MAX_PIC_WIDTH, MAX_PIC_HEIGHT, true);
     }   //end of Message constructor
 
     /**
@@ -116,4 +135,14 @@ public class Message implements Serializable
     {
         return this.chatRoomName;
     }   //end of getChatRoomName method
+
+    /**
+     * Returns the message's picture.
+     *
+     * @return  Returns the message's picture.
+     */
+    public Bitmap getPicture()
+    {
+        return this.picture;
+    }   //end of getPicture method
 }   //end of Message class

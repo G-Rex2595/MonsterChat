@@ -1,6 +1,7 @@
 package wifinderinc.wifinder;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
 
 /**
  * @author  Andrew Sytsma <asytsma@purdue.edu>
@@ -32,15 +33,16 @@ public class PrivateChatRoom extends ChatRoom
      * Calls P2PManager's sendMessage to send a message.
      *
      * @param str   Holds the message to be saved and sent.
+     * @param picture   Holds the picture to be saved and sent.
      */
-    public void sendMessage(String str)
+    public void sendMessage(String str, Bitmap picture)
     {
-        Message message = new Message(this.username, str, this.id, this.chatRoomName);
+        Message message = new Message(this.username, str, this.id, this.chatRoomName, picture);
         this.messages.add(message);
         this.view.addMessage(message);
         this.chatLogWriter.addToBuffer(message);
 
-        message = new Message(this.username, str, this.id, this.chatRoomName + "-" + this.password);
+        message = new Message(this.username, str, this.id, this.chatRoomName + "-" + this.password, picture);
         this.manager.sendMessage(message);
     }   //end of sendMessage method
 }   //end of PrivateChatRoom class

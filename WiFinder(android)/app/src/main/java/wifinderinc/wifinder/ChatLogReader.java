@@ -79,7 +79,7 @@ public class ChatLogReader
                 String message = line.substring(line.indexOf(' ', indexOfSecondSpace + 1) + 1);
                 String roomName = this.logName.substring(this.logName.lastIndexOf('/') + 1, this.logName.indexOf('-'));
 
-                Message m = new Message(username, message, id, roomName);
+                Message m = new Message(username, message, id, roomName, null);
                 m.setTime(time);
                 messages.add(m);
                 this.currentLine += 1;

@@ -252,7 +252,7 @@ public class ChatRoomView extends AppCompatActivity{
         //InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         //imm.hideSoftInputFromWindow(txtbxInput.getWindowToken(), 0);
 
-        manager.getCurrentChatRoom().sendMessage(message);
+        manager.getCurrentChatRoom().sendMessage(message, null);    //change null to the user's picture
 
         txtbxInput.clearFocus();
     }
