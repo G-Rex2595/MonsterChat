@@ -73,9 +73,10 @@ public class ChatLogReader
 
                 int indexOfFirstSpace = line.indexOf(' ');
                 String username = line.substring(0, indexOfFirstSpace);
-                long time = Long.parseLong(line.substring(indexOfFirstSpace + 1, line.indexOf(' ', indexOfFirstSpace + 1)));
-                String message = line.substring(line.indexOf(' ', indexOfFirstSpace + 1) + 1);
-                String id = "";
+                int indexOfSecondSpace = line.indexOf(' ', indexOfFirstSpace + 1);
+                String id = line.substring(indexOfFirstSpace + 1, indexOfSecondSpace);
+                long time = Long.parseLong(line.substring(indexOfSecondSpace + 1, line.indexOf(' ', indexOfSecondSpace + 1)));
+                String message = line.substring(line.indexOf(' ', indexOfSecondSpace + 1) + 1);
                 String roomName = this.logName.substring(this.logName.lastIndexOf('/') + 1, this.logName.indexOf('-'));
 
                 Message m = new Message(username, message, id, roomName);
