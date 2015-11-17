@@ -5,6 +5,8 @@ import android.content.Context;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.LinkedList;
 
 /**
@@ -27,8 +29,12 @@ public class ChatLogWriter
      * Holds the name of the log to write to.
      */
     private final String logName;
-    //either restrict chat room names to allow only letters and number
-    //or make file names only system time
+
+    /**
+     * Holds the maximum amount of space allotted
+     * to saving chat logs.
+     */
+    private static final long MAX_SPACE = 1073741824;   //1 GB
 
     /**
      * ChatLogWriter constructor initializes fields and
@@ -72,14 +78,16 @@ public class ChatLogWriter
 
     /**
      * Writes the buffer to a file in the following format:
-     * Username Time Message
+     * Username ID Time Message
+     *
+     * Also delete old logs to free up space.
      */
     private void writeToLog()
     {
         if (this.messageBuffer.size() == 0)
         {
             return;
-        }	//end if
+        }    //end if
 
         try
         {
@@ -91,13 +99,35 @@ public class ChatLogWriter
                 writer.print(message.getID() + " ");
                 writer.print(message.getTime() + " ");
                 writer.println(message.getMessage());
-            }	//end for
+            }    //end for
 
             writer.close();
         }
         catch (Exception exception)
         {
             ErrorLog.writeToLog(exception);
-        }	//end try
+        }    //end try
+
+        long totalSize = 0;
+        File directory = new File(this.logName.substring(0, this.logName.lastIndexOf('/')));
+        File[] files = directory.listFiles();
+        Arrays.sort(files, new Comparator<File>()
+        {
+            public int compare(File f1, File f2)
+            {
+                return Long.valueOf(f1.lastModified()).compareTo(f2.lastModified());
+            }
+        });
+
+        for (File file : files)
+        {
+            totalSize += file.length();
+        }   //end for
+
+        for (int x = 0; totalSize > MAX_SPACE && x < files.length; x += 1)
+        {
+            totalSize -= files[x].length();
+            files[x].delete();
+        }   //end for
     }   //end of writeToLog method
 }   //end of ChatLogWriter Class
