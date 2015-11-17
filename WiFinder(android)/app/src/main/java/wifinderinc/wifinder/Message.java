@@ -65,7 +65,7 @@ public class Message implements Serializable
         this.id = id;
         this.time = System.currentTimeMillis();
         this.chatRoomName = roomName;
-        this.picture = Bitmap.createScaledBitmap(picture, MAX_PIC_WIDTH, MAX_PIC_HEIGHT, true);
+        this.picture = Bitmap.createScaledBitmap(picture, this.MAX_PIC_WIDTH, this.MAX_PIC_HEIGHT, true);
     }   //end of Message constructor
 
     /**

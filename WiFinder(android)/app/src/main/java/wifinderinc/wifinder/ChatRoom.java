@@ -47,6 +47,11 @@ public class ChatRoom
     protected ChatLogWriter chatLogWriter;
 
     /**
+     * Holds the reference to the SpamFilter.
+     */
+    protected final SpamFilter filter;
+
+    /**
      * ChatRoom constructor initializes fields.
      *
      * @param manager   Contains a reference to the P2PManager
@@ -62,6 +67,7 @@ public class ChatRoom
         this.messages = new LinkedList<Message>();
         this.id = null;
         this.chatLogWriter = new ChatLogWriter(activity, roomName);
+        this.filter = new SpamFilter();
     }   //end of ChatRoom constructor
 
     /**
@@ -83,6 +89,11 @@ public class ChatRoom
      */
     public void sendMessage(String str, Bitmap picture)
     {
+        if (this.filter.isSpam(str))
+        {
+            return;
+        }   //end if
+
         Message message = new Message(this.username, str, this.id, this.chatRoomName, picture);
         this.messages.add(message);
         this.view.addMessage(message);

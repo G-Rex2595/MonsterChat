@@ -37,6 +37,11 @@ public class PrivateChatRoom extends ChatRoom
      */
     public void sendMessage(String str, Bitmap picture)
     {
+        if (this.filter.isSpam(str))
+        {
+            return;
+        }   //end if
+
         Message message = new Message(this.username, str, this.id, this.chatRoomName, picture);
         this.messages.add(message);
         this.view.addMessage(message);
