@@ -97,7 +97,10 @@ public class ChatRoomManager
     public void joinRoom(String roomName, String password)
     {
         if (_currentChatRoom != null)
+        {
             _currentChatRoom.close();
+            _currentChatRoom = null;
+        }
 
         if (password != null)
         {
@@ -140,9 +143,6 @@ public class ChatRoomManager
             Log.d("IncorrectPassword", correctPassword + " " + password);
             return;
         }   //end if
-
-        if (_currentChatRoom != null)
-            _currentChatRoom.close();
 
         _currentChatRoom = new PrivateChatRoom(_manager, _username, roomName, _activity, password);
         _manager.setChatRoom(_currentChatRoom);

@@ -103,7 +103,6 @@ public class ChatRoomView extends AppCompatActivity{
 
         //manager = new ChatRoomManager(UserName, this);
         manager = ChatRoomsList.manager;
-        manager.joinRoom(RoomName, null);   //TODO:  change null to the password the user entered
         manager.setUsername(UserName);
         manager.getCurrentChatRoom().setChatRoomView(this);
 
