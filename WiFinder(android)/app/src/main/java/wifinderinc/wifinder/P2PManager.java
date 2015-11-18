@@ -151,7 +151,27 @@ public class P2PManager {
         }
         Log.d("P2PManager", "receieveMessage " + msg.toString());
         Log.d("P2PManager", String.format("User: %s\t Msg %s\tRoom: %s", msg.getName(), msg.getMessage(), msg.getChatRoomName()));
-        if (chatroom != null && msg.getMessage() != null && chatroom.getChatRoomName().equals(msg.getChatRoomName())) {
+        if (chatroom != null && msg.getMessage() != null) {
+            //this is added to handle the way passwords are sent
+            String cName = chatroom.getChatRoomName();
+            String mName = msg.getChatRoomName();
+
+            if (cName.contains("-"))
+            {
+                cName = cName.substring(0, cName.indexOf('-'));
+            }
+
+            if (mName.contains("-"))
+            {
+                mName = mName.substring(0, mName.indexOf("-"));
+            }
+
+            if (!cName.equals(mName))
+            {
+                Log.d("P2PManager", "*** Dropped " + cName + " " + mName);
+                return;
+            }
+
             //It's a user message and belongs in the current chatroom
             synchronized (MESSAGE_HASHES) {
                 if (MESSAGE_HASHES.contains(msg.getMessage() + msg.getTime()))
@@ -161,6 +181,7 @@ public class P2PManager {
                 }
             }
             sendMessage(msg);           //Forward the message on to other devices. This will also add the hash.
+            Log.d("P2PManager", "**** Added ****");
             chatroom.addMessage(msg);
         }
         else if (msg.getMessage() == null){

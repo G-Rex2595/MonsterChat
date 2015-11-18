@@ -102,16 +102,20 @@ public class ChatRoomManager
         if (password != null)
         {
             LinkedList<String> rooms = getUnformattedRooms();
+            password = Security.hash(password);
 
             for (String s : rooms)
             {
+                Log.d("RoomName", s);
                 if (s.contains("-") && s.substring(0, s.indexOf('-')).equals(roomName))
                 {
+                    Log.d("Manager", "**** THIS WAY ****");
                     joinPrivateRoom(roomName, password, s.substring(s.indexOf('-') + 1));
                     return;
                 }   //end if
             }   //end for
 
+            Log.d("HERHEHRE", password);
             joinPrivateRoom(roomName, password, password);
             return;
         }   //end if
@@ -129,8 +133,11 @@ public class ChatRoomManager
      */
     private void joinPrivateRoom(String roomName, String password, String correctPassword)
     {
+        Log.d("PrivateChatRoom", "*** We are in ***");
+        Log.d("Password", correctPassword + " " + password);
         if (!correctPassword.equals(password))
         {
+            Log.d("IncorrectPassword", correctPassword + " " + password);
             return;
         }   //end if
 

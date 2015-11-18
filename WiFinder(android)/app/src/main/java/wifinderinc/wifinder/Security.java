@@ -13,7 +13,7 @@ import javax.crypto.spec.SecretKeySpec;
  */
 public final class Security
 {
-    public static final String DEFAULT_PASSWORD = "Az&37k##(*&r.-Q[";
+    private static final String DEFAULT_PASSWORD = "Az&37k##(*&r.-Q[";
 
     /**
      * Returns an encrypted message.
