@@ -2,6 +2,7 @@ package wifinderinc.wifinder;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import java.util.ArrayList;
 
@@ -27,7 +28,9 @@ public class PrivateChatRoom extends ChatRoom
     public PrivateChatRoom(P2PManager manager, String username, String roomName, Activity activity, String password)
     {
         super(manager, username, roomName, activity);
-        this.password = Security.hash(password);
+        this.chatRoomName = roomName + "-" + password;
+        Log.d("CHATROOMNAMEHERE", "**** " + chatRoomName + " ****");
+        this.password = password;
     }   //end of PrivateChatRoom constructor
 
     /**
@@ -49,10 +52,11 @@ public class PrivateChatRoom extends ChatRoom
         this.view.addMessage(message);
         this.chatLogWriter.addToBuffer(message);
 
-        Message formattedMessage = new Message(this.username, str, this.id, this.chatRoomName + "-" + this.password, picture);
+        Message formattedMessage = new Message(this.username, str, this.id, this.chatRoomName, picture);
         formattedMessage.setTime(message.getTime());
         formattedMessage = Security.encrypt(formattedMessage, this.password);
         this.manager.sendMessage(formattedMessage);
+        Log.d("** Sent Message **", formattedMessage.getMessage());
     }   //end of sendMessage method
 
     /**
@@ -63,6 +67,7 @@ public class PrivateChatRoom extends ChatRoom
      */
     public void addMessage(Message message)
     {
+        Log.d("** Received Message **", message.getMessage());
         if ((message = Security.decrypt(message, this.password)) == null)
         {
             return;
