@@ -108,6 +108,12 @@ public class ChatRoomsList extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //when item is selected open chat rooms view and send the room name
+                manager.joinRoom(((TextView)view).getText().toString(), null);   //TODO:  change null to the password the user entered
+                if (manager.getCurrentChatRoom() == null)   //could not join room
+                {
+                    return;
+                }
+
                 Intent intent = new Intent(ChatRoomsList.this, ChatRoomView.class);
                 TextView temp = (TextView) view;
                 intent.putExtra(ROOM_NAME, temp.getText().toString());
@@ -262,6 +268,12 @@ public class ChatRoomsList extends AppCompatActivity {
                     incorrectChatRoomName();
                     return;
                 } else {
+                    manager.joinRoom(NewRoomName, null);   //TODO:  change null to the password the user entered
+                    if (manager.getCurrentChatRoom() == null)   //could not join room
+                    {
+                        return;
+                    }
+
                     Intent intent = new Intent(ChatRoomsList.this, ChatRoomView.class);
                     intent.putExtra(ROOM_NAME, NewRoomName);
                     intent.putExtra(USER_NAME, ChatRoomsList.this.user);
