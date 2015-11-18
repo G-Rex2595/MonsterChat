@@ -1,7 +1,10 @@
 package wifinderinc.wifinder;
 
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Bitmap;
+import android.provider.Settings;
+import android.telephony.TelephonyManager;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -65,7 +68,7 @@ public class ChatRoom
         this.username = username;
         this.chatRoomName = roomName;
         this.messages = new LinkedList<Message>();
-        this.id = null;
+        this.id = Settings.Secure.getString(activity.getContentResolver(), Settings.Secure.ANDROID_ID);
         this.chatLogWriter = new ChatLogWriter(activity, roomName);
         this.filter = new SpamFilter();
     }   //end of ChatRoom constructor
@@ -94,10 +97,12 @@ public class ChatRoom
             return;
         }   //end if
 
-        Message message = Security.encrypt(new Message(this.username, str, this.id, this.chatRoomName, picture), null);
+        Message message = new Message(this.username, str, this.id, this.chatRoomName, picture);
         this.messages.add(message);
         this.view.addMessage(message);
         this.chatLogWriter.addToBuffer(message);
+
+        message = Security.encrypt(message, null);
         this.manager.sendMessage(message);
     }   //end of sendMessage method
 

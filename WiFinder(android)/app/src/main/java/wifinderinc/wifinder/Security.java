@@ -24,6 +24,11 @@ public final class Security
      */
     public static Message encrypt(Message message, String password)
     {
+        if (message.getName() == null)
+        {
+            return null;
+        }   //end if
+
         if (password == null)
         {
             password = hash(DEFAULT_PASSWORD);
