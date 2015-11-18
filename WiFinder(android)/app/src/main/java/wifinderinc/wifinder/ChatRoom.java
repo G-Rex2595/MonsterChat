@@ -94,7 +94,7 @@ public class ChatRoom
             return;
         }   //end if
 
-        Message message = new Message(this.username, str, this.id, this.chatRoomName, picture);
+        Message message = Security.encrypt(new Message(this.username, str, this.id, this.chatRoomName, picture), null);
         this.messages.add(message);
         this.view.addMessage(message);
         this.chatLogWriter.addToBuffer(message);
@@ -109,6 +109,11 @@ public class ChatRoom
      */
     public void addMessage(Message message)
     {
+        if ((message = Security.decrypt(message, null)) == null)
+        {
+            return;
+        }   //end if
+
         ArrayList<BlockedUser> users = Blocker.getBlockedUsers();
 
         for (BlockedUser u : users)
