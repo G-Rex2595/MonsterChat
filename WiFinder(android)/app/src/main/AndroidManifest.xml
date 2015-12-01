@@ -66,5 +66,13 @@
                 android:value=".HomePage" />
         </activity>
 
+        <activity
+            android:name=".UnblockUsers"
+            android:parentActivityName=".Preferences" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Preferences" />
+        </activity>
+
     </application>
 </manifest>

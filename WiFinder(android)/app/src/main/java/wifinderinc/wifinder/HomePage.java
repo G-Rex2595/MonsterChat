@@ -208,6 +208,7 @@ public class HomePage extends AppCompatActivity {
         btnChatList.setTypeface(FontStyle);
         btnLogs.setTypeface(FontStyle);
         btnPrefs.setTypeface(FontStyle);
+        Title.setTypeface(FontStyle);
     }
 
     //Opens the Chat Rooms List page
@@ -217,7 +218,7 @@ public class HomePage extends AppCompatActivity {
             incorrectUser("User name cannot be empty");
             return;
         }
-
+        Context cont = this;
         Intent intent = new Intent(this, ChatRoomsList.class);
         intent.putExtra(USER_NAME, userN);
         this.startActivity(intent);
@@ -231,6 +232,13 @@ public class HomePage extends AppCompatActivity {
 
     //Opens the Settings Page
     public void btnSettings_Click(View v){
+        Intent intent = new Intent(this, Preferences.class);
+        intent.putExtra(Preferences.EXTRA_SHOW_FRAGMENT, Preferences.Prefs.class.getName());
+        intent.putExtra(Preferences.EXTRA_NO_HEADERS, true);
+        this.startActivity(intent);
+    }
+
+    public void btntest_Click(View v){
         Intent intent = new Intent(this, Preferences.class);
         intent.putExtra(Preferences.EXTRA_SHOW_FRAGMENT, Preferences.Prefs.class.getName());
         intent.putExtra(Preferences.EXTRA_NO_HEADERS, true);

@@ -1,6 +1,8 @@
 package wifinderinc.wifinder;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
@@ -11,11 +13,13 @@ import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -55,6 +59,7 @@ public class ChatRoomView extends AppCompatActivity{
     private Boolean TimeStamps;
     private int textColor;
     private Typeface FontStyle;
+    private Blocker blocker;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,12 +83,30 @@ public class ChatRoomView extends AppCompatActivity{
         SetColors(ColorScheme);
         SetFont(Font);
 
+        blocker.initialize(this);
+
         //get values that are passed down
         Intent intent = getIntent();
         RoomName = intent.getStringExtra(ChatRoomsList.ROOM_NAME);
         UserName = intent.getStringExtra(ChatRoomsList.USER_NAME);
 
         Chat.add("Welcome to " + RoomName + ", " + UserName + "!");
+
+        lstDisplay.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //when item is selected open chat rooms view and send the room name
+                String textStr = ((TextView) view).getText().toString();
+                String Name = textStr.split(":")[0];
+
+               // if(Name.compareTo(UserName) != 0 && !Name.contains("e t")) {
+                    promptBlock(Name);
+                //}
+            }
+
+
+        });;
 
         //set up adapter
         adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Chat){
@@ -117,6 +140,32 @@ public class ChatRoomView extends AppCompatActivity{
                 }
             }
         });
+    }
+
+    private void promptBlock(String Name){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Block " + Name + "?");
+
+
+        // Set up the buttons
+        final String uName = Name;
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Calendar c = Calendar.getInstance();
+                BlockedUser BlockThis = new BlockedUser(uName, "0", c.getTimeInMillis());
+                blocker.block(BlockThis);
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
     }
 
     private void scrollMyListViewToBottom() {

@@ -31,6 +31,16 @@
             android:entries="@array/FontEntries"
             android:entryValues="@array/FontEntries" />
 
+        <Preference
+            android:key="UnblockUsers"
+            android:title="Unblock Users "
+            android:summary="derp">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="wifinderinc.wifinder"
+                android:targetClass="wifinderinc.wifinder.UnblockUsers" />
+        </Preference>
+
     </PreferenceCategory>
 
 </PreferenceScreen>

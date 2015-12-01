@@ -11,6 +11,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.renderscript.ScriptGroup;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.util.Log;
@@ -54,7 +55,8 @@ public class ChatRoomsList extends AppCompatActivity {
 
     //other globals
     private String NewRoomName = "";
-    //private String NewRoomPass = "";
+    private String NewRoomPass = "";
+    private String InputPass = "";
     private String user;
     private boolean isFocus = true;
 
@@ -88,7 +90,10 @@ public class ChatRoomsList extends AppCompatActivity {
 
         int count = 0;
         while(count < RoomList.size()){
-            RoomNames.add(RoomList.get(count));
+            String ItemText = RoomList.get(count);
+
+
+            RoomNames.add(ItemText);
             count++;
         }
 
@@ -102,23 +107,31 @@ public class ChatRoomsList extends AppCompatActivity {
         SetFont(Font);
 
 
-
         //set item listener
         lstRooms.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
+
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //when item is selected open chat rooms view and send the room name
-                manager.joinRoom(((TextView)view).getText().toString(), null);   //TODO:  change null to the password the user entered
-                if (manager.getCurrentChatRoom() == null)   //could not join room
-                {
-                    return;
-                }
+                String textStr = ((TextView) view).getText().toString();
+                InputPass = "";
+                if (textStr.contains("(Private)")) {
+                    getInputPass(textStr.split(" ")[0]);
 
-                Intent intent = new Intent(ChatRoomsList.this, ChatRoomView.class);
-                TextView temp = (TextView) view;
-                intent.putExtra(ROOM_NAME, temp.getText().toString());
-                intent.putExtra(USER_NAME, ChatRoomsList.this.user);
-                startActivity(intent);
+                }else {
+
+                    manager.joinRoom(textStr, InputPass);   //TODO:  change null to the password the user entered
+                    if (manager.getCurrentChatRoom() == null)   //could not join room
+                    {
+                        return;
+                    }
+
+                    Intent intent = new Intent(ChatRoomsList.this, ChatRoomView.class);
+                    TextView temp = (TextView) view;
+                    intent.putExtra(ROOM_NAME, temp.getText().toString());
+                    intent.putExtra(USER_NAME, ChatRoomsList.this.user);
+                    startActivity(intent);
+                }
             }
 
 
@@ -139,6 +152,47 @@ public class ChatRoomsList extends AppCompatActivity {
             }
         };
         lstRooms.setAdapter(RoomAdpt);
+    }
+
+    private void getInputPass(final String RoomName) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+        // Set up the input
+        final EditText inPass = new EditText(this);
+        inPass.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        builder.setTitle("Password Required");
+        builder.setView(inPass);
+
+        String checkPass = "";
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String tempPass = inPass.getText().toString();
+                //NewRoomPass = NewPass.getText().toString();
+
+                if (!tempPass.matches("[a-zA-Z0-9]+")) {
+                    invalidPassword();
+                    return;
+                } else {
+                    manager.joinRoom(RoomName, tempPass);   //TODO:  change null to the password the user entered
+                    if (manager.getCurrentChatRoom() == null)   //could not join room
+                    {
+                        return;
+                    }
+
+                    Intent intent = new Intent(ChatRoomsList.this, ChatRoomView.class);
+                    intent.putExtra(ROOM_NAME, RoomName);
+                    intent.putExtra(USER_NAME, ChatRoomsList.this.user);
+                    startActivity(intent);
+                }
+            }
+        });
+
+        builder.show();
+
     }
 
     protected void onResume() {
@@ -268,7 +322,43 @@ public class ChatRoomsList extends AppCompatActivity {
                     incorrectChatRoomName();
                     return;
                 } else {
-                    manager.joinRoom(NewRoomName, null);   //TODO:  change null to the password the user entered
+                    promptPassword();
+                }
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+
+    }
+
+    public void promptPassword(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Enter chat room name");
+
+        // Set up the input
+        final EditText NewPass = new EditText(this);
+        NewPass.setInputType(InputType.TYPE_CLASS_TEXT);
+
+        builder.setTitle("Passowrd (Optional)");
+        builder.setView(NewPass);
+
+        // Set up the buttons
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                NewRoomPass = NewPass.getText().toString();
+
+                if (!NewRoomPass.matches("[a-zA-Z0-9]+")) {
+                    invalidPassword();
+                    return;
+                } else {
+                    manager.joinRoom(NewRoomName, NewRoomPass);   //TODO:  change null to the password the user entered
                     if (manager.getCurrentChatRoom() == null)   //could not join room
                     {
                         return;
@@ -284,12 +374,20 @@ public class ChatRoomsList extends AppCompatActivity {
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
+                manager.joinRoom(NewRoomName, "");   //TODO:  change null to the password the user entered
+                if (manager.getCurrentChatRoom() == null)   //could not join room
+                {
+                    return;
+                }
+
+                Intent intent = new Intent(ChatRoomsList.this, ChatRoomView.class);
+                intent.putExtra(ROOM_NAME, NewRoomName);
+                intent.putExtra(USER_NAME, ChatRoomsList.this.user);
+                startActivity(intent);
             }
         });
 
         builder.show();
-
     }
 
     public void incorrectChatRoomName()
@@ -297,6 +395,20 @@ public class ChatRoomsList extends AppCompatActivity {
         AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
         dlgAlert.setMessage("The Chat Room Name may only contain letters and numbers.");
         dlgAlert.setTitle("Incorrect Chat Room Name");
+        dlgAlert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                //dismiss the dialog
+            }
+        });
+        dlgAlert.setCancelable(true);
+        dlgAlert.create().show();
+    }
+
+    public void invalidPassword()
+    {
+        AlertDialog.Builder dlgAlert  = new AlertDialog.Builder(this);
+        dlgAlert.setMessage("The Password may only contain letters and numbers.");
+        dlgAlert.setTitle("Invalid Password");
         dlgAlert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 //dismiss the dialog
