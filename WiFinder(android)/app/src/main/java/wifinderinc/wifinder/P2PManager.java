@@ -30,13 +30,16 @@ public class P2PManager {
     private final HashSet<String> MESSAGE_HASHES;               //Incoming messages to send to room
     public static final int PORT = 6223;                        //Port we will use for connections
     private Thread roomThread;                                  //Thread that will check the available rooms
-    private static List<String> AVAILABLE_ROOMS;         //Available rooms
+    private static List<String> AVAILABLE_ROOMS;                //Available rooms
+    private static List<String> UPDATED_ROOM_LIST;              //Keep track of all rooms available.
+
+    private static P2PManager manager = null;
 
     /**
      * Construct for P2PManager.
      * @param activity The activity the P2PManager is associated with.
      */
-	public P2PManager(Activity activity) {
+	private P2PManager(Activity activity) {
 		//Initialize components for Wifi p2p
         p2pManager = (WifiP2pManager) activity.getSystemService(Context.WIFI_P2P_SERVICE);
         channel = p2pManager.initialize(activity, activity.getMainLooper(), null);
@@ -86,6 +89,10 @@ public class P2PManager {
                         //Send a blank message as a check
                         synchronized (AVAILABLE_ROOMS) {
                             AVAILABLE_ROOMS.clear();
+                            for (String s : UPDATED_ROOM_LIST) {
+                                AVAILABLE_ROOMS.add(s);
+                            }
+                            UPDATED_ROOM_LIST.clear();
                         }
                         //Instead of null messages, why not broadcast the chatroom (and maybe the user?)
                         if (chatroom != null) sendMessage(new Message(null, null, null, chatroom.getChatRoomName(), null));
@@ -151,6 +158,7 @@ public class P2PManager {
         }
         Log.d("P2PManager", "receieveMessage " + msg.toString());
         Log.d("P2PManager", String.format("User: %s\t Msg %s\tRoom: %s", msg.getName(), msg.getMessage(), msg.getChatRoomName()));
+        sendMessage(msg);           //Forward the message on to other devices. This will also add the hash.
         if (chatroom != null && msg.getMessage() != null) {
             //this is added to handle the way passwords are sent
             String cName = chatroom.getChatRoomName();
@@ -177,10 +185,9 @@ public class P2PManager {
                 if (MESSAGE_HASHES.contains(msg.getMessage() + msg.getTime()))
                 {
                     Log.d("receiveMessage", "Message exists");
-                    return; //Already has got this message.
+                    return; //Already has this message.
                 }
             }
-            sendMessage(msg);           //Forward the message on to other devices. This will also add the hash.
             Log.d("P2PManager", "**** Added ****");
             chatroom.addMessage(msg);
         }
@@ -281,5 +288,10 @@ public class P2PManager {
             //Finally, clear the list for new ones
             OUTPUT_STREAMS.clear();
         }
+    }
+
+    public static P2PManager getInstance(Activity activity) {
+        if (manager == null) manager = new P2PManager(activity);
+        return manager;
     }
 }
