@@ -34,6 +34,11 @@ public class LogManager
     {
         ArrayList<LoggedChat> logs = new ArrayList<LoggedChat>();
 
+        if (this.directory == null || !this.directory.isDirectory())
+        {
+            return logs;
+        }   //end if
+
         for (File file : this.directory.listFiles())
         {
             if (file.isFile())
