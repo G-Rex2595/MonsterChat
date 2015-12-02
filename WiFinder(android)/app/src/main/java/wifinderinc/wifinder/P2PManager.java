@@ -115,7 +115,7 @@ public class P2PManager {
 	public void sendMessage(final Message msg) {
         Log.d("P2PManager", "sendMessage " + msg.getMessage());
         synchronized (MESSAGE_HASHES) {
-            MESSAGE_HASHES.add(msg.getMessage() + msg.getTime());
+            MESSAGE_HASHES.add(hash(msg));
             Log.d("sendMessage", "Added:  " + msg.hashCode());
         }
 		new Thread() {
@@ -181,13 +181,7 @@ public class P2PManager {
             }
 
             //It's a user message and belongs in the current chatroom
-            synchronized (MESSAGE_HASHES) {
-                if (MESSAGE_HASHES.contains(msg.getMessage() + msg.getTime()))
-                {
-                    Log.d("receiveMessage", "Message exists");
-                    return; //Already has this message.
-                }
-            }
+            if (messageExists(msg)) return;
             sendMessage(msg);           //Forward the message on to other devices. This will also add the hash.
             Log.d("P2PManager", "**** Added ****");
             chatroom.addMessage(msg);
@@ -203,15 +197,29 @@ public class P2PManager {
                         Log.d("AvailableSize", "" + UPDATED_ROOM_LIST.size());
                     }
                 }
+                if (!messageExists(msg)) sendMessage(msg); //Propogate the message
             }
         }
         //If we reach here, the message was valid but for the wrong room
     }
 
+    private String hash(Message msg) {
+        return msg.getMessage() + msg.getTime();
+    }
+
+    private boolean messageExists(Message msg) {
+        synchronized (MESSAGE_HASHES) {
+            if (MESSAGE_HASHES.contains(hash(msg))) {
+                return true;
+            }
+            return false;
+        }
+    }
+
     public void setChatRoom(ChatRoom chatroom) {
         Log.d("P2PManager", "setChatRoom called");
         this.chatroom = chatroom;
-        clearConnections();
+        //clearConnections();
     }
 
     /**
