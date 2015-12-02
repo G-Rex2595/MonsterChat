@@ -1,5 +1,6 @@
 package wifinderinc.wifinder;
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -11,8 +12,10 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -32,6 +35,8 @@ import android.widget.TextView;
 
 import org.w3c.dom.Text;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -64,6 +69,9 @@ public class ChatRoomView extends AppCompatActivity{
     private Boolean TimeStamps;
     private int textColor;
     private Typeface FontStyle;
+
+    public static final int GET_FROM_GALLERY = 3;
+    private Bitmap insertImg = null;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -113,7 +121,7 @@ public class ChatRoomView extends AppCompatActivity{
             }
 
 
-        });;
+        });
 
         //set up adapter
         adapter=new ChatList(this, Head, Message, Images, textColor, FontStyle );
@@ -152,9 +160,6 @@ public class ChatRoomView extends AppCompatActivity{
                 Calendar c = Calendar.getInstance();
                 BlockedUser BlockThis = new BlockedUser(uName, uId, c.getTimeInMillis());
                 Blocker.block(BlockThis);
-                ArrayList<BlockedUser> BlockedUsers = Blocker.getBlockedUsers();
-                Log.d("descr", "" + BlockedUsers.size());
-                //UserName = "" + BlockedUsers.size();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -266,7 +271,7 @@ public class ChatRoomView extends AppCompatActivity{
 
                 BitmapDrawable bd = null;
                 Bitmap b = msg.getPicture();
-                if (b !=null) {
+                if (b != null) {
                     bd = new BitmapDrawable(getResources(), b);
                 }
 
@@ -276,6 +281,38 @@ public class ChatRoomView extends AppCompatActivity{
             }
         });
         scrollMyListViewToBottom();
+    }
+
+    public void btnGallery_onClick(View v){
+        startActivityForResult(new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI),
+                        GET_FROM_GALLERY);
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        //Detects request codes
+        Bitmap bitmap = null;
+        if(requestCode==GET_FROM_GALLERY && resultCode == Activity.RESULT_OK) {
+            Uri selectedImage = data.getData();
+
+            try {
+                bitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), selectedImage);
+            } catch (FileNotFoundException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+
+        }
+        insertImg = bitmap;
+
     }
 
     @Override
@@ -312,8 +349,9 @@ public class ChatRoomView extends AppCompatActivity{
         //InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         //imm.hideSoftInputFromWindow(txtbxInput.getWindowToken(), 0);
 
-        manager.getCurrentChatRoom().sendMessage(message, null);    //change null to the user's picture
+        manager.getCurrentChatRoom().sendMessage(message, insertImg);    //change null to the user's picture
 
+        insertImg = null;
         txtbxInput.clearFocus();
     }
 

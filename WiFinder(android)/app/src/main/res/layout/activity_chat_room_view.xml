@@ -90,4 +90,15 @@
         android:footerDividersEnabled="true"
         android:layout_margin="5dp" />
 
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gallery"
+        android:id="@+id/Gallery"
+        android:layout_alignBottom="@+id/lstChatDisp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toEndOf="@+id/txtMessageInput"
+        android:onClick="btnGallery_onClick" />
+
 </RelativeLayout>

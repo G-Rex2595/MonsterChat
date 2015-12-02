@@ -1,14 +1,19 @@
 package wifinderinc.wifinder;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.LinkedList;
 
 /**
@@ -33,13 +38,23 @@ public class UnblockUsers extends AppCompatActivity {
         UnblockList = (ListView) findViewById(R.id.listView);
 
         BlockedUsers = Blocker.getBlockedUsers();
-        BlockedList.add("derp " + BlockedUsers.size());
 
         for(BlockedUser curr : BlockedUsers ){
             String str = curr.getUsername() + " blocked at " + curr.getTime();
             BlockedList.add(str);
         }
 
+        UnblockList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //when item is selected open chat rooms view and send the room name
+                BlockedUser currSelection = BlockedUsers.get(position);
+                promptUnblock(currSelection, position);
+            }
+
+
+        });
         BlockAdpt = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1 , BlockedList){
             public View getView(int position, View convertView, ViewGroup parent) {
 
@@ -50,6 +65,33 @@ public class UnblockUsers extends AppCompatActivity {
             }
         };
         UnblockList.setAdapter(BlockAdpt);
+
+    }
+
+    private void promptUnblock(BlockedUser unblockUser, int position){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Unblock " + unblockUser.getUsername() + "?");
+
+
+        // Set up the buttons
+        final BlockedUser unblU = unblockUser;
+        final int pos = position;
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Blocker.unblock(unblU);
+                BlockedList.remove(pos);
+                BlockAdpt.notifyDataSetChanged();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
 
     }
 }
