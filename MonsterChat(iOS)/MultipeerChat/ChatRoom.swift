@@ -13,8 +13,8 @@ class ChatRoom
     var username: String
     var network: P2PManager
     var roomName: String
-    var messages: [Message]
     var gui: ChatRoomView?
+    let logWriter: ChatLogWriter
     
     init(network: P2PManager, username: String, roomName: String)
     {
@@ -22,6 +22,7 @@ class ChatRoom
         self.username = username
         self.roomName = roomName
         self.messages = []
+        self.logWriter = ChatLogWriter(roomName)
     }
     
     func sendMessage(text: String) -> Message
@@ -42,14 +43,14 @@ class ChatRoom
     
     func addMessage(message: Message)
     {
-        self.messages.append(message)
-        
         self.gui!.addMessage(message)
+        self.logWriter.addMessage(message)
     }
     
     func exit()
     {
         //TODO: later sprint
+        self.logWriter.close()
     }
     
     func setChatRoomView(view: ChatRoomView)
