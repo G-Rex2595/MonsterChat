@@ -30,7 +30,7 @@ class Message
         self.time = NSDate()
     }
     
-    func getName() -> String
+    func getUserName() -> String
     {
         return self.username
     }
