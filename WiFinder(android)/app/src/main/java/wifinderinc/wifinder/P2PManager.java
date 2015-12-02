@@ -81,6 +81,7 @@ public class P2PManager {
         this.activity = activity;
 
         AVAILABLE_ROOMS = Collections.synchronizedList(new ArrayList<String>());
+        UPDATED_ROOM_LIST = Collections.synchronizedList(new ArrayList<String>());
         roomThread = new Thread() {
             @Override
             public void run() {
@@ -96,7 +97,7 @@ public class P2PManager {
                         }
                         //Instead of null messages, why not broadcast the chatroom (and maybe the user?)
                         if (chatroom != null) sendMessage(new Message(null, null, null, chatroom.getChatRoomName(), null));
-                        Thread.sleep(5000);
+                        Thread.sleep(1000);
                     }
                     catch (InterruptedException e) { break; }
                 }
@@ -152,13 +153,12 @@ public class P2PManager {
      * @param msg
      */
     public void receiveMessage(Message msg) {
-        if (msg == null)
-        {
+        if (msg == null) {
             return;
         }
         Log.d("P2PManager", "receieveMessage " + msg.toString());
         Log.d("P2PManager", String.format("User: %s\t Msg %s\tRoom: %s", msg.getName(), msg.getMessage(), msg.getChatRoomName()));
-        sendMessage(msg);           //Forward the message on to other devices. This will also add the hash.
+
         if (chatroom != null && msg.getMessage() != null) {
             //this is added to handle the way passwords are sent
             String cName = chatroom.getChatRoomName();
@@ -188,6 +188,7 @@ public class P2PManager {
                     return; //Already has this message.
                 }
             }
+            sendMessage(msg);           //Forward the message on to other devices. This will also add the hash.
             Log.d("P2PManager", "**** Added ****");
             chatroom.addMessage(msg);
         }
@@ -195,11 +196,11 @@ public class P2PManager {
             if (msg.getChatRoomName() != null) {
                 Log.d("receiveMessage roomname", msg.getChatRoomName());
                 String name = msg.getChatRoomName();
-                synchronized (AVAILABLE_ROOMS) {
-                    Log.d("AvailBefore", "" + AVAILABLE_ROOMS.size());
-                    if (!"Global".equals(name) && !AVAILABLE_ROOMS.contains(name)) {
-                        AVAILABLE_ROOMS.add(name);
-                        Log.d("AvailableSize", "" + AVAILABLE_ROOMS.size());
+                synchronized (UPDATED_ROOM_LIST) {
+                    Log.d("AvailBefore", "" + UPDATED_ROOM_LIST.size());
+                    if (!"Global".equals(name) && !UPDATED_ROOM_LIST.contains(name)) {
+                        UPDATED_ROOM_LIST.add(name);
+                        Log.d("AvailableSize", "" + UPDATED_ROOM_LIST.size());
                     }
                 }
             }
