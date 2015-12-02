@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		52D9AA011C0FAFC10020F976 /* ChatRoomManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D9AA001C0FAFC10020F976 /* ChatRoomManager.swift */; };
+		52D9AA031C0FAFCE0020F976 /* ChatRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D9AA021C0FAFCE0020F976 /* ChatRoom.swift */; };
+		52D9AA051C0FAFDA0020F976 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D9AA041C0FAFDA0020F976 /* Message.swift */; };
 		C978087E1BCC9AB700B6F31C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C978087D1BCC9AB700B6F31C /* AppDelegate.swift */; };
 		C97808801BCC9AB700B6F31C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C978087F1BCC9AB700B6F31C /* ViewController.swift */; };
 		C97808831BCC9AB700B6F31C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C97808811BCC9AB700B6F31C /* Main.storyboard */; };
@@ -36,6 +39,9 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		52D9AA001C0FAFC10020F976 /* ChatRoomManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatRoomManager.swift; sourceTree = "<group>"; };
+		52D9AA021C0FAFCE0020F976 /* ChatRoom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatRoom.swift; sourceTree = "<group>"; };
+		52D9AA041C0FAFDA0020F976 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		C978087A1BCC9AB700B6F31C /* MultipeerChat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MultipeerChat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C978087D1BCC9AB700B6F31C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C978087F1BCC9AB700B6F31C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -110,6 +116,9 @@
 				C97808891BCC9AB700B6F31C /* LaunchScreen.storyboard */,
 				C978088C1BCC9AB700B6F31C /* Info.plist */,
 				C97808841BCC9AB700B6F31C /* MultipeerChat.xcdatamodeld */,
+				52D9AA001C0FAFC10020F976 /* ChatRoomManager.swift */,
+				52D9AA021C0FAFCE0020F976 /* ChatRoom.swift */,
+				52D9AA041C0FAFDA0020F976 /* Message.swift */,
 			);
 			path = MultipeerChat;
 			sourceTree = "<group>";
@@ -263,8 +272,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				52D9AA011C0FAFC10020F976 /* ChatRoomManager.swift in Sources */,
 				C97808801BCC9AB700B6F31C /* ViewController.swift in Sources */,
 				C978087E1BCC9AB700B6F31C /* AppDelegate.swift in Sources */,
+				52D9AA051C0FAFDA0020F976 /* Message.swift in Sources */,
+				52D9AA031C0FAFCE0020F976 /* ChatRoom.swift in Sources */,
 				C97808861BCC9AB700B6F31C /* MultipeerChat.xcdatamodeld in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
