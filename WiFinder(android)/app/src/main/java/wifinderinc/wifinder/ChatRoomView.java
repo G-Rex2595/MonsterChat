@@ -6,8 +6,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.preference.PreferenceManager;
 import android.provider.CalendarContract;
@@ -49,8 +51,11 @@ public class ChatRoomView extends AppCompatActivity{
     private String UserName;
 
     //Adapter Globals
-    private ArrayList<String> Chat = new ArrayList<>();
-    private ArrayAdapter<String> adapter;
+    private ArrayList<String> Head = new ArrayList<>();
+    private ArrayList<String> Message = new ArrayList<>();
+    private ArrayList<BitmapDrawable> Images = new ArrayList<>();
+    private ArrayList<String> UserIds = new ArrayList<>();
+    private ChatList adapter;
 
     //Preference globals
     private String ColorScheme;
@@ -59,7 +64,6 @@ public class ChatRoomView extends AppCompatActivity{
     private Boolean TimeStamps;
     private int textColor;
     private Typeface FontStyle;
-    private Blocker blocker;
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,25 +87,28 @@ public class ChatRoomView extends AppCompatActivity{
         SetColors(ColorScheme);
         SetFont(Font);
 
-        blocker.initialize(this);
-
         //get values that are passed down
         Intent intent = getIntent();
         RoomName = intent.getStringExtra(ChatRoomsList.ROOM_NAME);
         UserName = intent.getStringExtra(ChatRoomsList.USER_NAME);
 
-        Chat.add("Welcome to " + RoomName + ", " + UserName + "!");
+        Head.add("Welcome to " + RoomName + ", " + UserName + "!");
+        Message.add("");
+        Images.add(null);
+        UserIds.add("default");
 
         lstDisplay.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //when item is selected open chat rooms view and send the room name
-                String textStr = ((TextView) view).getText().toString();
+                ViewGroup vG = (ViewGroup) view;
+                TextView headView = (TextView)vG.getChildAt(0);
+                String textStr = headView.getText().toString();
                 String Name = textStr.split(":")[0];
 
-               // if(Name.compareTo(UserName) != 0 && !Name.contains("e t")) {
-                    promptBlock(Name);
+                //if(Name.compareTo(UserName) != 0 && !Name.contains("e t")) {
+                    promptBlock(Name, UserIds.get(position));
                 //}
             }
 
@@ -109,19 +116,8 @@ public class ChatRoomView extends AppCompatActivity{
         });;
 
         //set up adapter
-        adapter=new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Chat){
-            public View getView(int position, View convertView, ViewGroup parent) {
+        adapter=new ChatList(this, Head, Message, Images, textColor, FontStyle );
 
-                View view = super.getView(position, convertView, parent);
-                TextView text = (TextView) view.findViewById(android.R.id.text1);
-
-                text.setTextColor(textColor);
-                text.setTypeface(FontStyle);
-
-
-                return view;
-            }
-        };
         lstDisplay.setAdapter(adapter);
 
         //manager = new ChatRoomManager(UserName, this);
@@ -142,19 +138,23 @@ public class ChatRoomView extends AppCompatActivity{
         });
     }
 
-    private void promptBlock(String Name){
+    private void promptBlock(String Name, String UserId){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Block " + Name + "?");
 
 
         // Set up the buttons
         final String uName = Name;
+        final String uId = UserId;
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 Calendar c = Calendar.getInstance();
-                BlockedUser BlockThis = new BlockedUser(uName, "0", c.getTimeInMillis());
-                blocker.block(BlockThis);
+                BlockedUser BlockThis = new BlockedUser(uName, uId, c.getTimeInMillis());
+                Blocker.block(BlockThis);
+                ArrayList<BlockedUser> BlockedUsers = Blocker.getBlockedUsers();
+                Log.d("descr", "" + BlockedUsers.size());
+                //UserName = "" + BlockedUsers.size();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -256,10 +256,22 @@ public class ChatRoomView extends AppCompatActivity{
             }
             timeStamp = formatT.format(c.getTime());
         }
-        final String message = String.format("%s:         %s\n%s\n", m.getName(), timeStamp, m.getMessage());
+
+        final String stamp = timeStamp;
+        final Message msg = m;
         runOnUiThread(new Runnable() {
             public void run() {
-                Chat.add(message);
+                Head.add(String.format("%s:         %s", msg.getName(), stamp));
+                Message.add(msg.getMessage());
+
+                BitmapDrawable bd = null;
+                Bitmap b = msg.getPicture();
+                if (b !=null) {
+                    bd = new BitmapDrawable(getResources(), b);
+                }
+
+                Images.add(bd);
+                UserIds.add(msg.getID());
                 adapter.notifyDataSetChanged();
             }
         });

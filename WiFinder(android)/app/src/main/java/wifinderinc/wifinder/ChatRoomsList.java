@@ -151,6 +151,7 @@ public class ChatRoomsList extends AppCompatActivity {
                 return view;
             }
         };
+
         lstRooms.setAdapter(RoomAdpt);
     }
 
@@ -177,7 +178,7 @@ public class ChatRoomsList extends AppCompatActivity {
                     invalidPassword();
                     return;
                 } else {
-                    manager.joinRoom(RoomName, tempPass);   //TODO:  change null to the password the user entered
+                    manager.joinRoom(RoomName, tempPass);
                     if (manager.getCurrentChatRoom() == null)   //could not join room
                     {
                         return;

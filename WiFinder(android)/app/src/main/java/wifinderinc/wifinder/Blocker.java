@@ -1,6 +1,7 @@
 package wifinderinc.wifinder;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -32,6 +33,7 @@ public final class Blocker
         }   //end if
 
         filename = context.getFilesDir() + "/BlockedUsers";
+        //new File(filename).delete();
     }   //end of initialize method
 
     /**

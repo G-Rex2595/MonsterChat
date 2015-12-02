@@ -18,7 +18,8 @@
         android:layout_centerHorizontal="true"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="3dp"
-        android:background="#000000" />
+        android:background="#000000"
+        android:layout_marginLeft="10dp" />
 
     <EditText
         android:layout_width="350dp"
@@ -44,7 +45,10 @@
         android:imeOptions="actionDone"
         android:layout_marginBottom="5dp"
         android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true" />
+        android:layout_alignParentBottom="true"
+        android:layout_toLeftOf="@+id/SendBack"
+        android:layout_marginLeft="2dp"
+        android:layout_alignLeft="@+id/InputBack" />
 
     <TextView
         android:layout_width="62dp"
@@ -64,14 +68,14 @@
         android:text="Send"
         android:id="@+id/btnSendMessage"
         android:layout_alignParentBottom="true"
-        android:layout_alignRight="@+id/txtMessageInput"
-        android:layout_alignEnd="@+id/txtMessageInput"
         android:onClick="btnSendMessage_Click"
         android:focusable="false"
         android:focusableInTouchMode="false"
         android:clickable="true"
         android:enabled="true"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginBottom="5dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="7dp" />
 
     <ListView
         android:layout_width="wrap_content"
