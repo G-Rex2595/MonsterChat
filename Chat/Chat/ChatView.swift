@@ -45,22 +45,21 @@ class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate, UITabl
         //let encodedMsg = msg.dataUsingEncoding(NSUTF8StringEncoding)
         
         
-        /*
+        
         let msg = msgfield.text?.dataUsingEncoding(NSUTF8StringEncoding)
         
-        do {
-            try chatsession.sendData(msg!, toPeers: chatsession.connectedPeers, withMode: MCSessionSendDataMode.Reliable)
-        } catch {
-            
-        }
-        */
-        
-        //self.updateChat(self.msgfield.text!, fromPeer: self.peerID)
-        
         if(msgfield.text! != ""){
-            self.messagesArray.append(msgfield.text!)
+            do {
+                try chatsession.sendData(msg!, toPeers: chatsession.connectedPeers, withMode: MCSessionSendDataMode.Reliable)
+            } catch {
+            
+            }
             self.chatTable.reloadData()
         }
+
+        
+        //self.updateChat(self.msgfield.text!, fromPeer: self.peerID)
+
         self.msgfield.text = ""
     }
 
@@ -76,10 +75,10 @@ class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate, UITabl
             print("Connecting to session:")
             
         case MCSessionState.NotConnected:
-            print("Did not connect to session:")
-            //NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-              //self.performSegueWithIdentifier("chatlist", sender: self)
-            //}
+            print("Disconnected from session:")
+            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+              self.performSegueWithIdentifier("chatlist", sender: self)
+            }
         }
     }
     
