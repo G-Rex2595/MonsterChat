@@ -1,5 +1,7 @@
 package wifinderinc.wifinder;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
@@ -30,9 +32,14 @@ public class LogView extends AppCompatActivity {
     //UI Globals
     private ListView lstDisplay;
     private RelativeLayout Back;
+    private Button btnHome;
+    private Button btnDeleteLog;
+    private Button btnSettings;
+    private TextView MenuBox;
 
     //Various Globals
     private String LogName;
+    private int LogPos;
 
     //Adapter global stuff
     private ArrayList<String> Log = new ArrayList<>();
@@ -49,6 +56,8 @@ public class LogView extends AppCompatActivity {
     private int textColor;
     private Typeface FontStyle;
 
+    private boolean isFocus = true;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_view);
@@ -56,10 +65,15 @@ public class LogView extends AppCompatActivity {
         //Setup up the ListView
         lstDisplay = (ListView)findViewById(R.id.lstLogDisp);
         Back = (RelativeLayout)findViewById(R.id.Layout);
+        btnHome = (Button)findViewById(R.id.btnHome);
+        btnDeleteLog = (Button)findViewById(R.id.btnDeleteLog);
+        btnSettings = (Button)findViewById(R.id.btnSettings);
+        MenuBox = (TextView)findViewById(R.id.MenuBack);
 
         //Gets the Name of the Log
         Intent intent = getIntent();
         LogName = intent.getStringExtra(LogsList.LOG_NAME);
+        LogPos = intent.getIntExtra(LogsList.LOG_POS, 0);
 
         //Get Preferences
         SharedPreferences SharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -167,6 +181,19 @@ public class LogView extends AppCompatActivity {
         LogView.this.Back.setBackgroundColor(backColor);
         lstDisplay.setBackgroundColor(backColor);
 
+        //Set button background colors
+        btnHome.setBackgroundColor(btnColor);
+        btnSettings.setBackgroundColor(btnColor);
+        btnDeleteLog.setBackgroundColor(btnColor);
+
+        //set highlight color
+        MenuBox.setBackgroundColor(textColor);
+
+        //set text colors
+        btnHome.setTextColor(textColor);
+        btnSettings.setTextColor(textColor);
+        btnDeleteLog.setTextColor(textColor);
+
         //set divider color
         ColorDrawable divColor = new ColorDrawable(textColor);
         lstDisplay.setDivider(divColor);
@@ -186,5 +213,59 @@ public class LogView extends AppCompatActivity {
                 break;
         }
 
+        btnHome.setTypeface(FontStyle);
+        btnSettings.setTypeface(FontStyle);
+        btnDeleteLog.setTypeface(FontStyle);
+
+    }
+
+    public void btnSettings_Click(View v){
+        Intent intent = new Intent(this, Preferences.class);
+        intent.putExtra(Preferences.EXTRA_SHOW_FRAGMENT, Preferences.Prefs.class.getName());
+        intent.putExtra(Preferences.EXTRA_NO_HEADERS, true);
+        this.startActivity(intent);
+    }
+
+    public void btnHome_Click(View v){
+        Intent intent = new Intent(this, HomePage.class);
+        this.startActivity(intent);
+    }
+
+    public void BtnDeleteLog_Click(View v){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Log?");
+
+        final LogManager logMan = new LogManager(this);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ArrayList<LoggedChat> LogList = logMan.getLogs();
+                LogList.get(LogPos).delete();
+                finish();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        builder.show();
+    }
+
+    protected void onResume() {
+        super.onResume();
+        if(!isFocus){
+            finish();
+            startActivity(getIntent());
+        }
+
+        isFocus = true;
+    }
+
+    protected void onPause() {
+        super.onPause();
+        isFocus = false;
     }
 }

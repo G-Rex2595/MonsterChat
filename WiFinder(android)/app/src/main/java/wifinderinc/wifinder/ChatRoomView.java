@@ -49,6 +49,10 @@ public class ChatRoomView extends AppCompatActivity{
     private TextView InputBox;
     private TextView SendBox;
     private RelativeLayout Back;
+    private Button btnHome;
+    private Button btnInsertImg;
+    private Button btnSettings;
+    private TextView MenuBox;
 
     //Various Globals
     private ChatRoomManager manager;
@@ -73,6 +77,8 @@ public class ChatRoomView extends AppCompatActivity{
     public static final int GET_FROM_GALLERY = 3;
     private Bitmap insertImg = null;
 
+    private Boolean isFocus = true;
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_room_view);
@@ -91,6 +97,10 @@ public class ChatRoomView extends AppCompatActivity{
         InputBox = (TextView) findViewById(R.id.InputBack);
         SendBox = (TextView)findViewById(R.id.SendBack);
         Back = (RelativeLayout)findViewById(R.id.Background);
+        btnHome = (Button)findViewById(R.id.btnHome);
+        btnInsertImg = (Button)findViewById(R.id.btnInsertImg);
+        btnSettings = (Button)findViewById(R.id.btnSettings);
+        MenuBox = (TextView)findViewById(R.id.MenuBack);
 
         SetColors(ColorScheme);
         SetFont(Font);
@@ -218,14 +228,21 @@ public class ChatRoomView extends AppCompatActivity{
 
         //set button background
         btnSend.setBackgroundColor(btnColor);
+        btnHome.setBackgroundColor(btnColor);
+        btnSettings.setBackgroundColor(btnColor);
+        btnInsertImg.setBackgroundColor(btnColor);
 
         //set highlights
         InputBox.setBackgroundColor(textColor);
         SendBox.setBackgroundColor(textColor);
+        MenuBox.setBackgroundColor(textColor);
 
         //set text colors
         txtbxInput.setTextColor(textColor);
         btnSend.setTextColor(textColor);
+        btnHome.setTextColor(textColor);
+        btnSettings.setTextColor(textColor);
+        btnInsertImg.setTextColor(textColor);
 
         //set divider colors
         ColorDrawable divColor = new ColorDrawable(textColor);
@@ -248,6 +265,9 @@ public class ChatRoomView extends AppCompatActivity{
 
         txtbxInput.setTypeface(FontStyle);
         btnSend.setTypeface(FontStyle);
+        btnHome.setTypeface(FontStyle);
+        btnSettings.setTypeface(FontStyle);
+        btnInsertImg.setTypeface(FontStyle);
     }
 
     public void addMessage(Message m) {
@@ -286,7 +306,7 @@ public class ChatRoomView extends AppCompatActivity{
     public void btnGallery_onClick(View v){
         startActivityForResult(new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI),
-                        GET_FROM_GALLERY);
+                GET_FROM_GALLERY);
 
     }
 
@@ -318,10 +338,23 @@ public class ChatRoomView extends AppCompatActivity{
     @Override
     public void onResume() {
         super.onResume();
+        if(!isFocus){
+            SharedPreferences SharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+            ColorScheme = SharedPrefs.getString("Colors", "Default");
+            Font = SharedPrefs.getString("Fonts", "Default");
+            TimeStamps = SharedPrefs.getBoolean("TimeStampEnabled", false);
+            TimeFormat = SharedPrefs.getBoolean("24hrEnabled", false);
+            SetColors(ColorScheme);
+            SetFont(Font);
+            adapter.setTextColor(textColor);
+            adapter.setFontStyle(FontStyle);
+            adapter.notifyDataSetChanged();
+        }
         //finish();
         //startActivity(getIntent());
         manager.onResume();
         //TODO: call ChatRoomManager onresume
+        isFocus = true;
     }
 
     @Override
@@ -332,6 +365,7 @@ public class ChatRoomView extends AppCompatActivity{
 
         //manager.onPause();
         //TODO: call ChatRoomManager onpause
+        isFocus = false;
     }
 
     public void btnSendMessage_Click(View v){
@@ -361,6 +395,18 @@ public class ChatRoomView extends AppCompatActivity{
         ChatRoomsList.manager = null;
         super.onBackPressed();
         Log.d("BackButton", "Pressed");
+    }
+
+    public void btnSettings_Click(View v){
+        Intent intent = new Intent(this, Preferences.class);
+        intent.putExtra(Preferences.EXTRA_SHOW_FRAGMENT, Preferences.Prefs.class.getName());
+        intent.putExtra(Preferences.EXTRA_NO_HEADERS, true);
+        this.startActivity(intent);
+    }
+
+    public void btnHome_Click(View v){
+        Intent intent = new Intent(this, HomePage.class);
+        this.startActivity(intent);
     }
 
 }

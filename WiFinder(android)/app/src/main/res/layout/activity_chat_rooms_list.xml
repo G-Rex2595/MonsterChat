@@ -5,25 +5,16 @@
     android:id="@+id/Layout">
 
     <TextView
-        android:layout_width="248dp"
+        android:layout_width="match_parent"
         android:layout_height="53dp"
         android:text="     ."
         android:id="@+id/CreateBack"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="8dp"
         android:background="#000000"
-        android:layout_marginLeft="6dp" />
-
-    <TextView
-        android:layout_width="103dp"
-        android:layout_height="53dp"
-        android:text="     ."
-        android:id="@+id/RefreshBack"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="8dp"
-        android:background="#000000"
-        android:layout_marginRight="6dp"
-        android:layout_alignParentRight="true" />
+        android:layout_marginLeft="6dp"
+        android:layout_alignRight="@+id/btnSettings"
+        android:layout_marginRight="6dp" />
 
     <Button
         android:layout_width="245dp"
@@ -31,45 +22,78 @@
         android:text="Create Your Own Chat Room"
         android:id="@+id/btnCreateRoom"
         android:width="300dp"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
+        android:layout_alignParentBottom="false"
+        android:layout_marginBottom="2dp"
         android:onClick="btnCreateRoom_Click"
-        android:layout_marginLeft="7dp"
-        android:layout_alignParentLeft="true" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Chat Rooms List"
-        android:id="@+id/txtChatRoomsList"
-        android:layout_alignParentTop="true"
-        android:layout_centerHorizontal="true"
-        android:textSize="40dp"
-        android:layout_marginTop="10dp"
-        android:textColor="#0d0d0d" />
+        android:layout_marginLeft="1dp"
+        android:layout_alignParentLeft="false"
+        android:layout_alignTop="@+id/CreateBack"
+        android:layout_alignBottom="@+id/CreateBack"
+        android:layout_alignLeft="@+id/CreateBack"
+        android:layout_alignRight="@+id/CreateBack"
+        android:layout_marginTop="1dp"
+        android:layout_marginRight="2dp" />
 
     <ListView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/lstChatRooms"
-        android:layout_below="@+id/txtChatRoomsList"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:clickable="true"
         android:contextClickable="true"
         android:focusable="true"
         android:layout_above="@+id/CreateBack"
-        android:layout_marginBottom="5dp" />
+        android:layout_marginBottom="5dp"
+        android:layout_below="@+id/MenuBack" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:id="@+id/MenuBack"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:background="#000000" />
 
     <Button
-        android:layout_width="100dp"
-        android:layout_height="50dp"
-        android:text="Refresh"
-        android:id="@+id/btnRefresh"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="10dp"
-        android:layout_marginRight="7dp"
-        android:onClick="btnRef_Click" />
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:text="Home"
+        android:id="@+id/btnHome"
+        android:layout_alignTop="@+id/MenuBack"
+        android:layout_alignLeft="@+id/MenuBack"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_alignBottom="@+id/MenuBack"
+        android:layout_marginBottom="2dp"
+        android:textSize="17dp"
+        android:layout_marginRight="2dp"
+        android:onClick="btnHome_Click" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Chats Rooms"
+        android:id="@+id/btnTitle"
+        android:layout_alignTop="@+id/MenuBack"
+        android:layout_toRightOf="@+id/btnHome"
+        android:layout_alignBottom="@+id/MenuBack"
+        android:layout_toLeftOf="@+id/btnSettings"
+        android:textSize="24dp" />
+
+    <Button
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:id="@+id/btnSettings"
+        android:layout_alignTop="@+id/btnHome"
+        android:layout_alignBottom="@+id/btnHome"
+        android:layout_alignRight="@+id/MenuBack"
+        android:layout_marginRight="2dp"
+        android:textSize="17dp"
+        android:layout_marginLeft="1dp"
+        android:onClick="btnSettings_Click" />
 
 </RelativeLayout>

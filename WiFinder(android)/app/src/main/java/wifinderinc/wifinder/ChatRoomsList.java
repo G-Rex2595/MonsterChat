@@ -27,8 +27,12 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by Cole Baughn on 11/10/2015.
@@ -42,11 +46,12 @@ public class ChatRoomsList extends AppCompatActivity {
     public static ChatRoomManager manager = null;
     private Button btnCreate;
     private ListView lstRooms;
-    private TextView lblTitle;
     private RelativeLayout Back;
     private TextView CreateBox;
-    private Button btnRef;
-    private TextView RefBox;
+    private Button btnHome;
+    private Button btnTitle;
+    private Button btnSettings;
+    private TextView MenuBox;
 
     //set up adapter
     private LinkedList<String> RoomList = new LinkedList<>();
@@ -66,6 +71,8 @@ public class ChatRoomsList extends AppCompatActivity {
     private int textColor;
     private Typeface FontStyle;
 
+    Timer timer = new Timer();
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_rooms_list);
@@ -73,28 +80,34 @@ public class ChatRoomsList extends AppCompatActivity {
         //Setup UI Globals
         btnCreate = (Button)findViewById(R.id.btnCreateRoom);
         lstRooms = (ListView) findViewById(R.id.lstChatRooms);
-        lblTitle = (TextView) findViewById(R.id.txtChatRoomsList);
         CreateBox = (TextView) findViewById(R.id.CreateBack);
-        btnRef = (Button) findViewById(R.id.btnRefresh);
-        RefBox = (TextView) findViewById(R.id.RefreshBack);
         Back = (RelativeLayout) findViewById(R.id.Layout);
+        btnHome = (Button)findViewById(R.id.btnHome);
+        btnTitle = (Button)findViewById(R.id.btnTitle);
+        btnSettings = (Button)findViewById(R.id.btnSettings);
+        MenuBox = (TextView)findViewById(R.id.MenuBack);
 
         Intent intent = getIntent();
         user = intent.getStringExtra(HomePage.USER_NAME);
 
         if (manager == null)
             manager = new ChatRoomManager("" + System.currentTimeMillis(), this);
-        RoomList = manager.getAvailableRooms();
+        RoomList = manager.getUnformattedRooms();
 
         RoomNames.add("Global");
 
-        int count = 0;
-        while(count < RoomList.size()){
-            String ItemText = RoomList.get(count);
+        for(String roomInfo : RoomList){
+            if(roomInfo.compareTo("Global") == 0){
+                continue;
+            }
 
+            if(roomInfo.contains("-")){
+                RoomNames.add(roomInfo.substring(0, roomInfo.indexOf('-')) + " \uD83D\uDD12" );
+            }
+            else{
+                RoomNames.add(roomInfo);
+            }
 
-            RoomNames.add(ItemText);
-            count++;
         }
 
         //Get Preferences
@@ -115,7 +128,7 @@ public class ChatRoomsList extends AppCompatActivity {
                 //when item is selected open chat rooms view and send the room name
                 String textStr = ((TextView) view).getText().toString();
                 InputPass = "";
-                if (textStr.contains("(Private)")) {
+                if (textStr.contains("\uD83D\uDD12")) {
                     getInputPass(textStr.split(" ")[0]);
 
                 }else {
@@ -153,6 +166,39 @@ public class ChatRoomsList extends AppCompatActivity {
         };
 
         lstRooms.setAdapter(RoomAdpt);
+
+
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        RoomList = manager.getUnformattedRooms();
+
+                        Log.d("RoomsCount", "" + RoomList.size());
+                        for (String s : RoomList)
+                            Log.d("Rooms", s);
+
+                        RoomNames.clear();
+
+                        RoomNames.add("Global");
+
+                        for (String roomInfo : RoomList) {
+                            if (roomInfo.compareTo("Global") == 0) {
+                                continue;
+                            }
+                            if (roomInfo.contains("-")) {
+                                RoomNames.add(roomInfo.substring(0, roomInfo.indexOf('-')) + " \uD83D\uDD12");
+                            } else {
+                                RoomNames.add(roomInfo);
+                            }
+                        }
+                        RoomAdpt.notifyDataSetChanged();
+                    }
+                });
+            }
+        }, 1000, 1000);
     }
 
     private void getInputPass(final String RoomName) {
@@ -208,6 +254,7 @@ public class ChatRoomsList extends AppCompatActivity {
 
     protected void onPause() {
         super.onPause();
+        timer.cancel();
         isFocus = false;
     }
 
@@ -241,21 +288,23 @@ public class ChatRoomsList extends AppCompatActivity {
 
         //Set Backgrounds
         ChatRoomsList.this.Back.setBackgroundColor(backColor);
-        lblTitle.setBackgroundColor(backColor);
         lstRooms.setBackgroundColor(backColor);
+        btnTitle.setBackgroundColor(backColor);
 
         //Set Button Background
         btnCreate.setBackgroundColor(btnColor);
-        btnRef.setBackgroundColor(btnColor);
+        btnHome.setBackgroundColor(btnColor);
+        btnSettings.setBackgroundColor(btnColor);
 
         //Set Highlights
         CreateBox.setBackgroundColor(textColor);
-        RefBox.setBackgroundColor(textColor);
+        MenuBox.setBackgroundColor(textColor);
 
         //Set text color
-        lblTitle.setTextColor(textColor);
         btnCreate.setTextColor(textColor);
-        btnRef.setTextColor(textColor);
+        btnHome.setTextColor(textColor);
+        btnSettings.setTextColor(textColor);
+        btnTitle.setTextColor(textColor);
 
         //Set divider color
         ColorDrawable divColor = new ColorDrawable(textColor);
@@ -278,25 +327,9 @@ public class ChatRoomsList extends AppCompatActivity {
         }
 
         btnCreate.setTypeface(FontStyle);
-        lblTitle.setTypeface(FontStyle);
-    }
-
-    public void btnRef_Click(View v){
-        RoomList = manager.getAvailableRooms();
-
-        Log.d("RoomsCount", "" + RoomList.size());
-        for (String s : RoomList)
-            Log.d("Rooms", s);
-
-        RoomNames.clear();
-
-        RoomNames.add("Global");
-        int count = 0;
-        while(count < RoomList.size()){
-            RoomNames.add(RoomList.get(count));
-            count++;
-        }
-        RoomAdpt.notifyDataSetChanged();
+        btnHome.setTypeface(FontStyle);
+        btnSettings.setTypeface(FontStyle);
+        btnTitle.setTypeface(FontStyle);
     }
 
     public void btnCreateRoom_Click(View v){
@@ -417,5 +450,17 @@ public class ChatRoomsList extends AppCompatActivity {
         });
         dlgAlert.setCancelable(true);
         dlgAlert.create().show();
+    }
+
+    public void btnSettings_Click(View v){
+        Intent intent = new Intent(this, Preferences.class);
+        intent.putExtra(Preferences.EXTRA_SHOW_FRAGMENT, Preferences.Prefs.class.getName());
+        intent.putExtra(Preferences.EXTRA_NO_HEADERS, true);
+        this.startActivity(intent);
+    }
+
+    public void btnHome_Click(View v){
+        Intent intent = new Intent(this, HomePage.class);
+        this.startActivity(intent);
     }
 }

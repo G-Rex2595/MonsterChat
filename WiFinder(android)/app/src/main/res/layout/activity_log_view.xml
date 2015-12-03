@@ -10,7 +10,60 @@
         android:id="@+id/lstLogDisp"
         android:headerDividersEnabled="true"
         android:stackFromBottom="true"
+        android:layout_alignParentTop="false"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/MenuBack" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:id="@+id/MenuBack"
+        android:background="#000000"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true" />
+
+    <Button
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:text="Home"
+        android:id="@+id/btnHome"
+        android:textSize="17dp"
+        android:layout_alignTop="@+id/MenuBack"
+        android:layout_alignLeft="@+id/MenuBack"
+        android:layout_alignBottom="@+id/MenuBack"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="1dp"
+        android:layout_marginRight="2dp"
+        android:layout_marginBottom="2dp"
+        android:onClick="btnHome_Click" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Delete Log"
+        android:id="@+id/btnDeleteLog"
+        android:textSize="23dp"
+        android:layout_alignTop="@+id/btnHome"
+        android:layout_toRightOf="@+id/btnHome"
+        android:layout_alignBottom="@+id/btnHome"
+        android:layout_toLeftOf="@+id/btnSettings"
+        android:layout_marginLeft="1dp"
+        android:layout_marginRight="2dp"
+        android:onClick="BtnDeleteLog_Click" />
+
+    <Button
+        android:layout_width="110dp"
+        android:layout_height="wrap_content"
+        android:text="Settings"
+        android:id="@+id/btnSettings"
+        android:textSize="17dp"
+        android:layout_alignTop="@+id/btnHome"
+        android:layout_alignBottom="@+id/btnHome"
+        android:layout_alignRight="@+id/MenuBack"
+        android:layout_marginLeft="1dp"
+        android:layout_marginRight="2dp"
+        android:onClick="btnSettings_Click" />
 </RelativeLayout>
