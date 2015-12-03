@@ -70,7 +70,7 @@ public class ChatRoomManager
      *
      * @return  Returns a list of available chat rooms.
      */
-    private LinkedList<String> getUnformattedRooms()
+    public LinkedList<String> getUnformattedRooms()
     {
         return _manager.getAvailableRooms();
     }   //end of getUnformattedRooms method

@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.security.KeyRep;
 import java.util.ArrayList;
 
 /**
@@ -23,6 +24,7 @@ public class ChatList extends ArrayAdapter<String> {
     private ArrayList<String> Headers;
     private ArrayList<String> Messages;
     private ArrayList<BitmapDrawable> Images;
+
     private int TextColor;
     private Typeface FontStyle;
 
@@ -68,6 +70,14 @@ public class ChatList extends ArrayAdapter<String> {
             imageView.setBackground(currImg);
         }
         return rowView;
+    }
+
+    public void setTextColor(int newColor){
+        TextColor = newColor;
+    }
+
+    public void setFontStyle(Typeface font){
+        FontStyle = font;
     }
 
 }
