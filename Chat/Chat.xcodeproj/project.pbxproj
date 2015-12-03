@@ -16,6 +16,7 @@
 		C94F85931C07F79600E17D5E /* MultipeerConnectivity.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C94F85921C07F79600E17D5E /* MultipeerConnectivity.framework */; };
 		C94F85951C08205300E17D5E /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94F85941C08205300E17D5E /* MainView.swift */; };
 		C94F85971C0A592200E17D5E /* Singleton.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94F85961C0A592200E17D5E /* Singleton.swift */; };
+		C9A7ADC21C0FBA97009C29D4 /* ChatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C9A7ADC11C0FBA97009C29D4 /* ChatView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		C94F85921C07F79600E17D5E /* MultipeerConnectivity.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MultipeerConnectivity.framework; path = System/Library/Frameworks/MultipeerConnectivity.framework; sourceTree = SDKROOT; };
 		C94F85941C08205300E17D5E /* MainView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
 		C94F85961C0A592200E17D5E /* Singleton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Singleton.swift; sourceTree = "<group>"; };
+		C9A7ADC11C0FBA97009C29D4 /* ChatView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -65,6 +67,7 @@
 			isa = PBXGroup;
 			children = (
 				C94F857D1C07F78400E17D5E /* AppDelegate.swift */,
+				C9A7ADC11C0FBA97009C29D4 /* ChatView.swift */,
 				C94F857F1C07F78400E17D5E /* ViewTwo.swift */,
 				C94F85941C08205300E17D5E /* MainView.swift */,
 				C94F85811C07F78400E17D5E /* Main.storyboard */,
@@ -153,6 +156,7 @@
 				C94F85951C08205300E17D5E /* MainView.swift in Sources */,
 				C94F85801C07F78400E17D5E /* ViewTwo.swift in Sources */,
 				C94F85971C0A592200E17D5E /* Singleton.swift in Sources */,
+				C9A7ADC21C0FBA97009C29D4 /* ChatView.swift in Sources */,
 				C94F857E1C07F78400E17D5E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -301,6 +305,7 @@
 				C94F85911C07F78400E17D5E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
