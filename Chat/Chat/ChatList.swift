@@ -9,7 +9,20 @@
 import UIKit
 import MultipeerConnectivity
 
-class ViewTwo: UIViewController, MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate, MCSessionDelegate, UITableViewDelegate, UITableViewDataSource {
+let serviceType = "Monster-Chat"
+var chatsession : MCSession!
+var browsession : MCSession!
+var peerID: MCPeerID!
+
+var discoveryInfo = [String: String]()
+var foundPeers = [MCPeerID]()
+var invHandler: ((Bool, MCSession)->Void)!
+
+var peerInformation = [peerInfo]()
+
+var checkPeer = MCPeerID!()
+
+class ChatList: UIViewController, MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate, MCSessionDelegate, UITableViewDelegate, UITableViewDataSource {
     
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
         //self.view.resignFirstResponder()
@@ -17,34 +30,27 @@ class ViewTwo: UIViewController, MCNearbyServiceAdvertiserDelegate, MCNearbyServ
         
     }
     
-    let serviceType = "Monster-Chat"
-    var chatsession : MCSession!
-    var browsession : MCSession!
-    var peerID: MCPeerID!
     var browser: MCNearbyServiceBrowser!
     var assistant : MCNearbyServiceAdvertiser!
-    
-    var discoveryInfo = [String: String]()
-    var foundPeers = [MCPeerID]()
-    var invHandler: ((Bool, MCSession)->Void)!
-    
-    var peerInformation = [peerInfo]()
+
     
     @IBOutlet weak var table: UITableView!
     @IBOutlet weak var nameOfRoom: UITextField!
-        
+    
+    
+
     @IBAction func createChat(sender: AnyObject) {
         
         //nameOfRoom.text = "\(Singleton.sharedInstance.userName)'s Chat"
         discoveryInfo["room"] = nameOfRoom.text
-        self.peerID = MCPeerID(displayName: Singleton.sharedInstance.userName)
-        self.chatsession = MCSession(peer: peerID)
-        self.chatsession.delegate = self
+        peerID = MCPeerID(displayName: Singleton.sharedInstance.userName)
+        chatsession = MCSession(peer: peerID)
+        chatsession.delegate = self
         //self.session.delegate = self
-        self.assistant = MCNearbyServiceAdvertiser(peer: peerID, discoveryInfo: discoveryInfo, serviceType: serviceType)
-        self.assistant.delegate = self
+        assistant = MCNearbyServiceAdvertiser(peer: peerID, discoveryInfo: discoveryInfo, serviceType: serviceType)
+        assistant.delegate = self
         
-        self.assistant.startAdvertisingPeer()
+        assistant.startAdvertisingPeer()
         self.table.reloadData()
     }
     
@@ -54,12 +60,12 @@ class ViewTwo: UIViewController, MCNearbyServiceAdvertiserDelegate, MCNearbyServ
         super.viewDidLoad()
         self.view.backgroundColor = Singleton.sharedInstance.backgroundColor
         
-        self.peerID = MCPeerID(displayName: Singleton.sharedInstance.userName)
-        self.browsession = MCSession(peer: peerID)
-        self.browsession.delegate = self
-        self.browser = MCNearbyServiceBrowser(peer: peerID, serviceType: serviceType)
-        self.browser.delegate = self
-        self.browser.startBrowsingForPeers()
+        peerID = MCPeerID(displayName: Singleton.sharedInstance.userName)
+        browsession = MCSession(peer: peerID)
+        browsession.delegate = self
+        browser = MCNearbyServiceBrowser(peer: peerID, serviceType: serviceType)
+        browser.delegate = self
+        browser.startBrowsingForPeers()
         // Do any additional setup after loading the view, typically from a nib.
         self.table.delegate = self
         self.table.reloadData()
@@ -72,14 +78,14 @@ class ViewTwo: UIViewController, MCNearbyServiceAdvertiserDelegate, MCNearbyServ
     }
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
-        return 1
+        return 1;
     }
     
-    func tableView(table: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return peerInformation.count
     }
     
-    func tableView(table: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let tableCell = UITableViewCell()
         
         if(peerInformation[indexPath.row].discInfo["room"] == ""){
@@ -87,21 +93,18 @@ class ViewTwo: UIViewController, MCNearbyServiceAdvertiserDelegate, MCNearbyServ
         }else{
             tableCell.textLabel?.text = peerInformation[indexPath.row].discInfo["room"]!+" chatroom"
         }
-
+        
         return tableCell
     }
     
-    func tableView(table: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 60.0
+    func tableView(tableView: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 35.0
     }
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let selectedPeer = peerInformation[indexPath.row].peerID
-        //let c = "none"
-        //let context = c.dataUsingEncoding(NSUTF8StringEncoding)
         browser.invitePeer(selectedPeer, toSession: browsession, withContext: nil, timeout: 20)
         print("invited \(selectedPeer.displayName)")
-
     }
     
     func browser(browser: MCNearbyServiceBrowser,
@@ -131,8 +134,6 @@ class ViewTwo: UIViewController, MCNearbyServiceAdvertiserDelegate, MCNearbyServ
             }
     }
     
-    var checkPeer = MCPeerID!()
-    
     func advertiser(advertiser: MCNearbyServiceAdvertiser,
         didReceiveInvitationFromPeer peerID: MCPeerID,
         withContext context: NSData?,
@@ -141,17 +142,17 @@ class ViewTwo: UIViewController, MCNearbyServiceAdvertiserDelegate, MCNearbyServ
             
             print("recieved invite from \(peerID.displayName)")
 
-            self.invHandler = invitationHandler
+            invHandler = invitationHandler
             let alert = UIAlertController(title: "", message: "\(peerID.displayName) wants to chat with you.", preferredStyle: UIAlertControllerStyle.Alert)
             
             let acceptAction: UIAlertAction = UIAlertAction(title: "Accept", style: UIAlertActionStyle.Default) { (alertAction) -> Void in
-                invitationHandler(true, self.chatsession)
-                self.checkPeer = peerID
+                invitationHandler(true, chatsession)
+                checkPeer = peerID
                 print("accepted")
             }
             
             let declineAction = UIAlertAction(title: "Cancel", style: UIAlertActionStyle.Cancel) { (alertAction) -> Void in
-                invitationHandler(false, self.chatsession)
+                invitationHandler(false, chatsession)
                 print("declined")
             }
             
@@ -170,14 +171,17 @@ class ViewTwo: UIViewController, MCNearbyServiceAdvertiserDelegate, MCNearbyServ
             
         case MCSessionState.Connected:
             print("Connected to session:")
-            //NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
-            //self.performSegueWithIdentifier("idSegueChat", sender: self)
-    
+            NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+            self.performSegueWithIdentifier("chatview", sender: self)
+            }
         case MCSessionState.Connecting:
             print("Connecting to session:")
             
         case MCSessionState.NotConnected:
             print("Did not connect to session:")
+            //NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+              //  self.performSegueWithIdentifier("chatview", sender: self)
+            //}
         }
     }
     
@@ -204,6 +208,8 @@ class ViewTwo: UIViewController, MCNearbyServiceAdvertiserDelegate, MCNearbyServ
         withName streamName: String, fromPeer peerID: MCPeerID)  {
             // Called when a peer establishes a stream with us
     }
+
+
 
 }
 

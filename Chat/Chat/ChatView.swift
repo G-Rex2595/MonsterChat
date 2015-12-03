@@ -8,9 +8,10 @@
 
 import Foundation
 import UIKit
+import MultipeerConnectivity
 
 
-class ChatView: UIViewController{
+class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate, UITableViewDataSource{
 
 
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -18,12 +19,16 @@ class ChatView: UIViewController{
         
     }
     
+    @IBOutlet var chatTable: UITableView!
+    @IBOutlet var msgfield: UITextField!
+    
+    
+    var messagesArray = [String]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = Singleton.sharedInstance.backgroundColor
-
-
+        
         // Do any additional setup after loading the view, typically from a nib.
     }
     
@@ -31,6 +36,110 @@ class ChatView: UIViewController{
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    @IBAction func sendData(sender: UIButton) {
+        
+        
+        //let msg = Message.init(username: peerID.displayName, message: msgfield.text!, id: "some ID", roomName: discoveryInfo["room"]!)
+        
+        //let encodedMsg = msg.dataUsingEncoding(NSUTF8StringEncoding)
+        
+        
+        /*
+        let msg = msgfield.text?.dataUsingEncoding(NSUTF8StringEncoding)
+        
+        do {
+            try chatsession.sendData(msg!, toPeers: chatsession.connectedPeers, withMode: MCSessionSendDataMode.Reliable)
+        } catch {
+            
+        }
+        */
+        
+        //self.updateChat(self.msgfield.text!, fromPeer: self.peerID)
+        
+        if(msgfield.text! != ""){
+            self.messagesArray.append(msgfield.text!)
+            self.chatTable.reloadData()
+        }
+        self.msgfield.text = ""
+    }
+
+    
+    func session(chatsession : MCSession, peer checkPeer: MCPeerID, didChangeState state: MCSessionState) {
+        
+        switch state{
+            
+        case MCSessionState.Connected:
+            print("Connected to session:")
+            
+        case MCSessionState.Connecting:
+            print("Connecting to session:")
+            
+        case MCSessionState.NotConnected:
+            print("Did not connect to session:")
+            //NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+              //self.performSegueWithIdentifier("chatlist", sender: self)
+            //}
+        }
+    }
+    
+    func session(session: MCSession, didReceiveData data: NSData,
+        fromPeer peerID: MCPeerID)  {
+            // This needs to run on the main queue
+            dispatch_async(dispatch_get_main_queue()) {
+                
+                let msg = NSString(data: data, encoding: NSUTF8StringEncoding)
+                
+                self.messagesArray.append(msg as! String)
+                self.chatTable.reloadData()
+            }
+    }
+    
+    
+    
+    
+    func numberOfSectionsInTableView(chatTable: UITableView) -> Int {
+        return 1;
+    }
+    
+    func tableView(chatTable: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return messagesArray.count
+    }
+    
+    func tableView(chatTable: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let tableCell = UITableViewCell()
+        tableCell.textLabel!.text = messagesArray[indexPath.row]
+
+        return tableCell
+    }
+    
+    func tableView(chatTable: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 20.0
+    }
+    
+
+    
+    
+    
+    func session(session: MCSession,
+        didStartReceivingResourceWithName resourceName: String,
+        fromPeer peerID: MCPeerID, withProgress progress: NSProgress)  {
+            
+            // Called when a peer starts sending a file to us
+    }
+    
+    func session(session: MCSession,
+        didFinishReceivingResourceWithName resourceName: String,
+        fromPeer peerID: MCPeerID,
+        atURL localURL: NSURL, withError error: NSError?)  {
+            // Called when a file has finished transferring from another peer
+    }
+    
+    func session(session: MCSession, didReceiveStream stream: NSInputStream,
+        withName streamName: String, fromPeer peerID: MCPeerID)  {
+            // Called when a peer establishes a stream with us
+    }
+
 
 
 }
