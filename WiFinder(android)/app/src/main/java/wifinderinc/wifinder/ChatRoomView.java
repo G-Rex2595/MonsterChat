@@ -265,6 +265,9 @@ public class ChatRoomView extends AppCompatActivity{
 
         txtbxInput.setTypeface(FontStyle);
         btnSend.setTypeface(FontStyle);
+        btnHome.setTypeface(FontStyle);
+        btnSettings.setTypeface(FontStyle);
+        btnInsertImg.setTypeface(FontStyle);
     }
 
     public void addMessage(Message m) {

@@ -213,6 +213,10 @@ public class LogView extends AppCompatActivity {
                 break;
         }
 
+        btnHome.setTypeface(FontStyle);
+        btnSettings.setTypeface(FontStyle);
+        btnDeleteLog.setTypeface(FontStyle);
+
     }
 
     public void btnSettings_Click(View v){
