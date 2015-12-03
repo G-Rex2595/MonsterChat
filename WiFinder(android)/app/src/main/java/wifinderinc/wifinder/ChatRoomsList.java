@@ -460,7 +460,8 @@ public class ChatRoomsList extends AppCompatActivity {
     }
 
     public void btnHome_Click(View v){
-        Intent intent = new Intent(this, HomePage.class);
-        this.startActivity(intent);
+        manager.close();
+        ChatRoomsList.manager = null;
+        super.onBackPressed();
     }
 }

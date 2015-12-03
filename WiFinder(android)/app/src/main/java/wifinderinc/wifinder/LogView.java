@@ -227,8 +227,9 @@ public class LogView extends AppCompatActivity {
     }
 
     public void btnHome_Click(View v){
-        Intent intent = new Intent(this, HomePage.class);
-        this.startActivity(intent);
+        Intent intent = new Intent(getApplicationContext(), HomePage.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
     public void BtnDeleteLog_Click(View v){

@@ -243,8 +243,7 @@ public class LogsList extends AppCompatActivity {
     }
 
     public void btnHome_Click(View v){
-        Intent intent = new Intent(this, HomePage.class);
-        this.startActivity(intent);
+        super.onBackPressed();
     }
 
     public void btnDeleteAllLogs_Click(View v){

@@ -74,7 +74,7 @@ public class ChatRoomView extends AppCompatActivity{
     private int textColor;
     private Typeface FontStyle;
 
-    public static final int GET_FROM_GALLERY = 3;
+    public static final int GET_FROM_GALLERY = 1;
     private Bitmap insertImg = null;
 
     private Boolean isFocus = true;
@@ -405,8 +405,11 @@ public class ChatRoomView extends AppCompatActivity{
     }
 
     public void btnHome_Click(View v){
-        Intent intent = new Intent(this, HomePage.class);
-        this.startActivity(intent);
+        manager.close();
+        ChatRoomsList.manager = null;
+        Intent intent = new Intent(getApplicationContext(), HomePage.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 
 }
