@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		52D9AA0C1C0FB96C0020F976 /* ChatLogWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D9AA081C0FB96C0020F976 /* ChatLogWriter.swift */; };
-		52D9AA0D1C0FB96C0020F976 /* ChatRoom.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D9AA091C0FB96C0020F976 /* ChatRoom.swift */; };
 		52D9AA0F1C0FB96C0020F976 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D9AA0B1C0FB96C0020F976 /* Message.swift */; };
 		C94F857E1C07F78400E17D5E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94F857D1C07F78400E17D5E /* AppDelegate.swift */; };
 		C94F85801C07F78400E17D5E /* ViewTwo.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94F857F1C07F78400E17D5E /* ViewTwo.swift */; };
@@ -23,7 +22,6 @@
 
 /* Begin PBXFileReference section */
 		52D9AA081C0FB96C0020F976 /* ChatLogWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatLogWriter.swift; sourceTree = "<group>"; };
-		52D9AA091C0FB96C0020F976 /* ChatRoom.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatRoom.swift; sourceTree = "<group>"; };
 		52D9AA0B1C0FB96C0020F976 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		C94F857A1C07F78400E17D5E /* Chat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C94F857D1C07F78400E17D5E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -71,7 +69,6 @@
 			isa = PBXGroup;
 			children = (
 				52D9AA081C0FB96C0020F976 /* ChatLogWriter.swift */,
-				52D9AA091C0FB96C0020F976 /* ChatRoom.swift */,
 				52D9AA0B1C0FB96C0020F976 /* Message.swift */,
 				C94F857D1C07F78400E17D5E /* AppDelegate.swift */,
 				C94F857F1C07F78400E17D5E /* ViewTwo.swift */,
@@ -163,7 +160,6 @@
 				52D9AA0F1C0FB96C0020F976 /* Message.swift in Sources */,
 				C94F85951C08205300E17D5E /* MainView.swift in Sources */,
 				C94F85801C07F78400E17D5E /* ViewTwo.swift in Sources */,
-				52D9AA0D1C0FB96C0020F976 /* ChatRoom.swift in Sources */,
 				C94F85971C0A592200E17D5E /* Singleton.swift in Sources */,
 				C94F857E1C07F78400E17D5E /* AppDelegate.swift in Sources */,
 			);
