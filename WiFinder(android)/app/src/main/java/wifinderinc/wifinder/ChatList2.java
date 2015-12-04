@@ -36,9 +36,9 @@ public class ChatList2 extends ArrayAdapter<String>
     private int TextColor;
     private Typeface FontStyle;
 
-    public ChatList2(Activity context, ArrayList<Message> messages, int txtColor, Typeface fontStyle)
+    public ChatList2(Activity context, ArrayList<Message> messages, ArrayList<String> text, int txtColor, Typeface fontStyle)
     {
-        super(context, R.layout.chat_list, new ArrayList<String>());
+        super(context, R.layout.chat_list, text);
         SharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
         Cont = context;
         Messages = messages;
