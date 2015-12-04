@@ -41,6 +41,16 @@
                 android:targetClass="wifinderinc.wifinder.UnblockUsers" />
         </Preference>
 
+        <Preference
+            android:key="About"
+            android:title="About "
+            android:summary="Application Information">
+            <intent
+                android:action="android.intent.action.VIEW"
+                android:targetPackage="wifinderinc.wifinder"
+                android:targetClass="wifinderinc.wifinder.About" />
+        </Preference>
+
     </PreferenceCategory>
 
 </PreferenceScreen>

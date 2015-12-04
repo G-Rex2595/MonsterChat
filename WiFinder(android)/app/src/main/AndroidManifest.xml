@@ -75,5 +75,13 @@
                 android:value=".Preferences" />
         </activity>
 
+        <activity
+            android:name=".About"
+            android:parentActivityName=".Preferences" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Preferences" />
+        </activity>
+
     </application>
 </manifest>
