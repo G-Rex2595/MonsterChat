@@ -25,11 +25,6 @@ class Message
         self.time = NSDate()
     }
     
-    func setTime()
-    {
-        self.time = NSDate()
-    }
-    
     func getUserName() -> String
     {
         return self.username
@@ -50,12 +45,17 @@ class Message
         return self.roomName
     }
     
+    func getTime() -> NSDate
+    {
+        return self.time
+    }
+    
     func setTime(time: NSDate)
     {
         self.time = time
     }
     
-    func setCurrentTime()
+    func setTime()
     {
         self.time = NSDate()
     }
