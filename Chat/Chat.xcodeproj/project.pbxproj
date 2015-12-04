@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		5256975E1C115B3A00085346 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5256975D1C115B3A00085346 /* Log.swift */; };
+		525697601C115F5400085346 /* ChatLogReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5256975F1C115F5400085346 /* ChatLogReader.swift */; };
 		52D9AA0C1C0FB96C0020F976 /* ChatLogWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D9AA081C0FB96C0020F976 /* ChatLogWriter.swift */; };
 		52D9AA0F1C0FB96C0020F976 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D9AA0B1C0FB96C0020F976 /* Message.swift */; };
 		C94F857E1C07F78400E17D5E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94F857D1C07F78400E17D5E /* AppDelegate.swift */; };
@@ -22,6 +24,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		5256975D1C115B3A00085346 /* Log.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Log.swift; sourceTree = "<group>"; };
+		5256975F1C115F5400085346 /* ChatLogReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatLogReader.swift; sourceTree = "<group>"; };
 		52D9AA081C0FB96C0020F976 /* ChatLogWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatLogWriter.swift; sourceTree = "<group>"; };
 		52D9AA0B1C0FB96C0020F976 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		C94F857A1C07F78400E17D5E /* Chat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chat.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -82,6 +86,8 @@
 				C94F85891C07F78400E17D5E /* LaunchScreen.storyboard */,
 				C94F858C1C07F78400E17D5E /* Info.plist */,
 				C94F85841C07F78400E17D5E /* Chat.xcdatamodeld */,
+				5256975D1C115B3A00085346 /* Log.swift */,
+				5256975F1C115F5400085346 /* ChatLogReader.swift */,
 			);
 			path = Chat;
 			sourceTree = "<group>";
@@ -160,10 +166,12 @@
 			files = (
 				C94F85861C07F78400E17D5E /* Chat.xcdatamodeld in Sources */,
 				52D9AA0C1C0FB96C0020F976 /* ChatLogWriter.swift in Sources */,
+				5256975E1C115B3A00085346 /* Log.swift in Sources */,
 				52D9AA0F1C0FB96C0020F976 /* Message.swift in Sources */,
 				C94F85951C08205300E17D5E /* MainView.swift in Sources */,
 				C94F85801C07F78400E17D5E /* ChatList.swift in Sources */,
 				C94F85971C0A592200E17D5E /* Singleton.swift in Sources */,
+				525697601C115F5400085346 /* ChatLogReader.swift in Sources */,
 				C9A7ADC21C0FBA97009C29D4 /* ChatView.swift in Sources */,
 				C94F857E1C07F78400E17D5E /* AppDelegate.swift in Sources */,
 			);
