@@ -34,7 +34,7 @@
         <Preference
             android:key="UnblockUsers"
             android:title="Unblock Users "
-            android:summary="derp">
+            android:summary="You can unblock users you blocked previously here">
             <intent
                 android:action="android.intent.action.VIEW"
                 android:targetPackage="wifinderinc.wifinder"
