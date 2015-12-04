@@ -80,7 +80,7 @@ public class ChatList2 extends ArrayAdapter<String>
 
         ImageView imageView = (ImageView) rowView.findViewById(R.id.img);
         BitmapDrawable currImg = null;
-        if(Messages.get(position) != null)
+        if(Messages.get(position).getPicture() != null)
         {
             currImg = new BitmapDrawable(Cont.getResources(), Messages.get(position).getPicture());
         }
