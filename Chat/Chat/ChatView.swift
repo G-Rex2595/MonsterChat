@@ -10,8 +10,10 @@ import Foundation
 import UIKit
 import MultipeerConnectivity
 
+var blockList:[String] = [""]
 
-class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate, UITableViewDataSource{
+
+class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate,UITableViewDataSource{
 
 
     override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
@@ -30,6 +32,8 @@ class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate, UITabl
         self.view.backgroundColor = Singleton.sharedInstance.backgroundColor
         chatsession.delegate = self
         
+        chatTable.delegate = self
+        chatTable.dataSource = self
         // Do any additional setup after loading the view, typically from a nib.
     }
     
@@ -37,6 +41,101 @@ class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate, UITabl
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    func numberOfSectionsInTableView(chatTable: UITableView) -> Int {
+        return 1;
+    }
+    
+    func tableView(chatTable: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return messagesArray.count
+    }
+    
+    func tableView(chatTable: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let tableCell = UITableViewCell()
+        tableCell.textLabel!.text = messagesArray[indexPath.row]
+        
+        if messagesArray[indexPath.row] is String
+        {
+            var temp: String = messagesArray[indexPath.row] as! String
+            var tempArr = temp.componentsSeparatedByString(":")
+            var blockUser = tempArr[0]
+            for i in 0 ... blockList.count-1
+            {
+                if blockUser == blockList[i]
+                {
+                    tableCell.textLabel?.text = "This user has been blocked"
+                    return tableCell
+                }
+                
+            }
+        }
+        else
+        {
+//            var temp: String = cellContent[indexPath.row-1] as! String
+//            var tempArr = temp.componentsSeparatedByString(":")
+//            var blockUser = tempArr[0]
+//            for i in 0 ... blockList.count-1
+//            {
+//                if blockUser == blockList[i]
+//                {
+//                    cell.textLabel?.text = "This message has been blocked"
+//                    return cell
+//                }
+//                
+//            }
+        }
+        
+        return tableCell
+    }
+    
+    func tableView(chatTable: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
+        return 40.0
+    }
+    
+    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
+        if editingStyle == UITableViewCellEditingStyle.Delete {
+            messagesArray.removeAtIndex(indexPath.row)
+            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
+        }
+    }
+    
+    
+    func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        
+        print("didselect was called")
+        let optionMenu = UIAlertController(title: nil, message: "Choose Option", preferredStyle: .ActionSheet)
+        
+        let blockAction = UIAlertAction(title: "Block user", style: .Default, handler: {
+            (alert: UIAlertAction!) -> Void in
+            print("blocked")
+            if self.messagesArray[indexPath.row] is String
+            {
+                var temp: String = self.messagesArray[indexPath.row] as! String
+                var tempArr = temp.componentsSeparatedByString(":")
+                var blockUser = tempArr[0]
+                blockList.append(blockUser)
+            }
+            else
+            {
+                //                var temp: String = self.cellContent[indexPath.row-1] as! String
+                //                var tempArr = temp.componentsSeparatedByString(":")
+                //                var blockUser = tempArr[0]
+                //                blockList.append(blockUser)
+            }
+        })
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: {
+            (alert: UIAlertAction!) -> Void in
+            print("Cancelled")
+        })
+        
+        optionMenu.addAction(blockAction)
+        optionMenu.addAction(cancelAction)
+        
+        self.presentViewController(optionMenu, animated: true, completion: nil)
+    }
+    
+
     
     @IBAction func sendData(sender: UIButton) {
         
@@ -107,29 +206,6 @@ class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate, UITabl
     }
     
     
-    
-    
-    func numberOfSectionsInTableView(chatTable: UITableView) -> Int {
-        return 1;
-    }
-    
-    func tableView(chatTable: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return messagesArray.count
-    }
-    
-    func tableView(chatTable: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let tableCell = UITableViewCell()
-        tableCell.textLabel!.text = messagesArray[indexPath.row]
-        //tableCell.detailTextLabel
-
-        return tableCell
-    }
-    
-    func tableView(chatTable: UITableView, heightForRowAtIndexPath indexPath: NSIndexPath) -> CGFloat {
-        return 20.0
-    }
-    
-
     
     
     

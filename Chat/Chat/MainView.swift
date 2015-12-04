@@ -27,6 +27,8 @@ class MainView: UIViewController{
         self.name.text = Singleton.sharedInstance.userName
         self.view.backgroundColor = Singleton.sharedInstance.backgroundColor
         // Do any additional setup after loading the view, typically from a nib.
+        
+    
     }
     
     override func didReceiveMemoryWarning() {
