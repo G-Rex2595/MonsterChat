@@ -125,9 +125,9 @@ public class ChatRoomView extends AppCompatActivity{
                 String textStr = headView.getText().toString();
                 String Name = textStr.split(":")[0];
 
-                //if(Name.compareTo(UserName) != 0 && !Name.contains("e t")) {
+                if(Name.compareTo(UserName) != 0 && !Name.contains("e t")) {
                     promptBlock(Name, UserIds.get(position));
-                //}
+                }
             }
 
 
@@ -305,7 +305,7 @@ public class ChatRoomView extends AppCompatActivity{
 
     public void btnGallery_onClick(View v){
         startActivityForResult(new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.INTERNAL_CONTENT_URI),
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI),
                 GET_FROM_GALLERY);
 
     }
@@ -369,19 +369,28 @@ public class ChatRoomView extends AppCompatActivity{
     }
 
     public void btnSendMessage_Click(View v){
-        String Default = "Message Here";
+        /*String Default = "Message Here";
 
         if(txtbxInput.getCurrentTextColor() == Color.GRAY){
             return;
-        }
+        }*/
 
         String message = txtbxInput.getText().toString();
 
-        txtbxInput.setText(Default.subSequence(0, Default.length()));
-        txtbxInput.setTextColor(Color.GRAY);
+
+       /* txtbxInput.setText(Default.subSequence(0, Default.length()));
+        txtbxInput.setTextColor(Color.GRAY);*/
+
+        if(message.length() == 0 && insertImg == null){
+            return;
+        }
 
         //InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
         //imm.hideSoftInputFromWindow(txtbxInput.getWindowToken(), 0);
+
+        if(insertImg != null && message.length() == 0) {
+            message = " ";
+        }
 
         manager.getCurrentChatRoom().sendMessage(message, insertImg);    //change null to the user's picture
 

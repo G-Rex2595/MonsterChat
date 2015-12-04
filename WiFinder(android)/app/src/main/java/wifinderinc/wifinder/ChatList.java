@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.support.annotation.DrawableRes;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -67,6 +69,7 @@ public class ChatList extends ArrayAdapter<String> {
             txtMessage.setLayoutParams(msgParams);
         }
         else {
+            Log.d("Str", currImg.getIntrinsicHeight() + " " + currImg.getIntrinsicWidth());
             imageView.setBackground(currImg);
         }
         return rowView;

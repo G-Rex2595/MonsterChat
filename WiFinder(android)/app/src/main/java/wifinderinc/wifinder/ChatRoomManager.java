@@ -156,6 +156,8 @@ public class ChatRoomManager
         //_manager.close();
         if(_currentChatRoom != null)
             _currentChatRoom.close();
+
+        _manager.setChatRoom(null);
     }   //end of close method
 
     /**
