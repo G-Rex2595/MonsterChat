@@ -46,7 +46,7 @@ class ChatLogWriter
     private func writeMessages()
     {
         //open file to append
-        let log: NSFileHandle? = NSFileHandle(forUpdatingAtPath: self.logName)
+        let log: NSFileHandle? = NSFileHandle(forUpdatingAtPath: "/" + self.logName)
         
         //check if logging is possible
         if log == nil

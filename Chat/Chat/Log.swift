@@ -13,12 +13,14 @@ class Log
     let roomName: String
     let timeCreated: NSDate
     let logName: String
+    var deleted: Bool
     
     init(roomName: String, timeCreated: NSDate, logName: String)
     {
         self.roomName = roomName
         self.timeCreated = timeCreated
         self.logName = logName
+        self.deleted = false;
     }
     
     func getRoomName() -> String
@@ -34,5 +36,25 @@ class Log
     func getLogName() -> String
     {
         return self.logName
+    }
+    
+    func delete()
+    {
+        let fileManager = NSFileManager.defaultManager()
+        do
+        {
+            try fileManager.removeItemAtPath("/" + self.logName)
+        }
+        catch is NSError
+        {
+            return
+        }
+        
+        self.deleted = true
+    }
+    
+    func wasDeleted() -> Bool
+    {
+        return self.deleted
     }
 }

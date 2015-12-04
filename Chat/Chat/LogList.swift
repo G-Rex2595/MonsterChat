@@ -14,8 +14,7 @@ class LogList
     {
         //set variables for listing logs
         let fileManager = NSFileManager.defaultManager()
-        let path = NSBundle.mainBundle().resourcePath!
-        let enumerator:NSDirectoryEnumerator = fileManager.enumeratorAtPath(path)!
+        let enumerator:NSDirectoryEnumerator = fileManager.enumeratorAtPath("/")!
         var logs: [Log] = []
         
         //go through directory
