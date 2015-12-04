@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.LinkedList;
@@ -38,9 +39,15 @@ public class UnblockUsers extends AppCompatActivity {
         UnblockList = (ListView) findViewById(R.id.listView);
 
         BlockedUsers = Blocker.getBlockedUsers();
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat formatT = new SimpleDateFormat("hh:mm a");
+        String time;
 
-        for(BlockedUser curr : BlockedUsers ){
-            String str = curr.getUsername() + " blocked at " + curr.getTime();
+
+        for(BlockedUser curr : BlockedUsers) {
+            c.setTimeInMillis(curr.getTime());
+            time = formatT.format(c.getTime());
+            String str = curr.getUsername() + " blocked at " + time;
             BlockedList.add(str);
         }
 

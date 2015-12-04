@@ -95,19 +95,22 @@ public class ChatRoomsList extends AppCompatActivity {
         RoomList = manager.getUnformattedRooms();
 
         RoomNames.add("Global");
-
+        Log.d("Test", "here");
         for(String roomInfo : RoomList){
             if(roomInfo.substring(0, roomInfo.indexOf('-')).compareTo("Global") == 0){
                 continue;
             }
 
+            String roomStr;
             if(roomInfo.contains("#")){
-                RoomNames.add(roomInfo.substring(0, roomInfo.indexOf('#')) + " \uD83D\uDD12" );
+                roomStr = roomInfo.substring(0, roomInfo.indexOf('#')) + " \uD83D\uDD12";
             }
             else{
-                RoomNames.add(roomInfo.substring(0, roomInfo.indexOf('-')) );
+                roomStr = roomInfo.substring(0, roomInfo.indexOf('-'));
             }
 
+            RoomNames.add(roomStr);
+            Log.d("Test", "" + roomStr );
         }
 
         //Get Preferences
@@ -129,7 +132,7 @@ public class ChatRoomsList extends AppCompatActivity {
                 String textStr = ((TextView) view).getText().toString();
                 InputPass = "";
                 if (textStr.contains("\uD83D\uDD12")) {
-                    getInputPass(textStr.split(" ")[0]);
+                    getInputPass(textStr.split(" ")[0] + "#");
 
                 }else {
 
@@ -189,12 +192,16 @@ public class ChatRoomsList extends AppCompatActivity {
                                 continue;
                             }
 
+                            String roomStr;
                             if(roomInfo.contains("#")){
-                                RoomNames.add(roomInfo.substring(0, roomInfo.indexOf('#')) + " \uD83D\uDD12" );
+                                roomStr = roomInfo.substring(0, roomInfo.indexOf('#')) + " \uD83D\uDD12";
                             }
                             else{
-                                RoomNames.add(roomInfo.substring(0, roomInfo.indexOf('-')) );
+                                roomStr = roomInfo.substring(0, roomInfo.indexOf('-'));
                             }
+
+                            RoomNames.add(roomStr);
+                            Log.d("Testinner", "" + roomStr );
 
                         }
                         RoomAdpt.notifyDataSetChanged();
@@ -223,18 +230,21 @@ public class ChatRoomsList extends AppCompatActivity {
                 String tempPass = inPass.getText().toString();
                 //NewRoomPass = NewPass.getText().toString();
 
+                Log.d("RoomPass", "pass: " +tempPass+" room: "+RoomName);
                 if (!tempPass.matches("[a-zA-Z0-9]+")) {
                     invalidPassword();
                     return;
                 } else {
-                    manager.joinRoom(RoomName, tempPass);
+                    String rName= RoomName;
+
+                    manager.joinRoom(rName, tempPass);
                     if (manager.getCurrentChatRoom() == null)   //could not join room
                     {
                         return;
                     }
 
                     Intent intent = new Intent(ChatRoomsList.this, ChatRoomView.class);
-                    intent.putExtra(ROOM_NAME, RoomName);
+                    intent.putExtra(ROOM_NAME, rName);
                     intent.putExtra(USER_NAME, ChatRoomsList.this.user);
                     startActivity(intent);
                 }
@@ -353,7 +363,7 @@ public class ChatRoomsList extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 NewRoomName = NewName.getText().toString();
-                //NewRoomPass = NewPass.getText().toString();
+                //NewRoomPass = NewPass.getText().toString()
 
                 if (!NewRoomName.matches("[a-zA-Z0-9]+")) {
                     incorrectChatRoomName();
@@ -399,7 +409,8 @@ public class ChatRoomsList extends AppCompatActivity {
                         manager.joinRoom(NewRoomName, null);
                     }
                     else {
-                        manager.joinRoom(NewRoomName+"#", NewRoomPass);
+                        NewRoomName = NewRoomName+"#";
+                        manager.joinRoom(NewRoomName, NewRoomPass);
                     }
                     if (manager.getCurrentChatRoom() == null)   //could not join room
                     {

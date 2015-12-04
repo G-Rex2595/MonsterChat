@@ -109,8 +109,11 @@ public class ChatRoomView extends AppCompatActivity{
         Intent intent = getIntent();
         RoomName = intent.getStringExtra(ChatRoomsList.ROOM_NAME);
         UserName = intent.getStringExtra(ChatRoomsList.USER_NAME);
-
-        Head.add("Welcome to " + RoomName + ", " + UserName + "!");
+        String welcomeName = RoomName;
+        if(welcomeName.contains("#")){
+            welcomeName = welcomeName.replace("#", "");
+        }
+        Head.add("Welcome to " + welcomeName + ", " + UserName + "!");
         Message.add("");
         Images.add(null);
         UserIds.add("default");

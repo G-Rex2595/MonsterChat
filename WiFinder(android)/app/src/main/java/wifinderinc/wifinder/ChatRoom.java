@@ -129,6 +129,7 @@ public class ChatRoom
             }   //end if
         }   //end for
 
+        message.setTime();
         this.messages.add(message);
         this.view.addMessage(message);
         this.chatLogWriter.addToBuffer(message);

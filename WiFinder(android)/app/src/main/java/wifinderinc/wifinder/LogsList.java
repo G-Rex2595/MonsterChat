@@ -123,7 +123,8 @@ public class LogsList extends AppCompatActivity {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
                 promptDeleteLog(position);
-                return false;
+
+                return true;
             }
         });
 
