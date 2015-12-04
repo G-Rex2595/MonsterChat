@@ -202,6 +202,7 @@ public class LogsList extends AppCompatActivity {
         //Set button background colors
         btnHome.setBackgroundColor(btnColor);
         btnSettings.setBackgroundColor(btnColor);
+        btnTitle.setBackgroundColor(btnColor);
 
         //Set Highlights
         MenuBox.setBackgroundColor(textColor);

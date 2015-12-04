@@ -130,7 +130,9 @@ public class P2PManager {
                             try {
                                 oos.writeObject(msg);
                                 oos.flush();
-                                Log.d("OOS", "We wrote");
+                                if(chatroom != null) {
+                                    Log.d("OOS", "We wrote3");
+                                }
                             } catch (IOException e) {
                                 //Most likely occured due to the stream no longer existing.
                                 Log.d("OOS", "Failed to send");
@@ -181,7 +183,9 @@ public class P2PManager {
             }
 
             //It's a user message and belongs in the current chatroom
-            if (messageExists(msg)) return;
+            if (messageExists(msg)){
+                return;
+            }
             sendMessage(msg);           //Forward the message on to other devices. This will also add the hash.
             Log.d("P2PManager", "**** Added ****");
             chatroom.addMessage(msg);
@@ -200,6 +204,7 @@ public class P2PManager {
                 if (!messageExists(msg)) sendMessage(msg); //Propogate the message
             }
         }
+        if (!messageExists(msg)) sendMessage(msg);
         //If we reach here, the message was valid but for the wrong room
     }
 

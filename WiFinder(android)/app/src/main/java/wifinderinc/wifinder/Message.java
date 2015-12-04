@@ -37,7 +37,7 @@ public class Message implements Serializable
     /**
      * Holds the message's picture.
      */
-    private final Bitmap picture;
+    private final SerialBitmap picture;
 
     /**
      * Holds the max width of the picture.
@@ -67,7 +67,7 @@ public class Message implements Serializable
         this.chatRoomName = roomName;
         if (picture != null)
         {
-            this.picture = Bitmap.createScaledBitmap(picture, this.MAX_PIC_WIDTH, this.MAX_PIC_HEIGHT, true);
+            this.picture = new SerialBitmap(Bitmap.createScaledBitmap(picture, this.MAX_PIC_WIDTH, this.MAX_PIC_HEIGHT, true));
         }
         else
         {
@@ -150,6 +150,9 @@ public class Message implements Serializable
      */
     public Bitmap getPicture()
     {
-        return this.picture;
+        if(this.picture == null){
+            return null;
+        }
+        return this.picture.bitmap;
     }   //end of getPicture method
 }   //end of Message class

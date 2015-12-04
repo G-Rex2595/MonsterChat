@@ -97,15 +97,15 @@ public class ChatRoomsList extends AppCompatActivity {
         RoomNames.add("Global");
 
         for(String roomInfo : RoomList){
-            if(roomInfo.compareTo("Global") == 0){
+            if(roomInfo.substring(0, roomInfo.indexOf('-')).compareTo("Global") == 0){
                 continue;
             }
 
-            if(roomInfo.contains("-")){
-                RoomNames.add(roomInfo.substring(0, roomInfo.indexOf('-')) + " \uD83D\uDD12" );
+            if(roomInfo.contains("#")){
+                RoomNames.add(roomInfo.substring(0, roomInfo.indexOf('#')) + " \uD83D\uDD12" );
             }
             else{
-                RoomNames.add(roomInfo);
+                RoomNames.add(roomInfo.substring(0, roomInfo.indexOf('-')) );
             }
 
         }
@@ -184,15 +184,18 @@ public class ChatRoomsList extends AppCompatActivity {
 
                         RoomNames.add("Global");
 
-                        for (String roomInfo : RoomList) {
-                            if (roomInfo.compareTo("Global") == 0) {
+                        for(String roomInfo : RoomList){
+                            if(roomInfo.substring(0, roomInfo.indexOf('-')).compareTo("Global") == 0){
                                 continue;
                             }
-                            if (roomInfo.contains("-")) {
-                                RoomNames.add(roomInfo.substring(0, roomInfo.indexOf('-')) + " \uD83D\uDD12");
-                            } else {
-                                RoomNames.add(roomInfo);
+
+                            if(roomInfo.contains("#")){
+                                RoomNames.add(roomInfo.substring(0, roomInfo.indexOf('#')) + " \uD83D\uDD12" );
                             }
+                            else{
+                                RoomNames.add(roomInfo.substring(0, roomInfo.indexOf('-')) );
+                            }
+
                         }
                         RoomAdpt.notifyDataSetChanged();
                     }
@@ -392,7 +395,12 @@ public class ChatRoomsList extends AppCompatActivity {
                     invalidPassword();
                     return;
                 } else {
-                    manager.joinRoom(NewRoomName, NewRoomPass);   //TODO:  change null to the password the user entered
+                    if(NewRoomPass.compareTo("")==0){
+                        manager.joinRoom(NewRoomName, null);
+                    }
+                    else {
+                        manager.joinRoom(NewRoomName+"#", NewRoomPass);
+                    }
                     if (manager.getCurrentChatRoom() == null)   //could not join room
                     {
                         return;
