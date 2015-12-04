@@ -61,8 +61,8 @@ class ChatList: UIViewController, MCNearbyServiceAdvertiserDelegate, MCNearbySer
         self.view.backgroundColor = Singleton.sharedInstance.backgroundColor
         
         peerID = MCPeerID(displayName: Singleton.sharedInstance.userName)
-        browsession = MCSession(peer: peerID)
-        browsession.delegate = self
+        chatsession = MCSession(peer: peerID)
+        chatsession.delegate = self
         browser = MCNearbyServiceBrowser(peer: peerID, serviceType: serviceType)
         browser.delegate = self
         browser.startBrowsingForPeers()
@@ -103,7 +103,7 @@ class ChatList: UIViewController, MCNearbyServiceAdvertiserDelegate, MCNearbySer
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         let selectedPeer = peerInformation[indexPath.row].peerID
-        browser.invitePeer(selectedPeer, toSession: browsession, withContext: nil, timeout: 20)
+        browser.invitePeer(selectedPeer, toSession: chatsession, withContext: nil, timeout: 20)
         print("invited \(selectedPeer.displayName)")
     }
     

@@ -28,6 +28,7 @@ class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate, UITabl
     override func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = Singleton.sharedInstance.backgroundColor
+        chatsession.delegate = self
         
         // Do any additional setup after loading the view, typically from a nib.
     }
@@ -44,21 +45,29 @@ class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate, UITabl
         
         //let encodedMsg = msg.dataUsingEncoding(NSUTF8StringEncoding)
         
+        let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .MediumStyle, timeStyle: .ShortStyle)
+
+        var usernameMsgTime = Singleton.sharedInstance.userName
+        usernameMsgTime.appendContentsOf(": " + self.msgfield.text!)
+        usernameMsgTime.appendContentsOf(": " + timestamp)
         
+        let msg = usernameMsgTime.dataUsingEncoding(NSUTF8StringEncoding)
         
-        let msg = msgfield.text?.dataUsingEncoding(NSUTF8StringEncoding)
-        
-        if(msgfield.text! != ""){
+        if(self.msgfield.text! != ""){
             do {
-                try chatsession.sendData(msg!, toPeers: chatsession.connectedPeers, withMode: MCSessionSendDataMode.Reliable)
+                try chatsession.sendData(msg!, toPeers: chatsession.connectedPeers, withMode: MCSessionSendDataMode.Unreliable)
+                self.messagesArray.append(usernameMsgTime)
+                self.chatTable.reloadData()
+                print("sent \(msg) to \(chatsession.connectedPeers)")
             } catch {
-            
+                print("couldnt sendData")
             }
-            self.chatTable.reloadData()
+
         }
 
         
         //self.updateChat(self.msgfield.text!, fromPeer: self.peerID)
+        
 
         self.msgfield.text = ""
     }
@@ -82,12 +91,15 @@ class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate, UITabl
         }
     }
     
-    func session(session: MCSession, didReceiveData data: NSData,
+    func session(chatsession: MCSession, didReceiveData data: NSData,
         fromPeer peerID: MCPeerID)  {
             // This needs to run on the main queue
+            print("didReceiveData was called")
+
+            let msg = NSString(data: data, encoding: NSUTF8StringEncoding)
+
             dispatch_async(dispatch_get_main_queue()) {
                 
-                let msg = NSString(data: data, encoding: NSUTF8StringEncoding)
                 
                 self.messagesArray.append(msg as! String)
                 self.chatTable.reloadData()
@@ -108,6 +120,7 @@ class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate, UITabl
     func tableView(chatTable: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let tableCell = UITableViewCell()
         tableCell.textLabel!.text = messagesArray[indexPath.row]
+        //tableCell.detailTextLabel
 
         return tableCell
     }
