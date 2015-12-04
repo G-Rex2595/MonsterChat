@@ -21,7 +21,7 @@ class ChatLogWriter
         self.roomName = roomName
         self.numMessages = 0
         let seconds = NSDate().timeIntervalSinceReferenceDate
-        logName = roomName + String(seconds)
+        logName = roomName + " " + String(Int(seconds)) + ".log"
         messages = []
     }
     
@@ -65,7 +65,7 @@ class ChatLogWriter
             {
                 //get line for logging
                 let time = m.getTime().timeIntervalSinceReferenceDate
-                let logText = m.getUserName() + ":" + String(time) + ":" + m.getMessage() + "\n"
+                let logText = m.getUserName() + ":" + String(Int(time)) + ":" + m.getMessage() + "\n"
                 
                 log?.writeData(logText.dataUsingEncoding(NSUTF8StringEncoding)!)
             }
