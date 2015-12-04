@@ -66,6 +66,10 @@ public class ChatRoomView extends AppCompatActivity{
     private ArrayList<String> UserIds = new ArrayList<>();
     private ChatList adapter;
 
+    //Adapter ChatList2 Globals
+    ArrayList<Message> Messages;
+    private ChatList2 adapter2;
+
     //Preference globals
     private String ColorScheme;
     private String Font;
@@ -137,9 +141,11 @@ public class ChatRoomView extends AppCompatActivity{
         });
 
         //set up adapter
-        adapter=new ChatList(this, Head, Message, Images, textColor, FontStyle );
+        //adapter=new ChatList(this, Head, Message, Images, textColor, FontStyle );
+        adapter2=new ChatList2(this, Messages, textColor, FontStyle);
 
-        lstDisplay.setAdapter(adapter);
+        //lstDisplay.setAdapter(adapter);
+        lstDisplay.setAdapter(adapter2);
 
         //manager = new ChatRoomManager(UserName, this);
         manager = ChatRoomsList.manager;
@@ -274,7 +280,7 @@ public class ChatRoomView extends AppCompatActivity{
     }
 
     public void addMessage(Message m) {
-        Calendar c = Calendar.getInstance();
+        /*Calendar c = Calendar.getInstance();
 
         String timeStamp = "";
         if (TimeStamps) {
@@ -285,11 +291,11 @@ public class ChatRoomView extends AppCompatActivity{
             timeStamp = formatT.format(c.getTime());
         }
 
-        final String stamp = timeStamp;
+        final String stamp = timeStamp;*/
         final Message msg = m;
         runOnUiThread(new Runnable() {
             public void run() {
-                Head.add(String.format("%s:         %s", msg.getName(), stamp));
+                /*Head.add(String.format("%s:         %s", msg.getName(), stamp));
                 Message.add(msg.getMessage());
 
                 BitmapDrawable bd = null;
@@ -298,7 +304,7 @@ public class ChatRoomView extends AppCompatActivity{
                     bd = new BitmapDrawable(getResources(), b);
                 }
 
-                Images.add(bd);
+                Images.add(bd);*/
                 UserIds.add(msg.getID());
                 adapter.notifyDataSetChanged();
             }
