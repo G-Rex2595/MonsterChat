@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		5256975E1C115B3A00085346 /* Log.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5256975D1C115B3A00085346 /* Log.swift */; };
-		525697601C115F5400085346 /* ChatLogReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5256975F1C115F5400085346 /* ChatLogReader.swift */; };
-		525697621C11942D00085346 /* LogList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 525697611C11942D00085346 /* LogList.swift */; };
 		52D9AA0C1C0FB96C0020F976 /* ChatLogWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D9AA081C0FB96C0020F976 /* ChatLogWriter.swift */; };
 		52D9AA0F1C0FB96C0020F976 /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 52D9AA0B1C0FB96C0020F976 /* Message.swift */; };
+		C907461A1C11442100A49A91 /* Settings.swift in Sources */ = {isa = PBXBuildFile; fileRef = C90746191C11442100A49A91 /* Settings.swift */; };
+		C907461C1C11E71500A49A91 /* BlockListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C907461B1C11E71500A49A91 /* BlockListView.swift */; };
+		C907461E1C11F46000A49A91 /* Chatlogs.swift in Sources */ = {isa = PBXBuildFile; fileRef = C907461D1C11F46000A49A91 /* Chatlogs.swift */; };
 		C94F857E1C07F78400E17D5E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94F857D1C07F78400E17D5E /* AppDelegate.swift */; };
 		C94F85801C07F78400E17D5E /* ChatList.swift in Sources */ = {isa = PBXBuildFile; fileRef = C94F857F1C07F78400E17D5E /* ChatList.swift */; };
 		C94F85831C07F78400E17D5E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C94F85811C07F78400E17D5E /* Main.storyboard */; };
@@ -30,6 +30,9 @@
 		525697611C11942D00085346 /* LogList.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LogList.swift; sourceTree = "<group>"; };
 		52D9AA081C0FB96C0020F976 /* ChatLogWriter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatLogWriter.swift; sourceTree = "<group>"; };
 		52D9AA0B1C0FB96C0020F976 /* Message.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
+		C90746191C11442100A49A91 /* Settings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Settings.swift; sourceTree = "<group>"; };
+		C907461B1C11E71500A49A91 /* BlockListView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BlockListView.swift; sourceTree = "<group>"; };
+		C907461D1C11F46000A49A91 /* Chatlogs.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Chatlogs.swift; sourceTree = "<group>"; };
 		C94F857A1C07F78400E17D5E /* Chat.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Chat.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C94F857D1C07F78400E17D5E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C94F857F1C07F78400E17D5E /* ChatList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatList.swift; sourceTree = "<group>"; };
@@ -86,6 +89,9 @@
 				C94F857F1C07F78400E17D5E /* ChatList.swift */,
 				C94F85941C08205300E17D5E /* MainView.swift */,
 				C94F85811C07F78400E17D5E /* Main.storyboard */,
+				C907461D1C11F46000A49A91 /* Chatlogs.swift */,
+				C907461B1C11E71500A49A91 /* BlockListView.swift */,
+				C90746191C11442100A49A91 /* Settings.swift */,
 				C94F85961C0A592200E17D5E /* Singleton.swift */,
 				C94F85871C07F78400E17D5E /* Assets.xcassets */,
 				C94F85891C07F78400E17D5E /* LaunchScreen.storyboard */,
@@ -127,7 +133,7 @@
 				TargetAttributes = {
 					C94F85791C07F78400E17D5E = {
 						CreatedOnToolsVersion = 7.1.1;
-						DevelopmentTeam = XQCMJ47UN6;
+						DevelopmentTeam = 83QHXJVSSP;
 					};
 				};
 			};
@@ -177,6 +183,7 @@
 				C94F85971C0A592200E17D5E /* Singleton.swift in Sources */,
 				525697601C115F5400085346 /* ChatLogReader.swift in Sources */,
 				C9A7ADC21C0FBA97009C29D4 /* ChatView.swift in Sources */,
+				C907461E1C11F46000A49A91 /* Chatlogs.swift in Sources */,
 				C94F857E1C07F78400E17D5E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -293,7 +300,7 @@
 				INFOPLIST_FILE = Chat/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = cs307.Chat1;
+				PRODUCT_BUNDLE_IDENTIFIER = cs307.Chat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};
@@ -308,7 +315,7 @@
 				INFOPLIST_FILE = Chat/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = cs307.Chat1;
+				PRODUCT_BUNDLE_IDENTIFIER = cs307.Chat;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 			};

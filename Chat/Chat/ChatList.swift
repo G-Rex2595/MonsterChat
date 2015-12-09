@@ -22,13 +22,7 @@ var peerInformation = [peerInfo]()
 
 var checkPeer = MCPeerID!()
 
-class ChatList: UIViewController, MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate, MCSessionDelegate, UITableViewDelegate, UITableViewDataSource {
-    
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        //self.view.resignFirstResponder()
-        self.view.endEditing(true)
-        
-    }
+class ChatList: UIViewController, MCNearbyServiceAdvertiserDelegate, MCNearbyServiceBrowserDelegate, MCSessionDelegate, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
     
     var browser: MCNearbyServiceBrowser!
     var assistant : MCNearbyServiceAdvertiser!
@@ -37,23 +31,8 @@ class ChatList: UIViewController, MCNearbyServiceAdvertiserDelegate, MCNearbySer
     @IBOutlet weak var table: UITableView!
     @IBOutlet weak var nameOfRoom: UITextField!
     
-    
-
-    @IBAction func createChat(sender: AnyObject) {
-        
-        //nameOfRoom.text = "\(Singleton.sharedInstance.userName)'s Chat"
-        discoveryInfo["room"] = nameOfRoom.text
-        peerID = MCPeerID(displayName: Singleton.sharedInstance.userName)
-        chatsession = MCSession(peer: peerID)
-        chatsession.delegate = self
-        //self.session.delegate = self
-        assistant = MCNearbyServiceAdvertiser(peer: peerID, discoveryInfo: discoveryInfo, serviceType: serviceType)
-        assistant.delegate = self
-        
-        assistant.startAdvertisingPeer()
-        self.table.reloadData()
-    }
-    
+    @IBOutlet weak var back: UIButton!
+    @IBOutlet weak var createchatroom: UIButton!
 
     
     override func viewDidLoad() {
@@ -69,13 +48,57 @@ class ChatList: UIViewController, MCNearbyServiceAdvertiserDelegate, MCNearbySer
         // Do any additional setup after loading the view, typically from a nib.
         self.table.delegate = self
         self.table.reloadData()
+
+        self.nameOfRoom.delegate = self
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillShow:"), name:UIKeyboardWillShowNotification, object: nil);
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillHide:"), name:UIKeyboardWillHideNotification, object: nil);
+        
+        self.back.tintColor = Singleton.sharedInstance.textColor
+        self.createchatroom.tintColor = Singleton.sharedInstance.textColor
+        self.nameOfRoom.textColor = Singleton.sharedInstance.textColor
+
+        
+        self.back.titleLabel?.font = UIFont(name: Singleton.sharedInstance.font, size:(back.titleLabel?.font?.pointSize)!)
+        self.createchatroom.titleLabel?.font = UIFont(name: Singleton.sharedInstance.font, size:(createchatroom.titleLabel?.font?.pointSize)!)
+        self.nameOfRoom.font = UIFont(name: Singleton.sharedInstance.font, size:(nameOfRoom.font?.pointSize)!)
     }
-
-
+    
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    @IBAction func createChat(sender: AnyObject) {
+        
+        //nameOfRoom.text = "\(Singleton.sharedInstance.userName)'s Chat"
+        discoveryInfo["room"] = nameOfRoom.text
+        peerID = MCPeerID(displayName: Singleton.sharedInstance.userName)
+        chatsession = MCSession(peer: peerID)
+        chatsession.delegate = self
+        //self.session.delegate = self
+        assistant = MCNearbyServiceAdvertiser(peer: peerID, discoveryInfo: discoveryInfo, serviceType: serviceType)
+        assistant.delegate = self
+        
+        assistant.startAdvertisingPeer()
+        self.table.reloadData()
+        
+    }
+    
+    func keyboardWillShow(sender: NSNotification) {
+        self.view.frame.origin.y -= 200
+    }
+    
+    func keyboardWillHide(sender: NSNotification) {
+        self.view.frame.origin.y += 200
+    }
+    
+    func textFieldShouldReturn(nameOfRoom: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return true
+    }
+    
     
     func numberOfSectionsInTableView(tableView: UITableView) -> Int {
         return 1;
