@@ -98,7 +98,8 @@ public class LogsList extends AppCompatActivity {
             Calendar c = Calendar.getInstance();
             c.setTimeInMillis(logInfo.getDate());
             String logDate = formatT.format(c.getTime());
-            LogNames.add(logInfo.getRoomName() + "     " + logDate);
+            String currName = logInfo.getRoomName().replace("#", " ");
+            LogNames.add(currName + "     " + logDate);
             count++;
         }
 

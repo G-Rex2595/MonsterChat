@@ -23,7 +23,7 @@ public class ChatLogReader
      * Holds the maximum number of messages
      * allowed to be returned in a list.
      */
-    private final int MAX_MESSAGES = 500;
+    private final int MAX_MESSAGES = 100;
 
     /**
      * Holds the name of the current log.
@@ -105,7 +105,7 @@ public class ChatLogReader
      */
     public LinkedList<Message> getOlderMessages()
     {
-        if (this.currentLine < this.MAX_MESSAGES * 2)
+        if (this.currentLine < this.MAX_MESSAGES*2)
         {
             return null;
         }   //end if

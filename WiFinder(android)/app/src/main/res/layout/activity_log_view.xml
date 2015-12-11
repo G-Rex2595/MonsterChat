@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/lstLogDisp"
         android:headerDividersEnabled="true"
-        android:stackFromBottom="true"
+        android:stackFromBottom="false"
         android:layout_alignParentTop="false"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"

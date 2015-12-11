@@ -300,6 +300,13 @@ public class ChatRoomView extends AppCompatActivity{
 
                 Images.add(bd);
                 UserIds.add(msg.getID());
+
+                if(Head.size() > 500){
+                    Head.remove(0);
+                    Message.remove(0);
+                    Images.remove(0);
+                    UserIds.remove(0);
+                }
                 adapter.notifyDataSetChanged();
             }
         });
@@ -399,6 +406,8 @@ public class ChatRoomView extends AppCompatActivity{
 
         insertImg = null;
         txtbxInput.clearFocus();
+
+
     }
 
     public void onBackPressed()
@@ -410,6 +419,7 @@ public class ChatRoomView extends AppCompatActivity{
     }
 
     public void btnSettings_Click(View v){
+
         Intent intent = new Intent(this, Preferences.class);
         intent.putExtra(Preferences.EXTRA_SHOW_FRAGMENT, Preferences.Prefs.class.getName());
         intent.putExtra(Preferences.EXTRA_NO_HEADERS, true);

@@ -10,8 +10,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -28,6 +30,9 @@ import java.util.LinkedList;
  * Created by Cole Baughn on 11/11/2015.
  */
 public class LogView extends AppCompatActivity {
+
+    private final int MAX_MESSAGES = 100;
+    private boolean up = true;
 
     //UI Globals
     private ListView lstDisplay;
@@ -100,39 +105,67 @@ public class LogView extends AppCompatActivity {
             }
         };
 
-        lstDisplay.setAdapter(adapter);
 
         //Setup the Chat Log Reader
         readChat = new ChatLogReader(LogName);
 
         LinkedList<Message> MsgList = readChat.getNewerMessages();
+        up = false;
 
-        int count = 0;
-        while(count < MsgList.size()){
-            Message Msg = MsgList.get(count);
+        addMessages(MsgList, false);
 
-            String timeStamp = "";
-            if(TimeStamp) {
-
-                SimpleDateFormat formatT = new SimpleDateFormat("hh:mm a");
-                if(TimeFormat){
-                    formatT = new SimpleDateFormat("HH:mm");
-                }
-
-                Calendar c = Calendar.getInstance();
-                c.setTimeInMillis(Msg.getTime());
-                timeStamp = formatT.format(c.getTime());
+        lstDisplay.setOnScrollListener(new AbsListView.OnScrollListener() {
+            int currScrollState = 0;
+            int prevFirst = MAX_MESSAGES;
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                currScrollState = scrollState;
             }
-            final String message = String.format("%s:         %s\n%s\n", Msg.getName(), timeStamp, Msg.getMessage());
-            runOnUiThread(new Runnable() {
-                public void run() {
-                    Log.add(message);
-                    adapter.notifyDataSetChanged();
-                }
-            });
-            count++;
-        }
 
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                LinkedList<Message> addList;
+
+                if (firstVisibleItem == Log.size() - 25 && prevFirst < Log.size() -25){
+                    addList = readChat.getNewerMessages();
+                    if(up){
+                        android.util.Log.d("test", "2nd newer");
+                        addList = readChat.getNewerMessages();
+                    }
+
+                    if(addList != null) {
+                        addMessages(addList, false);
+                    }
+                    if(Log.size() >= MAX_MESSAGES*2){
+                        remMessages(true);
+                    }
+                    android.util.Log.d("test", "newer " + Log.size());
+
+                    up = false;
+                }
+                else if(firstVisibleItem == 25 && prevFirst > 25){
+                    addList = readChat.getOlderMessages();
+                    if(!up){
+                        //android.util.Log.d("test", "2nd older");
+                        addList = readChat.getOlderMessages();
+                    }
+
+                    if(addList != null) {
+                        android.util.Log.d("test", "2nd older");
+                        addMessages(addList, true);
+                    }
+                    if(Log.size() >= MAX_MESSAGES*2){
+                        remMessages(false);
+                    }
+                    android.util.Log.d("test", "older " + Log.size());
+                    up = true;
+                }
+
+                prevFirst = firstVisibleItem;
+            }
+
+
+        });
 
 
         //Setup the adapter
@@ -151,6 +184,63 @@ public class LogView extends AppCompatActivity {
         };
         lstDisplay.setAdapter(adapter);
 
+    }
+
+    private void remMessages(final boolean before){
+        android.util.Log.d("test", "rem");
+        while(Log.size() > 200){
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    if(before){
+                        Log.remove(0);
+                    }
+                    else{
+                        Log.remove(Log.size() - 1);
+                    }
+                    adapter.notifyDataSetChanged();
+                }
+            });
+
+        }
+    }
+
+    private void addMessages(LinkedList<Message> MsgList, final boolean before){
+        android.util.Log.d("test", "add");
+        int count = 0;
+        for(Message Msg : MsgList){
+
+
+            String timeStamp = "";
+            if(TimeStamp) {
+
+                SimpleDateFormat formatT = new SimpleDateFormat("hh:mm a");
+                if(TimeFormat){
+                    formatT = new SimpleDateFormat("HH:mm");
+                }
+
+                Calendar c = Calendar.getInstance();
+                c.setTimeInMillis(Msg.getTime());
+                timeStamp = formatT.format(c.getTime());
+            }
+            final String message = String.format("%s:         %s\n%s\n", Msg.getName(), timeStamp, Msg.getMessage());
+            final int curr = count;
+            runOnUiThread(new Runnable() {
+                public void run() {
+                    if(before){
+                        Log.add(curr ,message);
+                    }
+                    else{
+                        Log.add(message);
+                    }
+
+
+                    adapter.notifyDataSetChanged();
+                }
+            });
+            count++;
+        }
     }
 
     private void SetColors(String ColorScheme){
