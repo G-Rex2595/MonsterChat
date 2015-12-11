@@ -314,6 +314,11 @@ public class ChatRoomView extends AppCompatActivity{
                 Messages.add(msg);
                 MessageTexts.add(msg.getMessage());
                 //adapter.notifyDataSetChanged();
+                if(Messages.size() > 500){
+                    Messages.remove(0);
+                    Messages.remove(0);
+                }
+
                 adapter2.notifyDataSetChanged();
 
             }
@@ -321,7 +326,7 @@ public class ChatRoomView extends AppCompatActivity{
         scrollMyListViewToBottom();
     }
 
-    public void btnGallery_onClick(View v){
+    public void btnGallery_onClick(View v) {
         startActivityForResult(new Intent(Intent.ACTION_PICK,
                         android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI),
                 GET_FROM_GALLERY);
