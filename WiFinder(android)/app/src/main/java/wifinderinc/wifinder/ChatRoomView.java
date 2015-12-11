@@ -66,6 +66,11 @@ public class ChatRoomView extends AppCompatActivity{
     private ArrayList<String> UserIds = new ArrayList<>();
     private ChatList adapter;
 
+    //Adapter ChatList2 Globals
+    ArrayList<Message> Messages;
+    ArrayList<String> MessageTexts;
+    private ChatList2 adapter2;
+
     //Preference globals
     private String ColorScheme;
     private String Font;
@@ -137,9 +142,13 @@ public class ChatRoomView extends AppCompatActivity{
         });
 
         //set up adapter
-        adapter=new ChatList(this, Head, Message, Images, textColor, FontStyle );
+        //adapter=new ChatList(this, Head, Message, Images, textColor, FontStyle );
+        MessageTexts = new ArrayList<String>();
+        Messages = new ArrayList<Message>();
+        adapter2=new ChatList2(this, Messages, MessageTexts, textColor, FontStyle);
 
-        lstDisplay.setAdapter(adapter);
+        //lstDisplay.setAdapter(adapter);
+        lstDisplay.setAdapter(adapter2);
 
         //manager = new ChatRoomManager(UserName, this);
         manager = ChatRoomsList.manager;
@@ -191,7 +200,8 @@ public class ChatRoomView extends AppCompatActivity{
             @Override
             public void run() {
                 // Select the last row so it will scroll into view...
-                lstDisplay.setSelection(adapter.getCount() - 1);
+                //lstDisplay.setSelection(adapter.getCount() - 1);
+                lstDisplay.setSelection(adapter2.getCount() - 1);
             }
         });
     }
@@ -274,7 +284,7 @@ public class ChatRoomView extends AppCompatActivity{
     }
 
     public void addMessage(Message m) {
-        Calendar c = Calendar.getInstance();
+        /*Calendar c = Calendar.getInstance();
 
         String timeStamp = "";
         if (TimeStamps) {
@@ -285,11 +295,11 @@ public class ChatRoomView extends AppCompatActivity{
             timeStamp = formatT.format(c.getTime());
         }
 
-        final String stamp = timeStamp;
+        final String stamp = timeStamp;*/
         final Message msg = m;
         runOnUiThread(new Runnable() {
             public void run() {
-                Head.add(String.format("%s:         %s", msg.getName(), stamp));
+                /*Head.add(String.format("%s:         %s", msg.getName(), stamp));
                 Message.add(msg.getMessage());
 
                 BitmapDrawable bd = null;
@@ -298,16 +308,14 @@ public class ChatRoomView extends AppCompatActivity{
                     bd = new BitmapDrawable(getResources(), b);
                 }
 
-                Images.add(bd);
+                Images.add(bd);*/
                 UserIds.add(msg.getID());
 
-                if(Head.size() > 500){
-                    Head.remove(0);
-                    Message.remove(0);
-                    Images.remove(0);
-                    UserIds.remove(0);
-                }
-                adapter.notifyDataSetChanged();
+                Messages.add(msg);
+                MessageTexts.add(msg.getMessage());
+                //adapter.notifyDataSetChanged();
+                adapter2.notifyDataSetChanged();
+
             }
         });
         scrollMyListViewToBottom();
@@ -356,9 +364,12 @@ public class ChatRoomView extends AppCompatActivity{
             TimeFormat = SharedPrefs.getBoolean("24hrEnabled", false);
             SetColors(ColorScheme);
             SetFont(Font);
-            adapter.setTextColor(textColor);
+            /*adapter.setTextColor(textColor);
             adapter.setFontStyle(FontStyle);
-            adapter.notifyDataSetChanged();
+            adapter.notifyDataSetChanged();*/
+            adapter2.setTextColor(textColor);
+            adapter2.setFontStyle(FontStyle);
+            adapter2.notifyDataSetChanged();
         }
         //finish();
         //startActivity(getIntent());

@@ -10,22 +10,17 @@ import Foundation
 import UIKit
 import MultipeerConnectivity
 
-var blockList:[String] = [""]
 
-
-class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate,UITableViewDataSource{
-
-
-    override func touchesBegan(touches: Set<UITouch>, withEvent event: UIEvent?) {
-        self.view.endEditing(true)
-        
-    }
+class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate,UITableViewDataSource, UITextFieldDelegate{
     
     @IBOutlet var chatTable: UITableView!
     @IBOutlet var msgfield: UITextField!
     
+    @IBOutlet weak var chatrooms: UIButton!
+    @IBOutlet weak var send: UIButton!
     
     var messagesArray = [String]()
+    var umtArray = [Umt]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -34,6 +29,22 @@ class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate,UITable
         
         chatTable.delegate = self
         chatTable.dataSource = self
+        
+        self.msgfield.delegate = self
+        
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillShow:"), name:UIKeyboardWillShowNotification, object: nil);
+        NSNotificationCenter.defaultCenter().addObserver(self, selector: Selector("keyboardWillHide:"), name:UIKeyboardWillHideNotification, object: nil);
+        
+        self.chatrooms.tintColor = Singleton.sharedInstance.textColor
+        self.send.tintColor = Singleton.sharedInstance.textColor
+        self.msgfield.tintColor = Singleton.sharedInstance.textColor
+
+        
+        self.chatrooms.titleLabel?.font = UIFont(name: Singleton.sharedInstance.font, size:(chatrooms.titleLabel?.font?.pointSize)!)
+        self.send.titleLabel?.font = UIFont(name: Singleton.sharedInstance.font, size:(send.titleLabel?.font?.pointSize)!)
+        self.msgfield.font = UIFont(name: Singleton.sharedInstance.font, size:(msgfield.font?.pointSize)!)
+
+
         // Do any additional setup after loading the view, typically from a nib.
     }
     
@@ -42,49 +53,44 @@ class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate,UITable
         // Dispose of any resources that can be recreated.
     }
     
+    func keyboardWillShow(sender: NSNotification) {
+        self.view.frame.origin.y -= 200
+    }
+    
+    func keyboardWillHide(sender: NSNotification) {
+        self.view.frame.origin.y += 200
+    }
+    
+    func textFieldShouldReturn(nameOfRoom: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return true
+    }
+    
     func numberOfSectionsInTableView(chatTable: UITableView) -> Int {
         return 1;
     }
     
     func tableView(chatTable: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return messagesArray.count
+        return umtArray.count
     }
     
     func tableView(chatTable: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let tableCell = UITableViewCell()
-        tableCell.textLabel!.text = messagesArray[indexPath.row]
+
+        let tableCell = UITableViewCell(style: .Subtitle, reuseIdentifier: nil)
         
-        if messagesArray[indexPath.row] is String
-        {
-            var temp: String = messagesArray[indexPath.row] as! String
-            var tempArr = temp.componentsSeparatedByString(":")
-            var blockUser = tempArr[0]
-            for i in 0 ... blockList.count-1
-            {
-                if blockUser == blockList[i]
-                {
-                    tableCell.textLabel?.text = "This user has been blocked"
-                    return tableCell
-                }
-                
-            }
-        }
-        else
-        {
-//            var temp: String = cellContent[indexPath.row-1] as! String
-//            var tempArr = temp.componentsSeparatedByString(":")
-//            var blockUser = tempArr[0]
-//            for i in 0 ... blockList.count-1
-//            {
-//                if blockUser == blockList[i]
-//                {
-//                    cell.textLabel?.text = "This message has been blocked"
-//                    return cell
-//                }
-//                
-//            }
-        }
+        var detailMsg = ""
         
+        if(Singleton.sharedInstance.timeStamp == "Standard"){
+            detailMsg = "Sent by: " + "\(umtArray[indexPath.row].getUsername())" + ", \(umtArray[indexPath.row].getTime())"
+        }else if(Singleton.sharedInstance.timeStamp == "Military"){
+            detailMsg = "Sent by: " + "\(umtArray[indexPath.row].getUsername())" + ", \(umtArray[indexPath.row].getTime())"
+        }else{
+            detailMsg = "Sent by: " + "\(umtArray[indexPath.row].getUsername())"
+        }
+
+        tableCell.textLabel!.text = umtArray[indexPath.row].getMessage()
+        tableCell.detailTextLabel?.text = detailMsg
+
         return tableCell
     }
     
@@ -92,81 +98,73 @@ class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate,UITable
         return 40.0
     }
     
-    func tableView(tableView: UITableView, commitEditingStyle editingStyle: UITableViewCellEditingStyle, forRowAtIndexPath indexPath: NSIndexPath) {
-        if editingStyle == UITableViewCellEditingStyle.Delete {
-            messagesArray.removeAtIndex(indexPath.row)
-            tableView.deleteRowsAtIndexPaths([indexPath], withRowAnimation: UITableViewRowAnimation.Automatic)
-        }
-    }
-    
     
     func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
         
-        print("didselect was called")
-        let optionMenu = UIAlertController(title: nil, message: "Choose Option", preferredStyle: .ActionSheet)
+        let selectedUser = umtArray[indexPath.row].getUsername()
+        var blockmessage = ""
+        if(Singleton.sharedInstance.blockList.contains(umtArray[indexPath.row].getUsername())){
+            blockmessage = "Do you want to unblock \(selectedUser)"
+        }else{
+            blockmessage = "Do you want to block \(selectedUser)"
+        }
         
-        let blockAction = UIAlertAction(title: "Block user", style: .Default, handler: {
-            (alert: UIAlertAction!) -> Void in
-            print("blocked")
-            if self.messagesArray[indexPath.row] is String
-            {
-                var temp: String = self.messagesArray[indexPath.row] as! String
-                var tempArr = temp.componentsSeparatedByString(":")
-                var blockUser = tempArr[0]
-                blockList.append(blockUser)
+        let alert = UIAlertController(title: "Block User", message: blockmessage, preferredStyle: UIAlertControllerStyle.Alert)
+        
+        let acceptAction: UIAlertAction = UIAlertAction(title: "Yes", style: UIAlertActionStyle.Default) { (alertAction) -> Void in
+        if(Singleton.sharedInstance.blockList.contains(self.umtArray[indexPath.row].getUsername())){
+        Singleton.sharedInstance.blockList.removeAtIndex(Singleton.sharedInstance.blockList.indexOf(self.umtArray[indexPath.row].getUsername())!)
             }
-            else
-            {
-                //                var temp: String = self.cellContent[indexPath.row-1] as! String
-                //                var tempArr = temp.componentsSeparatedByString(":")
-                //                var blockUser = tempArr[0]
-                //                blockList.append(blockUser)
+        else{
+            Singleton.sharedInstance.blockList.append(selectedUser)
             }
-        })
+            self.chatTable.reloadData()
+        }
         
-        let cancelAction = UIAlertAction(title: "Cancel", style: .Cancel, handler: {
-            (alert: UIAlertAction!) -> Void in
-            print("Cancelled")
-        })
+        let declineAction = UIAlertAction(title: "No", style: UIAlertActionStyle.Cancel) { (alertAction) -> Void in
+        }
         
-        optionMenu.addAction(blockAction)
-        optionMenu.addAction(cancelAction)
+        alert.addAction(acceptAction)
+        alert.addAction(declineAction)
         
-        self.presentViewController(optionMenu, animated: true, completion: nil)
+        NSOperationQueue.mainQueue().addOperationWithBlock { () -> Void in
+            self.presentViewController(alert, animated: true, completion: nil)
+        }
     }
     
 
     
     @IBAction func sendData(sender: UIButton) {
         
+        //military
         
-        //let msg = Message.init(username: peerID.displayName, message: msgfield.text!, id: "some ID", roomName: discoveryInfo["room"]!)
+        let date = NSDate()
+        let calendar = NSCalendar.currentCalendar()
+        let components = calendar.components([.Hour, .Minute], fromDate: date)
+        let hour = components.hour
+        let minutes = components.minute
         
-        //let encodedMsg = msg.dataUsingEncoding(NSUTF8StringEncoding)
-        
-        let timestamp = NSDateFormatter.localizedStringFromDate(NSDate(), dateStyle: .MediumStyle, timeStyle: .ShortStyle)
+        let time = "\(hour):\(minutes)\n"
 
         var usernameMsgTime = Singleton.sharedInstance.userName
-        usernameMsgTime.appendContentsOf(": " + self.msgfield.text!)
-        usernameMsgTime.appendContentsOf(": " + timestamp)
+        usernameMsgTime.appendContentsOf("|" + self.msgfield.text!)
+        usernameMsgTime.appendContentsOf("|" + time)
+        
+        let umtMsg = Umt(username: Singleton.sharedInstance.userName, message: msgfield.text!, time: time)
         
         let msg = usernameMsgTime.dataUsingEncoding(NSUTF8StringEncoding)
         
         if(self.msgfield.text! != ""){
             do {
-                try chatsession.sendData(msg!, toPeers: chatsession.connectedPeers, withMode: MCSessionSendDataMode.Unreliable)
-                self.messagesArray.append(usernameMsgTime)
+                try chatsession.sendData(msg!, toPeers: chatsession.connectedPeers, withMode: MCSessionSendDataMode.Reliable)
+                
+                self.umtArray.append(umtMsg)
                 self.chatTable.reloadData()
-                print("sent \(msg) to \(chatsession.connectedPeers)")
             } catch {
-                print("couldnt sendData")
+
             }
 
         }
-
-        
-        //self.updateChat(self.msgfield.text!, fromPeer: self.peerID)
-        
 
         self.msgfield.text = ""
     }
@@ -196,19 +194,26 @@ class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate,UITable
             print("didReceiveData was called")
 
             let msg = NSString(data: data, encoding: NSUTF8StringEncoding)
+            
+            let msgArr = msg?.componentsSeparatedByString("|")
+            
+            let a = Umt(username: msgArr![0], message: msgArr![1], time: msgArr![2])
+            print("username: \(a.username)")
+            print("message: \(a.message)")
+            print("time: \(a.getTime())")
+
 
             dispatch_async(dispatch_get_main_queue()) {
                 
+                if(Singleton.sharedInstance.blockList.contains(a.getUsername())){
+                    return
+                }
                 
-                self.messagesArray.append(msg as! String)
+                self.umtArray.append(a)
                 self.chatTable.reloadData()
             }
     }
-    
-    
-    
-    
-    
+  
     func session(session: MCSession,
         didStartReceivingResourceWithName resourceName: String,
         fromPeer peerID: MCPeerID, withProgress progress: NSProgress)  {
@@ -230,4 +235,32 @@ class ChatView: UIViewController, MCSessionDelegate, UITableViewDelegate,UITable
 
 
 
+}
+
+class Umt
+{
+
+    var username: String
+    var message: String
+    var time: String
+    
+    init(username: String, message: String, time: String){
+        self.username = username
+        self.message = message
+        self.time = time
+        
+    }
+    
+    func getUsername() -> String{
+        return self.username
+    }
+    
+    func getMessage() -> String{
+        return self.message
+    }
+    
+    func getTime() -> String{
+        return self.time
+    }
+    
 }

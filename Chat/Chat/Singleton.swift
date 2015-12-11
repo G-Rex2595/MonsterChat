@@ -10,11 +10,20 @@ import Foundation
 //import MultipeerConnectivity
 import UIKit
 
-class Singleton{
+class Singleton: UIFont{
     
-    var backgroundColor = UIColor.orangeColor()
     var userName = "Anon"
     var roomName = ""
+    
+    var backgroundColor = UIColor.whiteColor()
+    var textColor = UIColor.blueColor()
+
+    var timeStamp = "Standard"
+    var font = "Helvetica Neue"
+    
+    var blockList: [String] = []
+    
+
     static let sharedInstance = Singleton()
 
 }
